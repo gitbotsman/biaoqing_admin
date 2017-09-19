@@ -56,7 +56,7 @@
       done () {
         this.loading = true
         Auth.login(this.$data).then(response => {
-          if (response.data.success) {
+          if (response.data.code == 200) {
             return this.$router.replace(this.$route.query.redirect || '/')
           }
           toastr.warning(response.data.msg)
