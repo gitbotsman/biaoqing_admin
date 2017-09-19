@@ -40,6 +40,7 @@
     </div>
   </div>
 </template>
+
 <script>
   import {Permission} from '../../resources'
   import {del, treeify} from '../../misc/utils'

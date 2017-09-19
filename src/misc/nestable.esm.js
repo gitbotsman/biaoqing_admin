@@ -32,7 +32,6 @@ var eStart  = hasTouch ? 'touchstart' : 'mousedown',
 var $document = $(document)
 
 var DEFAULTS = {
-
   rootClass: 'dd',
   listClass: 'dd-list',
   itemClass: 'dd-item',

@@ -130,6 +130,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
+  background: #fff;
 }
 .app-content, .app-content-view {
   -webkit-flex-direction: column;
@@ -703,7 +704,7 @@ body.aside-show { overflow-y: hidden !important }
 .app-aside:after { content: ' '; position: fixed; width: inherit; top: 0; bottom: 0; z-index: -1; background-color: inherit; border: inherit }
 .app-footer { line-height: 41px; padding-left: 1rem; padding-right: 1rem; margin-top: auto }
 .app-header, .navbar-brand { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15); min-height: 41px; height: 41px; z-index: 15; padding: 0; margin: 0 }
-.navbar-brand { display: block; overflow: hidden; z-index: 16; position: absolute; top: 0 }
+.navbar-brand { display: block; overflow: hidden; z-index: 16; position: absolute; top: 0 ;background: #fff;}
 .navbar-brand:after { position: absolute; content: ''; bottom: -1px; right: -1px; left: 0; height: 1px; z-index: 1 }
 .navbar-brand > .logo-xs { display: none }
 .navbar-brand > .logo-sm { display: none }
@@ -832,3 +833,67 @@ body.footer-fixed .app-footer { position: fixed; border-top: 1px solid #c5c5c5; 
 #app-preloader { background: #fff url('../img/logos/logo.png') no-repeat center; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99 }
 body.preloader #app-preloader { display: block }
 body.preloader { overflow: hidden }
+
+
+/*公用表单*/
+.table-hover tbody tr:hover{
+  background-color: rgba(0,0,0,.05);
+}
+.biaoqing-container{
+  margin: 0 16px;
+  background: #fff;
+  padding:  0 10px;
+}
+.biaoqing-nav{
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.operation-item{
+  color: #419df2;
+} 
+.operation-item span{
+    cursor: pointer;
+    padding: 0 10px;
+}
+.operation-item span:hover{
+  color: #037ded;
+}
+
+.operation-icon {
+  padding-right: 5px;
+}
+.biaoqing-sort{
+  padding: 0 8px;
+  cursor: pointer;
+}
+.biaoqing-table thead th{
+  text-align: center;
+}
+.biaoqing-table tbody td{
+  font-size: 13px;
+  padding: 0 8px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+.biaoqing-list-cover{
+  max-width: 30px;
+  height: 30px;
+  overflow: hidden;
+  text-align: center;
+  margin: 5px auto;
+
+}
+.biaoqing-list-cover img{
+  margin: 0 auto;
+  display: block;
+  width: 100%;
+}
+.max-width100{
+  max-width: 100px;
+}
+.max-width20{
+  max-width: 20px;
+}

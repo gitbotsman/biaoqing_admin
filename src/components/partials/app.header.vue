@@ -1,7 +1,6 @@
 <template>
   <nav class="app-header navbar navbar-toggleable-sm">
 
-    <a class="nav-item hidden-md-up" title="拉出菜单" @click="pushAside"><i class="fa fa-bars"></i></a>
     <a class="nav-item hidden-sm-down" title="展开菜单" @click="toggleAside"><i class="fa fa-bars"></i></a>
 
     <div class="dropdown static">

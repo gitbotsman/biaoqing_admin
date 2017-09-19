@@ -38,16 +38,24 @@
         <router-link class="aside-item" to="/html/forms.wizard.html" v-ripple.stop><span>Form wizard</span></router-link>
       </div>
     </div>
+    <div class="aside-item parent" v-ripple>
+      <i class="fa fa-file-text-o"></i><span>表情管理</span>
+      <div class="children">
+        <div class="fold-header">Forms</div>
+        <router-link class="aside-item" to="/subjectmanage" v-ripple.stop><span>表情列表</span></router-link>
+        <router-link class="aside-item" to="/html/forms.layouts.html" v-ripple.stop><span>专题列表</span></router-link>
+      </div>
+    </div>
   </div>
 </template>
 <script>
   import $ from 'jquery'
-
   export default {
-    data: () => ({}),
+    data: () => ({
+      title: '表情'
+    }),
     mounted () {
       var $el = $(this.$el)
-
       function activeAncestors ($el) {
         var $parent = $el.parent()
         if ($parent.hasClass('parent')) {

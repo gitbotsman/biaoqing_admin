@@ -45,7 +45,6 @@
     data: () => ({
       name: '',
       pass: '',
-      rememberMe: false,
       loading: false
     }),
     beforeRouteEnter (to, from, next) {
@@ -55,6 +54,7 @@
     methods: {
       done () {
         this.loading = true
+        console.log(this.$data)
         Auth.login(this.$data).then(response => {
           if (response.data.success) {
             return this.$router.replace(this.$route.query.redirect || '/')

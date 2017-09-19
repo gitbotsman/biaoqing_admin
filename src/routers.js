@@ -62,7 +62,9 @@ const routes = [
       {path: '/department/new', component: resolve => require(['./components/department/new.vue'], resolve)},
       {path: '/department/:id', component: resolve => require(['./components/department/edit.vue'], resolve)},
       {path: '/files/:parent?', component: resolve => require(['./components/files/files.vue'], resolve)},
-      {path: '/filess/:type?', component: resolve => require(['./components/files/filess.vue'], resolve)}
+      {path: '/filess/:type?', component: resolve => require(['./components/files/filess.vue'], resolve)},
+      
+      {path: '/subjectmanage', component: resolve => require(['./components/biaoqing/subject-manage.vue'], resolve)}
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},
