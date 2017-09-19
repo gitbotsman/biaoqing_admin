@@ -33,7 +33,7 @@ export const Auth = {
   authorizationCheck (cb) { // 身份验证, 成功后返回当前用户所有权限
     console.log('authorizationCheck')
     http.get('/authorization-check').then(response => {
-      this.permissions = response.data.permissions
+      this.permissions = response.data.data
       cb(true)
     }).catch(error => { // 验证失败后台会抛出401异常, 注销当前用户
       toastr.error('会话已过期, 请重新登录.')
@@ -44,8 +44,8 @@ export const Auth = {
   login: (data) => {
     return new Promise((resolve, reject) => {
       http.post('/login', data).then(response => {
-        if (response.data.success) {
-          storage.setItem('user', JSON.stringify(response.data.user))
+        if (response.data.code == 200) {
+          storage.setItem('user', JSON.stringify(response.data.data))
         }
         resolve(response)
       }, reject).catch(reject)
