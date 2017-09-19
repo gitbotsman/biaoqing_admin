@@ -105,8 +105,8 @@
     beforeRouteEnter (to, from, next) {
       Promise.all([Permission.get(to.params.id), Permission.jstree()]).then(([perm, tree]) => {
         next(vm => {
-          vm.permission = perm.data
-          vm.treenodes = tree.data
+          vm.permission = perm.data.data
+          vm.treenodes = tree.data.data
           vm.$nextTick(() => vm.$emit('loaded'))
         })
       })
@@ -114,7 +114,7 @@
     beforeRouteUpdate (to, from, next) {
       this.$nextTick(() => this.$emit('loaded', 1))
       Permission.get(to.params.id).then(perm => {
-        this.permission = perm.data
+        this.permission = perm.data.data
         this.$nextTick(() => this.$emit('loaded'))
         next()
       })

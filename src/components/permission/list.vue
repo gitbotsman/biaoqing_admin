@@ -58,7 +58,7 @@
     beforeRouteEnter (to, from, next) {
       Permission.treetable().then(response => {
         next(vm => {
-          vm.items = response.data
+          vm.items = response.data.data
           vm.$nextTick(() => {
             vm.$treetable = treeify(vm.$refs.treetable, expanded)
             vm.$emit('loaded')

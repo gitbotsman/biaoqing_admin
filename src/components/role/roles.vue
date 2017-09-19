@@ -67,9 +67,9 @@
       var requests = [Role.all(), Permission.tree(), id ? Role.owns(id) : []]
       Promise.all(requests).then(([roles, perms, owns]) => {
         next(vm => {
-          vm.roles = roles.data
-          vm.perms = perms.data
-          vm.owns = owns.data
+          vm.roles = roles.data.data
+          vm.perms = perms.data.data
+          vm.owns = owns.data.data
           if (id) {
             vm.role = vm.roles.find(r => r.id === to.params.id)
           }
@@ -84,7 +84,7 @@
       if (to.params.id) {
         this.role = this.roles.find(r => r.id == to.params.id)
         return Role.owns(to.params.id).then(response => {
-          this.owns = response.data
+          this.owns = response.data.data
           this.$emit('loaded')
           next()
         })
@@ -101,7 +101,7 @@
           e.checked && items.push(e.value)
         })
         Role.put_perms({id: this.role.id, perms: items}).then(response => {
-          if (response.data.success) {
+          if (response.data.code == 200) {
             return toastr.success('角色权限更新成功!')
           }
           toastr.error(response.data.msg)

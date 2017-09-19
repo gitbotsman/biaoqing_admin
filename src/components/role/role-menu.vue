@@ -73,11 +73,11 @@
         this.loading = true
         Role[this.action === 'edit' ? 'update' : 'save'](this.me).then(response => {
           this.loading = false
-          if (!response.data.success) {
+          if (response.data.code != 200) {
             return toastr.error(response.data.msg)
           }
           toastr.success('角色' + (this.action === 'edit' ? '编辑' : '创建') + '成功!')
-          this.me = response.data.role
+          this.me = response.data.data
           this.$emit(this.action, this.me)
           this.close()
         }).catch(error => {
@@ -87,7 +87,7 @@
       },
       del (exec) {
         Role.delete(this.role.id).then(response => {
-          if (response.data.success) {
+          if (response.data.code == 200) {
             toastr.success('角色删除成功!')
             this.$emit('del', this.role)
             this.close()

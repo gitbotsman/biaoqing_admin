@@ -136,7 +136,7 @@
     beforeRouteEnter (to, from, next) {
       Permission.jstree().then(tree => {
         next(vm => {
-          vm.treenodes = tree.data
+          vm.treenodes = tree.data.data
           vm.permission.parent = to.query.parent || ''
           vm.$nextTick(() => vm.$emit('loaded'))
         })
@@ -147,7 +147,7 @@
         var checked = e.target.checked
         if (checked && !this.perms) {   // 第一次选中时从字典数据中加载默认子权限组
           Dict.bycode('default_permission_group').then(response => {
-            this.perms = response.data
+            this.perms = response.data.data
           })
         }
       },
