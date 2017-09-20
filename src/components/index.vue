@@ -34,6 +34,7 @@
   import AppHeader from './partials/app.header.vue'
   import AppAside from './partials/app.aside.vue'
   import {Auth} from '../resources'
+  import $ from 'jquery'
 
   export default {
     data: () => ({
@@ -41,7 +42,6 @@
       loading: 1
     }),
     beforeRouteEnter (to, form, next) {
-
       // 进入首页前先进行登录验证
       Auth.authorizationCheck(function (success) {
         if (!success) {

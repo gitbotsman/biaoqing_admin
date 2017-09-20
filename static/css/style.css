@@ -846,7 +846,6 @@ body.preloader { overflow: hidden }
 }
 .biaoqing-nav{
   font-size: 14px;
-  margin-bottom: 10px;
 }
 .operation-item{
   color: #419df2;
@@ -874,19 +873,18 @@ body.preloader { overflow: hidden }
   padding: 0 8px;
   line-height: 40px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+  overflow: hidden;
 }
 .biaoqing-list-cover{
   max-width: 30px;
   height: 30px;
-  overflow: hidden;
   text-align: center;
   margin: 5px auto;
-
+  overflow: hidden;
 }
-.biaoqing-list-cover img{
+.biaoqing-list-cover-img{
   margin: 0 auto;
   display: block;
   width: 100%;
@@ -896,4 +894,18 @@ body.preloader { overflow: hidden }
 }
 .max-width20{
   max-width: 20px;
+}
+.biaoqing-table{
+  padding-top: 10px;
+}
+.img-view{
+  overflow: visible !important; 
+  position: relative;
+}
+.img-view-con{
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 900;
+  background: #fff;
 }

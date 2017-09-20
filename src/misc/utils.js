@@ -1,7 +1,7 @@
 import Treetable from './treetable.esm'
 import toastr from './toastr.esm'
 import swal from 'sweetalert'
-
+import $ from 'jquery'
 /* 生成当前时间戳对应的62进制形式短链接 */
 export const shorten = function () {
   var DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -214,4 +214,35 @@ export const debounce = function (func, wait, immediate) {
     }
     return result
   }
+}
+
+
+/* 鼠标移入图片上时放大图片 */
+export const viewImg = function (e, maxWidth) {
+  var $this = $(e.target);
+  var width = parseInt($this.find('.biaoqing-list-cover-img').attr('data-width'));
+  var height = parseInt($this.find('.biaoqing-list-cover-img').attr('data-height'));
+  if(width>maxWidth){
+    if(width!=height){
+      height = (height/width)*maxWidth;
+      width = maxWidth;
+    }else{
+      width = maxWidth;
+      height = maxWidth;
+    }
+  }
+  var src = $this.find('.biaoqing-list-cover-img').attr('src');
+  var html ="<div class='img-view-con'><img src="+src+"></div>"
+  $this.prepend(html)
+  $this.find('.img-view-con').css({
+    right:'-'+width+'px',
+    top:'-'+height+'px'
+  })
+
+  
+}
+/* 鼠标移出图片上时取消放大图片 */
+export const clearViewImg = function (e) {
+  var $this = $(e.target);
+  $this.find('.img-view-con').remove();
 }

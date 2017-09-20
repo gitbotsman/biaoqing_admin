@@ -47,7 +47,6 @@
             <jstree class="mt-0" attach="#parent" :treenodes="treenodes" v-model="permission.parent" dropdown="down"></jstree>
           </div>
         </div>
-
         <div class="form-group row">
           <label class="col-form-label col-sm-2">排序</label>
           <div class="col-sm-10">

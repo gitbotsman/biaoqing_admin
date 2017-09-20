@@ -33,8 +33,15 @@ export const Auth = {
   authorizationCheck (cb) { // 身份验证, 成功后返回当前用户所有权限
     console.log('authorizationCheck')
     http.get('/authorization-check').then(response => {
+      console.log(response)
       this.permissions = response.data.data
-      cb(true)
+      if(response.data.code==401){      //code返回401,登录失效
+        toastr.error('会话已过期, 请重新登录.')
+        storage.removeItem('user')
+        cb(false, error)
+      }else{
+        cb(true)
+      }
     }).catch(error => { // 验证失败后台会抛出401异常, 注销当前用户
       toastr.error('会话已过期, 请重新登录.')
       storage.removeItem('user')
@@ -44,7 +51,7 @@ export const Auth = {
   login: (data) => {
     return new Promise((resolve, reject) => {
       http.post('/login', data).then(response => {
-        if (response.data.code == 200) {
+        if (response.data.code==200) {
           storage.setItem('user', JSON.stringify(response.data.data))
         }
         resolve(response)
@@ -190,3 +197,14 @@ function resource (path, http, actions) {
   }
   return Object.assign(obj, actions)
 }
+
+/**
+ * 请求表情列表和tab
+ * @param path request path
+ * @param method  request method
+ * @param data JSON data
+ * @returns {AxiosPromise}
+ */
+export const Subject = resource('role', http, {
+  works: (param) => http.get('subject',param),     // 获取作品列表
+})

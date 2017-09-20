@@ -30,8 +30,7 @@
 				      <th>浏览量<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>点赞<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>评论数<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>分享次数<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>改图次数</th>
+				      <th>来源</th>
 				      <th>最后回复<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>热门在线</th>
 				      <th>操作人</th>
@@ -39,38 +38,33 @@
 				    </tr>
 		    	</thead>
 		    	<tbody>
-		    		<tr>
-		    			<td>
+		    		<tr v-for="work in works.items">
+		    			<td class="img-view" @mouseenter="bigImg"  @mouseleave="clearbigImg">
 		    				<div class="biaoqing-list-cover">
-		    					<img src="https://img.biaoqing.com/work/20170824/0801320001780.gif!thumb240" alt="">
+		    					<img class="biaoqing-list-cover-img"  :data-height="work.coverHeight" :data-width="work.coverWidth" :src="[work.fullCover+'!thumb240']" alt="">
 		    				</div>
 		    			</td>
-		    			<td>
-		    				4545221
-		    			</td>
+		    			<td>{{work.id}}</td>
 		    			<td class="max-width100">
-		    				<span class="biaoqing-table-content">#斗图# #蘑菇头#</span>
+		    				<span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
 		    			</td>
 		    			<td class="max-width20">
-		    				<span>斗图蘑菇头</span>
+		    				<span>{{work.name}}</span>
 		    			</td>
 		    			<td class="max-width100 publish-time">
 		    				<span>2017-08-24 16:00</span>
 		    			</td>
 		    			<td class="view-num">
-		    				<span>1212</span>
+		    				<span>{{work.viewNum}}</span>
 		    			</td>
 		    			<td class="like-num">
-		    				<span>122</span>
+		    				<span>{{work.likedNum}}</span>
 		    			</td>
 		    			<td class="pl-num">
-		    				<span>3220</span>
-		    			</td>
-		    			<td class="share-num">
-		    				<span>8220</span>
+		    				<span>{{work.commentNum}}</span>
 		    			</td>
 		    			<td class="change-num">
-		    				<span>20</span>
+		    				<span>{{work.source}}</span>
 		    			</td>
 		    			<td class="max-width100 last-comment">
 		    				<span>2017-08-25 16:00</span>
@@ -83,7 +77,7 @@
 		    			</td>
 		    			<td class="operation-item">
 		    				<span><i class="operation-icon fa fa-send"></i>详情</span>
-		    				<span><i class="operation-icon fa fa-trash-o"></i>删除</span>
+		    				<span class="text-danger"><i class="operation-icon fa fa-trash-o"></i>删除</span>
 		    			</td>
 		    		</tr>
 		    	</tbody>
@@ -96,15 +90,32 @@
 
 <script>
 import '../../../static/css/biaoqing/biaoqing.css'
+import { Subject } from '../../resources'
+import toastr from '../../misc/toastr.esm'
+import { viewImg, clearViewImg } from '../../misc/utils'
 
 export default {
 	data: () => ({
-		loading: false
+		loading: false,
+		works:''
 	}),
+	beforeRouteEnter (to,form,next) {
+		var param = {
+			pn:'20'
+		}
+		Promise.all([Subject.works(param)]).then(([works]) => {
+		console.log(works)
+    		next(vm => {
+    			vm.works=works.data.data;
+    		})
+		})
+	},
     mounted () {
-      this.$emit('loaded')
+      	this.$emit('loaded')
     },
     methods: {
+    	clearbigImg(e){clearViewImg(e)},
+    	bigImg(e){viewImg(e,240)},
     	deleteSubject (id){
     		swal({
 			  title: 'Are you sure?',

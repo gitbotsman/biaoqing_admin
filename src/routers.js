@@ -64,7 +64,9 @@ const routes = [
       {path: '/files/:parent?', component: resolve => require(['./components/files/files.vue'], resolve)},
       {path: '/filess/:type?', component: resolve => require(['./components/files/filess.vue'], resolve)},
       
-      {path: '/subjectmanage', component: resolve => require(['./components/biaoqing/subject-manage.vue'], resolve)}
+      {path: '/subjectmanage', component: resolve => require(['./components/biaoqing/subject-manage.vue'], resolve)},
+      {path: '/topicmanage', component: resolve => require(['./components/biaoqing/topic-manage.vue'], resolve)},
+      {path: '/topicexamine', component: resolve => require(['./components/biaoqing/topic-examine.vue'], resolve)}
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},
