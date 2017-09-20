@@ -149,6 +149,34 @@ export const timepast = function (timestamp) {
   var minites = parseInt(diff / uminute)
   if (minites > 0) return minites + '分钟前'
 }
+/* 格式化时间 */
+export const formatTime = function (ns) {
+  var timeFormate = new Date(ns);
+  var now = new Date();
+  var nowYear = now.getFullYear();
+  　　var year = timeFormate.getFullYear(),
+    　　month = zero(timeFormate.getMonth() + 1),
+    　　date = zero(timeFormate.getDate()),
+    　　hour = zero(timeFormate.getHours()),
+    　　minute = zero(timeFormate.getMinutes()),
+    　　second = zero(timeFormate.getSeconds());
+
+  if (nowYear == year) {
+    var time = year + "-" +month + "-" + date + " " + hour + ":" + minute;
+  } else {
+    var time = year + "-" + month + "-" + date + " " + hour + ":" + minute;
+  }
+  return time;
+}
+
+function zero(time) {
+  var time = String(time)
+  if (time.length < 2) {
+    return '0' + time
+  } else {
+    return time
+  }
+}
 
 /* 触发DOM事件 */
 export const triggerEvent = function (el, name, data) {
@@ -220,6 +248,8 @@ export const debounce = function (func, wait, immediate) {
 /* 鼠标移入图片上时放大图片 */
 export const viewImg = function (e, maxWidth) {
   var $this = $(e.target);
+  var clientY = parseInt(e.clientY);
+
   var width = parseInt($this.find('.biaoqing-list-cover-img').attr('data-width'));
   var height = parseInt($this.find('.biaoqing-list-cover-img').attr('data-height'));
   if(width>maxWidth){
@@ -233,13 +263,17 @@ export const viewImg = function (e, maxWidth) {
   }
   var src = $this.find('.biaoqing-list-cover-img').attr('src');
   var html ="<div class='img-view-con'><img src="+src+"></div>"
+  if(clientY-50<height){
+    height=clientY-50;
+  }
+
   $this.prepend(html)
   $this.find('.img-view-con').css({
     right:'-'+width+'px',
     top:'-'+height+'px'
   })
 
-  
+
 }
 /* 鼠标移出图片上时取消放大图片 */
 export const clearViewImg = function (e) {

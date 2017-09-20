@@ -892,6 +892,9 @@ body.preloader { overflow: hidden }
 .max-width100{
   max-width: 100px;
 }
+.max-width200{
+  max-width: 200px;
+}
 .max-width20{
   max-width: 20px;
 }
@@ -908,4 +911,7 @@ body.preloader { overflow: hidden }
   top: 0;
   z-index: 900;
   background: #fff;
+}
+.nav-item a{
+  border-bottom: 2px solid transparent;
 }

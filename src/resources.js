@@ -174,6 +174,7 @@ export const jsonRequest = function (path, method, data) {
  * @returns the resource object
  */
 function resource (path, http, actions) {
+  
   var obj = {
     get: id => http.get(path + '/' + id),
     save: obj => http.post(path, obj),
@@ -193,7 +194,6 @@ function resource (path, http, actions) {
         }, reject)
       })
     },
-    http
   }
   return Object.assign(obj, actions)
 }
@@ -205,6 +205,18 @@ function resource (path, http, actions) {
  * @param data JSON data
  * @returns {AxiosPromise}
  */
-export const Subject = resource('role', http, {
-  works: (param) => http.get('subject',param),     // 获取作品列表
+export const Subject = resource('subject', http, {
+  works: params => http.get('subject',{params:params}),     // 获取作品列表
+  tags: params => http.get('tag/all',{params:params})     // 获取标签
+})
+
+/**
+ * 话题申请列表
+ * @param path request path
+ * @param method  request method
+ * @param data JSON data
+ * @returns {AxiosPromise}
+ */
+export const Topic = resource('topic', http, {
+  topicReview: params => http.get('topicReview',{params:params}),     // 话题申请列表
 })

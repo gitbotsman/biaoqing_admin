@@ -54,7 +54,6 @@
     methods: {
       done () {
         this.loading = true
-        console.log(this.$data)
         Auth.login(this.$data).then(response => {
           if (response.data.code==200) {
             return this.$router.replace(this.$route.query.redirect || '/')

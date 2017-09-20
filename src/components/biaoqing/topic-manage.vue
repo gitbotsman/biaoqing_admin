@@ -2,7 +2,7 @@
 <div>
 	<ol class="breadcrumb">
       <li class="breadcrumb-item">表情管理</li>
-      <li class="breadcrumb-item" @click="deleteSubject">专题列表</li>
+      <li class="breadcrumb-item">专题列表</li>
     </ol>
     <div class="biaoqing-container">
     	<div class="biaoqing-table">
@@ -17,11 +17,7 @@
 				      <th>浏览量<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>点赞<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>评论数<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>分享次数<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>改图次数</th>
-				      <th>最后回复<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>热门在线</th>
-				      <th>操作人</th>
 				      <th>操作</th>
 				    </tr>
 		    	</thead>
@@ -53,20 +49,8 @@
 		    			<td class="pl-num">
 		    				<span>3220</span>
 		    			</td>
-		    			<td class="share-num">
-		    				<span>8220</span>
-		    			</td>
-		    			<td class="change-num">
-		    				<span>20</span>
-		    			</td>
-		    			<td class="max-width100 last-comment">
-		    				<span>2017-08-25 16:00</span>
-		    			</td>
 		    			<td class="publish-hot">
 		    				<span>上线</span>
-		    			</td>
-		    			<td class="operation">
-		    				<span>小猫</span>
 		    			</td>
 		    			<td class="operation-item">
 		    				<span><i class="operation-icon fa fa-send"></i>详情</span>

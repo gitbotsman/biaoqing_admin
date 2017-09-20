@@ -1,40 +1,39 @@
 <template>
 <div>
 	<ol class="breadcrumb">
-      <li class="breadcrumb-item">表情管理</li>
-      <li class="breadcrumb-item">表情列表</li>
+      <li class="breadcrumb-item">审核管理</li>
+      <li class="breadcrumb-item">专题审核</li>
     </ol>
     <div class="biaoqing-container">
     	<div class="biaoqing-table">
 			<table class="table table-bordered table-hover">
 				<thead>
 		    		<tr>
+		    		  <th>Banner</th>
 				      <th>封面</th>
-				      <th>表情ID</th>
-				      <th>内容</th>
-				      <th>发布人</th>
-				      <th>发布时间<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>浏览量<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>点赞<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>评论数<span class="biaoqing-sort fa fa-sort"></span></th>
+				      <th>专题ID</th>
+				      <th>描述</th>
+				      <th>审核人</th>
+				      <th>提交时间<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>分享次数<span class="biaoqing-sort fa fa-sort"></span></th>
-				      <th>改图次数</th>
-				      <th>最后回复<span class="biaoqing-sort fa fa-sort"></span></th>
 				      <th>热门在线</th>
 				      <th>操作人</th>
 				      <th>操作</th>
 				    </tr>
 		    	</thead>
 		    	<tbody>
-		    		<tr>
-		    			<td>
+		    		<tr v-for="review in reviews.items">
+		    			<td class="img-view"  @mouseenter="bigImg($event,750)"  @mouseleave="clearbigImg">
 		    				<div class="biaoqing-list-cover">
-		    					<img src="https://img.biaoqing.com/work/20170824/0801320001780.gif!thumb240" alt="">
+		    					<img class="biaoqing-list-cover-img" data-height="300" data-width="750" :src="[review.fullBanner]">
 		    				</div>
 		    			</td>
-		    			<td>
-		    				4545221
+		    			<td class="img-view"  @mouseenter="bigImg($event,300)"  @mouseleave="clearbigImg">
+		    				<div class="biaoqing-list-cover">
+		    					<img class="biaoqing-list-cover-img" data-height="300" data-width="300" :src="[review.fullCover]">
+		    				</div>
 		    			</td>
+		    			<td>4545221</td>
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content">#斗图# #蘑菇头#</span>
 		    			</td>
@@ -44,23 +43,8 @@
 		    			<td class="max-width100 publish-time">
 		    				<span>2017-08-24 16:00</span>
 		    			</td>
-		    			<td class="view-num">
-		    				<span>1212</span>
-		    			</td>
-		    			<td class="like-num">
-		    				<span>122</span>
-		    			</td>
-		    			<td class="pl-num">
-		    				<span>3220</span>
-		    			</td>
 		    			<td class="share-num">
 		    				<span>8220</span>
-		    			</td>
-		    			<td class="change-num">
-		    				<span>20</span>
-		    			</td>
-		    			<td class="max-width100 last-comment">
-		    				<span>2017-08-25 16:00</span>
 		    			</td>
 		    			<td class="publish-hot">
 		    				<span>上线</span>
@@ -83,16 +67,36 @@
 
 <script>
 import '../../../static/css/biaoqing/biaoqing.css'
+import { Topic } from '../../resources'
+import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
+
 
 export default {
 	data: () => ({
-		loading: false
+		loading: false,
+		reviews:''
 	}),
+	beforeRouteEnter (to,form,next) {
+		var params = {
+
+		}
+		Promise.all([Topic.topicReview(params)]).then(([reviews]) => {
+			console.log(reviews)
+			next(vm => {
+				if(reviews.data.data && reviews.data.code==200){
+					vm.reviews = reviews.data.data;
+				}
+			})
+		})
+	},
     mounted () {
       this.$emit('loaded')
     },
     methods: {
-    	
+    	clearbigImg(e){clearViewImg(e)},
+    	bigImg(e,maxWidth){
+    		viewImg(e,maxWidth)
+    	},
     } 
 }
 </script>
