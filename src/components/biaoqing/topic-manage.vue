@@ -84,7 +84,7 @@
 		    				</template>
 		    				<template v-if="topic.isHot==true">
 		    					<span @click="setHot(false,topic.id,index)" class="text-danger"><i class="operation-icon fa fa-fire"></i>取消热门</span>
-		    					<span @click="setIndex(false,topic.id,index)" class="pass-ing"><i class="operation-icon fa fa-level-up"></i>首页展示</span>
+		    					<!-- <span @click="setIndex(false,topic.id,index)" class="pass-ing"><i class="operation-icon fa fa-level-up"></i>首页展示</span> -->
 		    				</template>
 
 
