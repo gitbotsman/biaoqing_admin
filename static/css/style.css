@@ -833,8 +833,9 @@ body.footer-fixed .app-footer { position: fixed; border-top: 1px solid #c5c5c5; 
 #app-preloader { background: #fff url('../img/logos/logo.png') no-repeat center; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99 }
 body.preloader #app-preloader { display: block }
 body.preloader { overflow: hidden }
-
-
+.fl{float: left;}
+.clearfloat:after{display:block;clear:both;content:"";visibility:hidden;height:0} 
+.clearfloat{zoom:1} 
 /*公用表单*/
 .table-hover tbody tr:hover{
   background-color: rgba(0,0,0,.05);
@@ -848,7 +849,7 @@ body.preloader { overflow: hidden }
   font-size: 14px;
 }
 .operation-item{
-  color: #419df2;
+  color: #58c6ff;
 } 
 .operation-item span{
     cursor: pointer;
@@ -864,6 +865,12 @@ body.preloader { overflow: hidden }
 .biaoqing-sort{
   padding: 0 8px;
   cursor: pointer;
+  height: 11px;
+  width: 11px;
+  display: inline-block;
+}
+.biaoqing-sort .fa{
+  height: 1px;
 }
 .biaoqing-table thead th{
   text-align: center;
@@ -914,4 +921,28 @@ body.preloader { overflow: hidden }
 }
 .nav-item a{
   border-bottom: 2px solid transparent;
+}
+.page-input{
+  /*display: inline-block;*/
+  width: 110px;
+  margin-left: 10px;
+  font-size: 13px;
+}
+.page-input input{
+  padding:.5rem .4rem;
+}
+.biaoqing-sort .active{
+  color: #58c6ff;
+}
+.pass-fail{
+  color: #dc3545 !important
+}
+.pass-ing{
+  color: green !important
+}
+.pass-success{
+  color: #58c6ff !important
+}
+.publish-hot{
+  color: #419df2;
 }

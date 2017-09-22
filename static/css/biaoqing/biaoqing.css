@@ -1,3 +1,15 @@
-.publish-hot{
-	color: #419df2;
+.selecTagContainer{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+}
+.tag-name{
+  font-size:14px;
+  border: 1px solid #ddd;
+  line-height: auto;
+  display: inline-block;
+  padding:5px 10px; 
+  margin: 0 3px;
+  border-radius: 4px;
+  cursor: pointer;
 }

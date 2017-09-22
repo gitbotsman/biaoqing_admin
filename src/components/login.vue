@@ -3,9 +3,9 @@
     <div class="container text-center animated fadeIn bg-themeblue">
       <div class="login-box">
         <div style="height:125px; line-height: 125px">
-          <img src="/static/img/logos/logo-big.png">
+          <img src="/static/img/logos/logo-login.png">
         </div>
-        <div class="text-muted mb-2">Login to Yeapp Admin</div>
+        <div class="text-muted mb-2">Login to Biaoqing Admin</div>
         <form @submit.prevent="done" class="text-left" autocomplete="off">
           <div class="form-group" v-styling="'name'">
             <input name="name" v-model="name" v-validate="'required|min:3'" title="邮箱/手机号" placeholder="邮箱/手机号" class="form-control form-control-line" autofocus>
@@ -16,7 +16,7 @@
             <span class="form-control-feedback">{{ errors.first('pass') }}</span>
             <button class="btn btn-outline-primary rounded" :class="{'loading': loading}" :disabled="errors.any() || loading">登 录</button>
           </div>
-          <div class="clearfix mb-2">
+          <!-- <div class="clearfix mb-2">
             <label class="ui-checkbox float-left">
               <input type="checkbox" name="rememberMe"><i class="text-primary"></i> <span class="font-xs align-middle">记住我</span>
             </label>
@@ -24,12 +24,12 @@
               <a class="btn bg-facebook text-white rounded btn-icon"><i class="fa fa-qq"></i></a>
               <a class="btn bg-googleplus text-white rounded btn-icon"><i class="fa fa-wechat"></i></a>
             </span>
-          </div>
+          </div> -->
         </form>
-        <div class="clearfix">
+        <!-- <div class="clearfix">
           <a href="#/signup" class="float-left">注册</a>
           <a href="#/logout" class="float-right">忘记密码?</a>
-        </div>
+        </div> -->
       </div>
       <div class="text-muted pt-2">v0.1</div>
     </div>
@@ -53,8 +53,12 @@
     },
     methods: {
       done () {
-        this.loading = true
-        Auth.login(this.$data).then(response => {
+        this.loading = true;
+        var data = {
+          name:this.name,
+          pass:this.pass
+        }
+        Auth.login(data).then(response => {
           if (response.data.code==200) {
             return this.$router.replace(this.$route.query.redirect || '/')
           }

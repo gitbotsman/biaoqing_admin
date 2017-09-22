@@ -66,7 +66,11 @@ const routes = [
       
       {path: '/subjectmanage', component: resolve => require(['./components/biaoqing/subject-manage.vue'], resolve)},
       {path: '/topicmanage', component: resolve => require(['./components/biaoqing/topic-manage.vue'], resolve)},
-      {path: '/topicexamine', component: resolve => require(['./components/biaoqing/topic-examine.vue'], resolve)}
+      {path: '/topicexamine', component: resolve => require(['./components/biaoqing/topic-examine.vue'], resolve)},
+      // 贴纸
+      {path: '/stickerlist', component: resolve => require(['./components/sticker/sticker-list.vue'], resolve)},
+
+
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},

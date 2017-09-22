@@ -1,4 +1,4 @@
- import querystring from 'querystring'
+import querystring from 'querystring'
 import toastr from './misc/toastr.esm'
 import storage from 'localStorage'
 import axios from 'axios'
@@ -7,11 +7,11 @@ import Vue from 'vue'
 export const baseURL = process.env.NODE_ENV === 'production' ? '/' : '/api'  // 所有请求的根路径
 
 export const http = axios.create({
-  baseURL: baseURL,
+  baseURL: "http://support.c3e1c0e165dda47f8957716f59db25d2d.cn-hangzhou.alicontainer.com/",
   timeout: 10000,
   withCredentials: true,
   headers: {'X-Requested-With': 'XMLHttpRequest'},
-  transformRequest: [data => querystring.stringify(data)]
+  // transformRequest: [data => {querystring.stringify(data)}]
 })
 
 // Add a response interceptor handing global errors
@@ -49,6 +49,7 @@ export const Auth = {
     })
   },
   login: (data) => {
+    data=querystring.stringify(data)
     return new Promise((resolve, reject) => {
       http.post('/login', data).then(response => {
         if (response.data.code==200) {
@@ -217,6 +218,17 @@ export const Subject = resource('subject', http, {
  * @param data JSON data
  * @returns {AxiosPromise}
  */
-export const Topic = resource('topic', http, {
+export const Topic = resource('topicReview', http, {
   topicReview: params => http.get('topicReview',{params:params}),     // 话题申请列表
+})
+/**
+ * 话题管理
+ * @param path request path
+ * @param method  request method
+ * @param data JSON data
+ * @returns {AxiosPromise}
+ */
+export const TopicManage = resource('topicManage', http, {
+  topic: params => http.get('topic',{params:params}),     // 
+  tags: params => http.get('tag/all',{params:params})     // 获取标签
 })

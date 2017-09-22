@@ -67,19 +67,6 @@
 
     <div class="row row-gap-5">
       <div class="col-md-12">
-        <div class="card mb-3">
-          <div class="card-header"><i class="fa fa-dashboard"></i> 欢迎使用学乎管理平台</div>
-          <div class="card-block">
-            <div class="pb-3">关于学乎管理平台:</div>
-            <div class="lead mb-3">
-              <h5>学乎管理平台是一个将 SPA (Single Page Application) 的理念应用到后台管理系统上，一个完全使用AJAX交互的系统平台。</h5>
-            </div>
-            <div class="progress progress-xs mb-3"><span class="progress-bar bg-success" style="width: 35%"></span></div>
-            <div class="my-2 text-center">
-              <a href="https://www.baidu.com/s?wd=Single%20page%20application" target="_blank" class="btn rounded btn-success">READ MORE</a>
-            </div>
-          </div>
-        </div>
 
         <div class="card mb-3 b-0">
           <ul class="nav nav-tabs nav-line" role="tablist">
@@ -89,7 +76,7 @@
           <div class="tab-content p-3">
             <div class="tab-pane active" id="changlog" role="tabpanel">
               <h1 class="text-primary">v{{changelog[0].version}}</h1>
-              <p>{{changelog[0].time}}日发布, 主要变动以及BUG修复如下：</p>
+              <p>主要变动以及BUG修复如下：</p>
               <ul>
                 <li class="mb-2" v-for="(fix, idx) in changelog[0].changes" v-html="fix"></li>
               </ul>
@@ -123,166 +110,6 @@
           </div>
         </div>
 
-        <div class="card mb-3 b-warning">
-          <div class="card-header"><i class="fa fa-cubes"></i> 浏览器支持 / 技术特性</div>
-          <div class="card-block">
-            <dl class="row">
-              <dt class="col-sm-2 text-truncate">浏览器支持</dt>
-              <dd class="col-sm-10">IE 10, IE 11, Edge, Firefox, Google Chrome, Opera, Safari 等, 以及其它支持
-                <code>HTML5</code>的现代浏览器.
-              </dd>
-              <dd class="col-sm-10 offset-sm-2">页面自适应, HTML编写遵守Bootstrap样式规范，适配不同屏幕大小的设备 .</dd>
-
-              <dt class="col-sm-2 text-truncate">后端主要框架</dt>
-              <dd class="col-sm-10">核心框架<code>Spring Framework 4</code> / 安全框架<code>Apache Shiro 1.2</code> / 视图框架<code>Spring MVC 4</code> / 持久框架<code>MyBatis 3</code>.</dd>
-              <dd class="col-sm-10 offset-sm-2">验证框架<code>JSR303 Bean Validation</code>.</dd>
-
-              <dt class="col-sm-2 text-truncate">前端主要框架</dt>
-              <dd class="col-sm-10">核心框架<code>Angular.js v1.5.5</code> / 布局框架<code>Twiter Bootstrap v4.0.0-alpha.2</code> / 验证框架<code>Parsley.js v2.3.11</code></dd>
-              <dd class="col-sm-10 offset-sm-2">表单提交<code>jquery-form</code> / 树形控件<code>jstree</code> / 树形表格<code>jquery-treetable</code> 等.</dd>
-            </dl>
-          </div>
-        </div>
-
-        <div class="row row-gap-5 mb-3">
-          <div class="col-md-8">
-            <div class="card">
-              <div class="card-header"><i class="fa fa-info-circle"></i> Main server #1</div>
-              <div class="card-block py-0">
-                <div class="row bordered-columns">
-                  <div class="col-md-4 col-sm-6">
-                    <div class="mb-5">
-                      <span class="h4">Virtual #1</span><span class="h4 float-right text-green m-0">
-                    <i class="fa fa-check-circle"></i> Healty</span>
-                    </div>
-                    <div class="mb-2">/path/<strong>virtual1</strong></div>
-                    <div class="mb-2">
-                      <span class="h1">2.72</span><span> TB</span>
-                    </div>
-                    <div class="mb-5">Volume size</div>
-                    <div class="relative mb-2">
-                      <div id="chart1" class="easy-chart" style="width: 140px;height: 140px" data-percent="55">
-                        <span class="percent" style="line-height: 140px">55</span>
-                      </div>
-                    </div>
-                    <table class="table table-sm table-no-border text-center mb-2">
-                      <tbody>
-                      <tr>
-                        <td><i class="icon-circle text-green"></i> Example</td>
-                        <td><i class="icon-circle" style="color:#f2f2f2"></i>Example</td>
-                      </tr>
-                      <tr>
-                        <td><h4 class="m-0">0.81 TB</h4></td>
-                        <td><h4 class="m-0">1.66 TB</h4></td>
-                      </tr>
-                      <tr>
-                        <td><h4 class="m-0">29%</h4></td>
-                        <td><h4 class="m-0">55%</h4></td>
-                      </tr>
-                      <tr>
-                        <td colspan="2"><a href="#" class="btn btn-secondary btn-xs rounded">
-                          <i class="fa fa-chevron-right"></i> ssh</a></td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="col-md-4 col-sm-6">
-                    <div class="mb-5">
-                      <span class="h4">Virtual #2</span><span class="h4 float-right text-green m-0">
-                    <i class="fa fa-check-circle"></i> Healty</span>
-                    </div>
-                    <div class="mb-2">
-                      /path/<strong>virtual1</strong>
-                    </div>
-                    <div class="mb-2">
-                      <span class="h1">1.05</span><span> TB</span>
-                    </div>
-                    <div class="mb-5">Volume size</div>
-                    <div class="relative mb-2">
-                      <div id="chart2" class="easy-chart" style="width: 140px;height: 140px" data-percent="75">
-                        <span class="percent" style="line-height: 140px">75</span>
-                      </div>
-                    </div>
-                    <table class="table table-sm table-no-border text-center mb-2">
-                      <tbody>
-                      <tr>
-                        <td><i class="icon-circle text-green"></i> Example</td>
-                        <td><i class="icon-circle" style="color:#f2f2f2"></i>Example</td>
-                      </tr>
-                      <tr>
-                        <td><h4 class="m-0">0.81 TB</h4></td>
-                        <td><h4 class="m-0">1.66 TB</h4></td>
-                      </tr>
-                      <tr>
-                        <td><h4 class="m-0">29%</h4></td>
-                        <td><h4 class="m-0">55%</h4></td>
-                      </tr>
-                      <tr>
-                        <td colspan="2">
-                          <a href="#" class="btn btn-secondary btn-xs rounded">
-                            <i class="fa fa-chevron-right"></i> ssh</a>
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="mb-5">
-                      <span class="h4">Virtual #3</span>
-                      <span class="h4 float-right text-green m-0"><i class="fa fa-check-circle"></i> Healty</span>
-                    </div>
-                    <div class="mb-2">/path/<strong>virtual1</strong></div>
-                    <div class="mb-2">
-                      <span class="h1">5.67</span><span> TB</span>
-                    </div>
-                    <div class="mb-5">Volume size</div>
-                    <div class="relative mb-2">
-                      <div id="chart3" class="easy-chart" style="width: 140px; height: 140px" data-percent="95">
-                        <span class="percent" style="line-height: 140px">95</span>
-                      </div>
-                    </div>
-                    <table class="table table-sm table-no-border text-center mb-2">
-                      <tbody>
-                      <tr>
-                        <td><i class="icon-circle text-green"></i> Example</td>
-                        <td><i class="icon-circle" style="color:#f2f2f2"></i>Example</td>
-                      </tr>
-                      <tr>
-                        <td><h4 class="m-0">0.81 TB</h4></td>
-                        <td><h4 class="m-0">1.66 TB</h4></td>
-                      </tr>
-                      <tr>
-                        <td><h4 class="m-0">29%</h4></td>
-                        <td><h4 class="m-0">55%</h4></td>
-                      </tr>
-                      <tr>
-                        <td colspan="2"><a href="#" class="btn btn-secondary btn-xs rounded">
-                          <i class="fa fa-chevron-right"></i> ssh</a></td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card mb-3">
-              <form class="bb-l" method="post">
-                <div class="input-group">
-                  <input class="form-control form-control-lg b-0" name="content" placeholder="BUG or 建议">
-                  <span class="input-group-btn bl-l">
-                <button type="button" class="btn btn-outline-info btn-lg b-0 ml-0 rad-0">添加</button>
-              </span>
-                </div>
-              </form>
-              <ul class="list-unstyled m-0 p-0 b-0"></ul>
-            </div>
-            <div class="card-block p-0 py-3">
-              <div class="datepicker-here" data-inline="true"></div>
-            </div>
-          </div>
-        </div>
 
         <div class="card widget-weather">
           <div class="row">

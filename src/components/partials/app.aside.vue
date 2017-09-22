@@ -1,9 +1,8 @@
 <template>
   <div class="app-aside">
-    <router-link class="navbar-brand" to="/">
-      <img src="/static/img/logos/logo-xs.png" class="logo-xs">
-      <img src="/static/img/logos/logo-sm.png" class="logo-sm">
-      <img src="/static/img/logos/logo.png" class="logo">
+    <router-link class="navbar-brand" to="/" style="width: 219px;text-align: center;line-height:41px;">
+      <img src="/static/img/logos/logo-xmin.png" style="margin-right: 31px;" class="logo-xs">
+      <img src="/static/img/logos/logo-min.png" class="logo">
     </router-link>
     <div class="aside-title">SYSTEM</div>
     <router-link class="aside-item" to="/" title="Dashboard" v-ripple exact>
@@ -51,9 +50,14 @@
       <div class="children">
         <div class="fold-header">Forms</div>
         <router-link class="aside-item" to="/topicexamine" v-ripple.stop><span>专题审核</span></router-link>
-        <router-link class="aside-item" to="/topicmanage" v-ripple.stop><span>表情举报</span></router-link>
-        <router-link class="aside-item" to="/subjectmanage" v-ripple.stop><span>用户举报</span></router-link>
-        <router-link class="aside-item" to="/topicmanage" v-ripple.stop><span>专题举报</span></router-link>
+        <!-- <router-link class="aside-item" to="/subjectreport" v-ripple.stop><span>表情举报</span></router-link> -->
+      </div>
+    </div>
+    <div class="aside-item parent" v-ripple>
+      <i class="fa fa-meetup"></i><span>贴纸管理</span>
+      <div class="children">
+        <div class="fold-header">Forms</div>
+        <router-link class="aside-item" to="/stickerlist" v-ripple.stop><span>贴纸列表</span></router-link>
       </div>
     </div>
   </div>

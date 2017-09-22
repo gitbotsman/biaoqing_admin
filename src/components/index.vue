@@ -14,7 +14,7 @@
       </transition>
 
       <div class="app-footer">
-        <small>© 2002 - 2017 xuehu365.com | 益策（中国）学习管理机构 版权所有 | 粤B2-20050579号-5</small>
+        <small>Copyright © 2004-2017 BiaoQing.com 表情网 | 闽ICP备16039073号-1</small>
         <span class="float-right">
           <small>APP_VERSION</small>
           <a href><i class="fa fa-long-arrow-up"></i></a>
