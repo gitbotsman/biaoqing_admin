@@ -110,6 +110,55 @@
           </div>
         </div>
 
+        <div class="card mb-3 b-0">
+          <ul class="nav nav-tabs nav-line" role="tablist">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" data-target="#changlog" role="tab"><i class="fa fa-warning"></i> 待处理举报</a></li>
+          </ul>
+          <div class="biaoqing-container">
+            <div class="biaoqing-table">
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>目标ID</th>
+                  <th>举报类型</th>
+                  <th>举报原因</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item,index) in reports.items">
+                  <td class="max-width20">
+                    <span>{{item.valId}}</span>
+                  </td>
+                  <td>
+                    <span class="pass-ing" v-if="item.type=='1'" ><i class="operation-icon fa fa-check-circle"></i>作品</span>
+                    <span class="pass-fail" v-if="item.type=='2'" ><i class="operation-icon fa fa-bell"></i>评论</span>
+                    <span class="pass-fail" v-if="item.type=='3'" ><i class="operation-icon fa fa-bell"></i>用户</span>
+                  </td>
+                  <td>
+                    <span>{{item.subContent}}</span>
+                  </td>
+                  <td>
+                    <span class="pass-ing" v-if="item.status=='0'" ><i class="operation-icon fa fa-check-circle"></i>已处理</span>
+                    <span class="pass-fail" v-if="item.status=='1'" ><i class="operation-icon fa fa-bell"></i>处理中</span>
+                  </td>
+                  <td class="max-width100 publish-time">
+                    <span>{{item.createTime}}</span>
+                  </td>
+                  <td class="max-width20">
+                    <span></span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+
 
         <div class="card widget-weather">
           <div class="row">
@@ -139,11 +188,27 @@
 </template>
 <script>
   import changelog from '../assets/changelog'
+  import { viewImg, clearViewImg,formatTime } from '../misc/utils'
+  import $ from 'jquery'
   export default {
     data: () => ({
       colors: ['success', 'info', 'danger', 'primary', 'warning', ''],
-      changelog: changelog
+      changelog: changelog,
+      reports:''
     }),
+    beforeRouteEnter (to,form,next) {
+      next(vm => {
+        vm.$http.get('/report').then(response => {
+          console.dir(response.data)
+          if(response.data && response.data.code==200){
+            for(var i=0;i<response.data.data.items.length;i++){
+              response.data.data.items[i].createTime=formatTime(response.data.data.items[i].createTime);
+            }
+            vm.reports=response.data.data;
+          }
+        })
+      })
+    },
     mounted () {
       this.$emit('loaded')
     }
