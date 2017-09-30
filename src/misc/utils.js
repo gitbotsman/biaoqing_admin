@@ -2,6 +2,8 @@ import Treetable from './treetable.esm'
 import toastr from './toastr.esm'
 import swal from 'sweetalert'
 import $ from 'jquery'
+
+
 /* 生成当前时间戳对应的62进制形式短链接 */
 export const shorten = function () {
   var DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -162,7 +164,7 @@ export const formatTime = function (ns) {
     　　second = zero(timeFormate.getSeconds());
 
   if (nowYear == year) {
-    var time = year + "-" +month + "-" + date + " " + hour + ":" + minute;
+    var time = month + "-" + date + " " + hour + ":" + minute;
   } else {
     var time = year + "-" + month + "-" + date + " " + hour + ":" + minute;
   }
@@ -249,9 +251,27 @@ export const debounce = function (func, wait, immediate) {
 export const viewImg = function (e, maxWidth) {
   var $this = $(e.target);
   var clientY = parseInt(e.clientY);
+  var src = $this.find('.biaoqing-list-cover-img').attr('src');
 
-  var width = parseInt($this.find('.biaoqing-list-cover-img').attr('data-width'));
-  var height = parseInt($this.find('.biaoqing-list-cover-img').attr('data-height'));
+  var orignWidth = $this.find('.biaoqing-list-cover-img').attr('data-width'),
+      orignHeight = $this.find('.biaoqing-list-cover-img').attr('data-height');
+  var width = parseInt(orignWidth);
+  var height = parseInt(orignHeight);
+
+  if(orignWidth==undefined || orignHeight==undefined){
+    var img  = new Image();
+    img.src = src;
+    if(img.complete){
+        var width=img.width;
+        var height=img.height;
+    }else{
+      img.onload = function(){
+        var width=img.width;
+        var height=img.height;
+      }
+    }
+  }//no width
+
   if(width>maxWidth){
     if(width!=height){
       height = (height/width)*maxWidth;
@@ -261,16 +281,20 @@ export const viewImg = function (e, maxWidth) {
       height = maxWidth;
     }
   }
-  var src = $this.find('.biaoqing-list-cover-img').attr('src');
+  
+  src=src.replace('!thumb240','')
   var html ="<div class='img-view-con'><img src="+src+"></div>"
   if(clientY-50<height){
     height=clientY-50;
   }
-
   $this.prepend(html)
   $this.find('.img-view-con').css({
+    'maxWidth':maxWidth,
     right:'-'+width+'px',
     top:'-'+height+'px'
+  })
+  $this.find('.img-view-con img').css({
+    'maxWidth':maxWidth
   })
 
 

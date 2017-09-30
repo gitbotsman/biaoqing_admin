@@ -16,7 +16,7 @@
     <router-link class="aside-item" to="/files" v-permission="'files'" v-ripple><i class="fa fa-files-o"></i><span>文件库</span></router-link> -->
     <div class="aside-divider"></div>
     <div class="aside-title">LIST</div>
-    <div class="aside-item parent" v-ripple>
+    <!-- <div class="aside-item parent" v-ripple>
       <i class="fa fa-star-o"></i><span>UI</span>
       <div class="children">
         <div class="fold-header">UI</div>
@@ -36,7 +36,7 @@
         <router-link class="aside-item" to="/html/forms.layouts.html" v-ripple.stop><span>Layouts</span></router-link>
         <router-link class="aside-item" to="/html/forms.wizard.html" v-ripple.stop><span>Form wizard</span></router-link>
       </div>
-    </div>
+    </div> -->
     <div class="aside-item parent" v-ripple>
       <i class="fa fa-tint"></i><span>表情管理</span>
       <div class="children">
@@ -60,6 +60,19 @@
         <router-link class="aside-item" to="/stickerlist" v-ripple.stop><span>贴纸列表</span></router-link>
       </div>
     </div>
+    <div class="aside-item parent" v-ripple>
+      <i class="fa fa-user-circle"></i><span>用户管理</span>
+      <div class="children">
+        <div class="fold-header">Forms</div>
+        <router-link class="aside-item" to="/userlist" v-ripple.stop><span>用户列表</span></router-link>
+      </div>
+    </div>
+    <router-link class="aside-item" to="/banner" title="Dashboard" v-ripple exact>
+      <i class="fa fa-map"></i><span>广告管理</span>
+    </router-link>
+    <router-link class="aside-item" to="/feedback" title="Dashboard" v-ripple exact>
+      <i class="fa fa-grav"></i><span>反馈管理</span>
+    </router-link>
   </div>
 </template>
 <script>

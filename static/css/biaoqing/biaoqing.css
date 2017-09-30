@@ -2,6 +2,20 @@
 	position: fixed;
 	width: 100%;
 	height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 99;
+  display: none;
+}
+.selecTag-bg{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: #000;
+  opacity: 0.1;
+  z-index: 100;
 }
 .tag-name{
   font-size:14px;
@@ -9,7 +23,85 @@
   line-height: auto;
   display: inline-block;
   padding:5px 10px; 
-  margin: 0 3px;
+  margin-right: 5px;
+  margin-bottom: 5px;
   border-radius: 4px;
   cursor: pointer;
+  float: left;
+  color: #333;
+  transition: all ease 0.2s;
+}
+.tag-name:hover{
+  border: 1px solid #58c6ff;
+  color: #fff;
+  background: #58c6ff;
+}
+.tag-name.active{
+  border: 1px solid #58c6ff !important;
+  color: #fff !important;
+  background: #58c6ff !important;
+}
+.selecTag-main{
+  background: #fff;
+  z-index: 101;
+  width: 430px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -120px;
+  margin-left: -215px;
+  padding: 15px;
+  border-radius: 5px;
+}
+.selecTag-btn-box{
+  text-align: center;
+  margin-top: 20px;
+}
+.selecTag-btn{
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 5px;
+  width: 80px;
+  text-align: center;
+  margin-right: 0;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.selecTag-title{
+  color: #333;
+  margin-bottom: 10px;
+}
+.selecTag-cancle{
+  color: #58c6ff;
+  margin-right: 20px;
+  border: 1px solid #58c6ff;
+}
+.selecTag-cancle:hover{
+  color: #43bbfa;
+  border:1px solid #43bbfa;
+}
+.selecTag-disabled{
+  background: #d5d5d5;
+  color: #fff;
+}
+.selecTag-ok{
+  color: #fff;
+  background: #58c6ff;
+}
+.selecTag-ok:hover{
+  background: #43bbfa;
+}
+.search-subject{
+  margin: 10px 0;
+}
+.search-subject .input-group{
+  max-width: 300px;
+}
+.search-topic{
+  max-width: 300px;
+  margin-left: 10px;
+}
+.search-container{
+  margin-bottom: 10px;
 }

@@ -4,14 +4,25 @@
       <li class="breadcrumb-item">表情管理</li>
       <li class="breadcrumb-item">专题列表</li>
     </ol>
-    <div class="biaoqing-container">
-    	<div class="biaoqing-table">
-    		<div class="btn-group btn-group-sm mb-2">
-    			<button @click="goTopics(topics.pageNumber,sort,asc,'all')" type="button" class="btn btn-outline-primary" :class="{active:(isHot=='' && isSlider!='1')}" >所有</button>
-	          	<button  @click="goTopics(topics.pageNumber,sort,asc,'1')" type="button" class="btn btn-outline-primary" :class="{active:(isHot=='1')}" >热门</button>
-	          	<button  @click="goTopics(topics.pageNumber,sort,asc,'0')" type="button" class="btn btn-outline-primary" :class="{active:(isHot=='0')}" >正常</button>
-	          	<button  @click="goTopics(topics.pageNumber,sort,asc,'all','1')" type="button" class="btn btn-outline-primary" :class="{active:(isSlider=='1')}" >轮播</button>
-	        </div>
+    <div class="biaoqing-container pr">
+    	<div class="biaoqing-table ">
+    		<div class="clearfloat search-container flex-center">
+    			<div class="btn-group btn-group-sm fl">
+	    			<button @click="goTopics(topics.pageNumber,sort,asc,'all')" type="button" class="btn btn-outline-primary" :class="{active:(isHot=='' && isSlider!='1')}" >所有</button>
+		          	<button  @click="goTopics(topics.pageNumber,sort,asc,'1')" type="button" class="btn btn-outline-primary" :class="{active:(isHot=='1')}" >热门</button>
+		          	<button  @click="goTopics(topics.pageNumber,sort,asc,'0')" type="button" class="btn btn-outline-primary" :class="{active:(isHot=='0')}" >正常</button>
+		          	<button  @click="goTopics(topics.pageNumber,sort,asc,'all','1')" type="button" class="btn btn-outline-primary" :class="{active:(isSlider=='1')}" >轮播</button>
+		        </div>
+		        <div class="input-group search-topic fl">
+			     	<input @keyup.enter="searchSuject" type="text" class="form-control" v-model="searchTopicKey" placeholder="输入关键词" aria-label="Search for...">
+			      	<span class="input-group-btn">
+			          <button @click="searchTopic" class="btn btn-secondary" type="button">Search</button>
+			        </span>
+			    </div>
+    		</div>
+    		
+	        <!-- <div class="cursor btn btn-warning pb" @click="freshTopicCache" style="color:#fff;font-size:13px;right:10px;top:7px;">刷新热门缓存</div> -->
+	        <div class="pb biaoqing-topic-info" style="right:13px"><i class="operation-icon fa fa-info-circle"></i>只有热门才能设置首页显示</div>
 			<table class="table table-bordered table-hover">
 				<thead>
 		    		<tr>
@@ -27,10 +38,18 @@
 				      			<span class="fa fa-sort-down fl" :class="{active:(sort=='create_time' && asc==true)}" style="display:block;"></span>
 				      		</span>
 				      </th>
-				      <th>状态</th>
-				      <th>是否热门</th>
-				      <th>APP轮播</th>
-				      <th>操作</th>
+				      <th><div>首页显示</div><div style="font-weight:normal;font-size:12px;">(点击修改)</div></th>
+				      <th>
+				      	是否热门
+				      	<span class="biaoqing-sort clearfloat" @click="goTopics(topics.pageNumber,'sort_',!asc)">
+			      			<span class="fa fa-sort-up fl" :class="{active:(sort=='sort_' && asc==false)}" style="display:block;"></span>
+			      			<span class="fa fa-sort-down fl" :class="{active:(sort=='sort_' && asc==true)}" style="display:block;"></span>
+			      		</span>
+				      	<div style="font-weight:normal;font-size:12px;">(点击修改)</div>
+
+				      </th>
+				      <th>APP轮播<div style="font-weight:normal;font-size:12px;">(点击修改)</div></th>
+				      <!-- <th>操作</th> -->
 				    </tr>
 		    	</thead>
 		    	<tbody>
@@ -47,9 +66,9 @@
 		    			</td>
 		    			<td>{{topic.id}}</td>
 		    			<td class="max-width100">
-		    				<span class="biaoqing-table-content" :title="topic.topicName"># {{topic.name}} #</span>
+		    				<span class="biaoqing-table-content" :title="topic.name"># {{topic.name}} #</span>
 		    			</td>
-		    			<td class="max-width200">
+		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="topic.summary">{{topic.summary}}</span>
 		    			</td>
 		    			<td class="max-width20">
@@ -60,34 +79,17 @@
 		    				<span>{{topic.createTime}}</span>
 		    			</td>
 		    			<td class="max-width20">
-		    				<span class="pass-fail" v-if="topic.audit=='-1'">审核失败</span>
-		    				<span class="pass-ing" v-if="topic.audit=='1'">审核中</span>
-		    				<span class="pass-success" v-if="topic.audit=='2'">审核通过</span>
+		    				<span @click="setIndex(topic.id,index,topic.tags)" class="pass-success cursor" v-if="topic.tags" title="topic.tags">{{topic.tags}}</span>
+							<span @click="setIndex(topic.id,index,topic.tags)" class="pass-ing cursor" 
+							v-if="(!topic.tags || topic.tags==' ') && topic.isHot==true" title="设置"><i class="operation-icon fa fa-pencil"></i>设置</span>
 		    			</td>
-		    			<td class="max-width100">
-		    				<span class="pass-success" v-if="topic.isHot==true">热门</span>
-		    				<span class="" v-else>正常</span>
+		    			<td class="max-width100 cursor" @click="setHot(!topic.isHot,topic.id,index,topic.sort)">
+		    				<span class="pass-success" v-if="topic.isHot==true">热门({{topic.sort}})</span>
+		    				<span class="pass-ing" v-else>正常</span>
 		    			</td>
-		    			<td class="max-width100">
+		    			<td class="max-width100 cursor" @click="setSlider(!topic.isSlider,topic.id,index)">
 		    				<span class="pass-success" v-if="topic.isSlider==true">是</span>
-		    				<span class="" v-else>否</span>
-		    			</td>
-		    			<td class="operation-item">
-		    				<template v-if="topic.isSlider==false">
-		    					<span @click="setSlider(true,topic.id,index)" class=""><i class="operation-icon fa fa-fire"></i>设为轮播</span>
-		    				</template>
-		    				<template v-if="topic.isSlider==true">
-		    					<span @click="setSlider(false,topic.id,index)" class="text-danger"><i class="operation-icon fa fa-fire"></i>取消轮播</span>
-		    				</template>
-		    				<template v-if="topic.isHot==false">
-		    					<span @click="setHot(true,topic.id,index)" class=""><i class="operation-icon fa fa-fire"></i>设为热门</span>
-		    				</template>
-		    				<template v-if="topic.isHot==true">
-		    					<span @click="setHot(false,topic.id,index)" class="text-danger"><i class="operation-icon fa fa-fire"></i>取消热门</span>
-		    					<!-- <span @click="setIndex(false,topic.id,index)" class="pass-ing"><i class="operation-icon fa fa-level-up"></i>首页展示</span> -->
-		    				</template>
-
-
+		    				<span class="pass-ing " v-else>否</span>
 		    			</td>
 		    		</tr>
 		    	</tbody>
@@ -141,15 +143,24 @@
 			</nav>
 	    </div>	
     </div>
-    <!-- <div class="selecTagContainer">
-    	<div class="selecTag-bg"></div>
+    <div class="selecTagContainer">
+    	<div class="selecTag-bg" @click="selectCancle"></div>
     	<div class="selecTag-main">
-    		<div class="tag-name">热门</div>
-			<div class="tag-name">搞笑</div>
-			<div class="tag-name">二次元</div>
-			<div class="tag-name">宠物</div>
+    		<div class="selecTag-title">选择所展示的频道：</div>
+    		<div class="clearfloat">
+    			<div v-for="tag in tags" 
+    			class="tag-name" 
+    			:class="{active:(ch==tag.name)}" 
+    			@click="selectTag"
+    			v-if="tag.name !=='最新'"
+    			>{{tag.name}}</div>
+    		</div>
+    		<div class="selecTag-btn-box">
+    			<div class="selecTag-btn selecTag-cancle" @click="selectCancle">取消</div>
+    			<div @click="setIndexView(topicId,ch)" class="selecTag-btn selecTag-ok">确定</div>
+    		</div>
     	</div>
-    </div> -->
+    </div>
 </div>
 
 </template>
@@ -159,11 +170,17 @@ import '../../../static/css/biaoqing/biaoqing.css'
 import { TopicManage } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
-import $ from 'jquery'
+import swal2 from 'sweetalert2'
+
 export default {
 	data: () => ({
 		loading: false,
+		searchTopicKey:'',
 		currentPage:1,
+		topicId:'',
+		index:'',
+		ch:'',
+		tags:'',
 		formPage:'',
 		audit:'2',
 		topics:'',
@@ -181,7 +198,6 @@ export default {
 			asc:''
 		}
 		Promise.all([TopicManage.topic(params),TopicManage.tags()]).then(([topics,tags]) => {
-			console.log(topics)
 			if(topics.data.data && topics.data.code==200){
 				for(var i = 0;i<topics.data.data.items.length;i++){
 					topics.data.data.items[i].createTime=formatTime(topics.data.data.items[i].createTime)
@@ -193,8 +209,9 @@ export default {
 					}
 				})
 			}else{
-				toastr.error(topics.data.msg)
-				next()
+				next(vm=>{
+					vm.$notice.error(topics.data.msg)
+				})
 			}
 		})
 	},
@@ -238,7 +255,6 @@ export default {
 					}
 				}else{
 					toastr.error(topics.data.msg)
-					next()
 				}
 			})
     	},
@@ -259,29 +275,139 @@ export default {
 		        }
 		    })
     	},
-    	setHot(type,id,index){
+    	setHot(type,id,index,sort){
 			var that = this;
+
+			swal2({
+			  text:'请选择排序值,数字越小越靠前,设置-1取消热门',
+			  input: 'number',
+			  confirmButtonText: '确定',
+			  cancelButtonText: '取消',
+			  showLoaderOnConfirm: true,
+			  showCancelButton: true,
+			  reverseButtons:true,
+			  inputAttributes: {
+			    min: -1,
+			    step: 1
+			  },
+			  inputValue: sort,
+			  preConfirm:function(num){
+			  	return new Promise(function(resolve,reject){
+			  		swal2.close();
+			  		if(num !=''){
+						var params = {
+						  "id": id,
+						  "isHot": type,
+						  "sort":num
+						}
+						if(num==-1){
+							params.isHot=false;
+							var msg = '取消成功';
+						}else{
+							params.isHot=true;
+							var msg = '设置成功';
+						}
+						that.$http.post('/topic/update', params).then(response => {
+					        if(response.data.code==200){
+					        	var topics = that.topics;
+					        	topics.items[index].isHot=params.isHot;
+					        	if(num!=-1){
+					        		topics.items[index].sort=num;
+					        	}
+			        			toastr.success(msg);
+					        }else{
+					        	toastr.error(response.data.msg);
+					        }
+					    })
+			  		}else{
+			  			reject('请输入排序值')
+			  		}
+			  	})
+			  }
+			}).catch(swal2.noop)
+    		
+    	},
+    	selectTag(e){
+    		var $this= $(e.target);
+    		var ch = $this.text();
+    		if($this.hasClass('active')){
+    			$this.removeClass('active');
+    			$this.css({
+    				'borderColor':'#ddd',
+					'color': '#333',
+					'background':'#fff'
+    			})
+    			this.ch = '';
+    			return;
+    		}
+    		$this.addClass('active').siblings().removeClass('active');
+    		this.ch = ch;
+    	},
+    	selectCancle(e){$('.selecTagContainer').fadeOut('fast')},
+    	setIndex(id,index,tags){
+    		this.topicId = id;
+    		this.index = index;
+    		if(tags){
+    			this.ch = tags;
+    		}else{
+    			this.ch = '';
+    		}
+    		$('.selecTagContainer').fadeIn('fast')
+    	},
+    	setIndexView(id,ch){
+    		var index = this.index;
+    		var that = this;
     		var params = {
 			  "id": id,
-			  "isHot": type
+			  "tags": ch
 			}
-			if(type){var msg = '设置成功'}else{var msg = '取消成功'}
+			if(ch !=''){var msg = '设置成功'}else{var msg = '取消成功'}
 			that.$http.post('/topic/update', params).then(response => {
 		        if(response.data.code==200){
 		        	var topics = that.topics;
-		        	topics.items[index].isHot=params.isHot;
-        			toastr.success(msg);
+		        	topics.items[index].tags=params.tags;
+		        	toastr.success(msg);
+        			that.ch='';
+        			that.topicId=''
+        			$('.selecTagContainer').fadeOut('fast');
 		        }else{
 		        	toastr.error(response.data.msg);
 		        }
 		    })
     	},
-    	selecTag(e){
-    		var $this= $(e.target);
-    		console.log($this.html())
+    	searchTopic(){
+    		var searchTopicKey = this.searchTopicKey;
+    		this.$emit('loaded',true)
+    		var params = {
+				pageNum:1,
+				pageSize:15,
+				audit:'2',
+				keyword:searchTopicKey
+			}
+			Promise.all([TopicManage.topic(params)]).then(([topics]) => {
+				this.$emit('loaded',false)
+				if(topics.data.data && topics.data.code==200){
+					for(var i = 0;i<topics.data.data.items.length;i++){
+						topics.data.data.items[i].createTime=formatTime(topics.data.data.items[i].createTime)
+					}
+					if(topics.data.data && topics.data.code==200){
+						this.topics = topics.data.data;
+					}
+				}else{
+					this.$notice.error(topics.data.msg)
+				}
+			})
     	},
-    	setIndex(){
-    		
+    	freshTopicCache(){
+    		var that = this;
+    		that.$http.get('/topic/updateCacheHots').then(response => {
+    			console.log(response)
+		        if(response.data.code==200){
+		        	toastr.success(response.data.msg);
+		        }else{
+		        	toastr.error(response.data.msg);
+		        }
+		    })
     	}
     } 
 }

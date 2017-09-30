@@ -21,7 +21,7 @@
           <div class="text-center h4 m-0 text-muted">直播用户</div>
         </div>
       </div>
-      <div class="col-lg-2 col-sm-4 pointer">
+      <router-link class="col-lg-2 col-sm-4 pointer" to="/html/ui.font-awesome-icons.html">
         <div class="card mb-3 p-2" v-ripple>
           <div class="to-corner h5 m-0">
             <div class="bg-primary rad-15 px-2 py-1 text-white">138</div>
@@ -29,7 +29,7 @@
           <div class="my-3"><i class="fa fa-users fa-3x"></i></div>
           <div class="text-center h4 m-0 text-muted">系统用户</div>
         </div>
-      </div>
+      </router-link>
       <div class="col-lg-2 col-sm-4 pointer">
         <div class="card mb-3 p-2" v-ripple>
           <div class="to-corner h5 m-0">

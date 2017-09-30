@@ -14,6 +14,8 @@ import 'jstree/dist/themes/default/style.min.css'
 import '../static/themify-icons/themify-icons.css'
 import '../static/css/plugins.css'
 import '../static/css/style.css'
+
+import 'sweetalert2/dist/sweetalert2.min.css'
 // import javascripts
 import $ from 'jquery'
 import 'sweetalert/dist/sweetalert.min'

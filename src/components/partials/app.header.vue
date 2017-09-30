@@ -52,7 +52,7 @@
 
     <div class="dropdown ml-auto">
       <a class="nav-item" data-toggle="dropdown">
-        <span class="badge badge-pill badge-primary absolute r-0 t-0">3</span>
+        <span class="badge badge-pill badge-primary absolute r-0 t-0"></span>
         <i class="fa fa-comment-o font-lg"></i>
         <span class="hidden-sm-down">Messages</span>
       </a>

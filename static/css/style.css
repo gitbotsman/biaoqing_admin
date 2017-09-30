@@ -57,6 +57,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
   visibility: visible;
   opacity: 1
 }
+.cursor{cursor: pointer;}
 .dropdown-item { padding-left: 1rem; padding-right: 1rem; cursor: pointer }
 .badge { font-weight: 400; font-size: 80% }
 .progress-bar { transition: width 300ms ease-in-out }
@@ -72,6 +73,8 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
   line-height: 45px;
   padding: 0 15px;
 }
+.pr{position: relative;}
+.pb{position: absolute;}
 .dropdown-title i { position: absolute; line-height: 46px; cursor: pointer }
 .dropdown-title i.left { left: 14px }
 .dropdown-title i.right { right: 14px }
@@ -88,7 +91,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
   opacity: .5;
   right: 26px;
   top: 27px;
-}
+} 
 .loading .input > i:before,
 .loading .input > i:after {
   border-radius: 500rem;
@@ -677,7 +680,7 @@ body.aside-show { overflow-y: hidden !important }
 .table-bordered tr > td { border: 1px solid #ebebeb }
 .table-centered td { text-align: center }
 .table-vertical-middle td, .table > thead > tr > th { vertical-align: middle }
-.table > thead > tr > th { text-transform: uppercase; font-weight: 600; font-size: .8124rem; padding-top: 14px; padding-bottom: 14px; border-bottom: 1px solid #ddd; color: #999 }
+.table > thead > tr > th {padding: 0 0.4rem; text-transform: uppercase; font-weight: 600; font-size: .8124rem; padding-top: 14px; padding-bottom: 14px; border-bottom: 1px solid #ddd; color: #999 ;white-space:nowrap;}
 .table-advanced tbody tr > i { font-size: .875rem }
 .table-advanced thead tr th { background-color: #f5fbff; padding: 1em }
 .table-advanced tbody tr td { vertical-align: middle }
@@ -848,12 +851,15 @@ body.preloader { overflow: hidden }
 .biaoqing-nav{
   font-size: 14px;
 }
+.biaoqing-nav .nav-item{
+  white-space: nowrap;
+}
 .operation-item{
   color: #58c6ff;
 } 
 .operation-item span{
     cursor: pointer;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 .operation-item span:hover{
   color: #037ded;
@@ -877,7 +883,7 @@ body.preloader { overflow: hidden }
 }
 .biaoqing-table tbody td{
   font-size: 13px;
-  padding: 0 8px;
+  padding: 4px;
   line-height: 40px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -885,10 +891,10 @@ body.preloader { overflow: hidden }
   overflow: hidden;
 }
 .biaoqing-list-cover{
-  max-width: 30px;
-  height: 30px;
+  width: 45px;
+  height: 45px;
   text-align: center;
-  margin: 5px auto;
+  margin: 0 auto;
   overflow: hidden;
 }
 .biaoqing-list-cover-img{
@@ -896,11 +902,20 @@ body.preloader { overflow: hidden }
   display: block;
   width: 100%;
 }
+.max-width500{
+  max-width: 500px;
+}
+.max-width400{
+  max-width: 400px;
+}
 .max-width100{
   max-width: 100px;
 }
 .max-width200{
   max-width: 200px;
+}
+.max-width50{
+  max-width: 50px;
 }
 .max-width20{
   max-width: 20px;
@@ -911,6 +926,7 @@ body.preloader { overflow: hidden }
 .img-view{
   overflow: visible !important; 
   position: relative;
+  padding: 0;
 }
 .img-view-con{
   position: absolute;
@@ -945,4 +961,29 @@ body.preloader { overflow: hidden }
 }
 .publish-hot{
   color: #419df2;
+}
+.biaoqing-topic-info{
+  font-size: 13px;
+  right: 128px;
+  top: 15px;
+  color: #999;
+}
+.overflow{
+  overflow: visible !important;
+}
+.color999{
+  color: #999;
+}
+.flex {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex; 
+}
+
+.flex .flex_item {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1; 
 }

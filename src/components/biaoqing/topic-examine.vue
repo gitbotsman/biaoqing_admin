@@ -20,6 +20,7 @@
 				      <th>专题ID</th>
 				      <th>标题</th>
 				      <th>描述</th>
+				      <th>申请人</th>
 				      <th>审核人</th>
 				      <th>提交时间
 				      		<span class="biaoqing-sort clearfloat" @click="goTopicReview(reviews.pageNumber,'create_time',!asc)">
@@ -43,7 +44,7 @@
 		    					<img class="biaoqing-list-cover-img" data-height="300" data-width="300" :src="[review.fullCover]">
 		    				</div>
 		    			</td>
-		    			<td>{{review.id}}</td>
+		    			<td>{{review.topicId}}</td>
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="review.topicName"># {{review.topicName}} #</span>
 		    			</td>
@@ -53,7 +54,9 @@
 		    			<td class="max-width20">
 		    				<span :title="review.ownerName">{{review.ownerName}}</span>
 		    			</td>
-
+						<td class="max-width20">
+		    				<span :title="review.auditUserName">{{review.auditUserName}}</span>
+		    			</td>
 		    			<td class="max-width100 publish-time">
 		    				<span>{{review.createTime}}</span>
 		    			</td>
@@ -174,7 +177,7 @@ export default {
 		})
 	},
     mounted () {
-      this.$emit('loaded')
+      this.$emit('loaded');
     },
     methods: {
     	clearbigImg(e){clearViewImg(e)},
@@ -245,11 +248,13 @@ export default {
 			    closeOnConfirm: false
 			}, function(){
 				that.$http.post('/topicReview/audit', data).then(response => {
-			        if(response.data.code){
+			        if(response.data.code==200){
 			        	var reviews = that.reviews;
 			        	reviews.items[index].audit=data.audit;
 						swal.close();
 	        			toastr.success('审核成功');
+			        }else{
+			        	toastr.error(response.data.msg);
 			        }
 			    })
 			})

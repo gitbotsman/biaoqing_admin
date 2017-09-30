@@ -7,6 +7,7 @@ import Vue from 'vue'
 export const baseURL = process.env.NODE_ENV === 'production' ? '/' : '/api'  // 所有请求的根路径
 
 export const http = axios.create({
+  // baseURL:baseURL,
   baseURL: "http://support.c3e1c0e165dda47f8957716f59db25d2d.cn-hangzhou.alicontainer.com/",
   timeout: 10000,
   withCredentials: true,
@@ -33,7 +34,7 @@ export const Auth = {
   authorizationCheck (cb) { // 身份验证, 成功后返回当前用户所有权限
     console.log('authorizationCheck')
     http.get('/authorization-check').then(response => {
-      console.log(response)
+     
       this.permissions = response.data.data
       if(response.data.code==401){      //code返回401,登录失效
         toastr.error('会话已过期, 请重新登录.')
@@ -231,4 +232,13 @@ export const Topic = resource('topicReview', http, {
 export const TopicManage = resource('topicManage', http, {
   topic: params => http.get('topic',{params:params}),     // 
   tags: params => http.get('tag/all',{params:params})     // 获取标签
+})
+
+export const StickerManage = resource('stickerManage', http, {
+  materia: params => http.get('material',{params:params}),     // 
+  materialHot: params => http.get('/materialHot',{params:params})     // 获取标签
+})
+
+export const UserManage = resource('usermanage', http, {
+  users: params => http.get('user',{params:params})
 })

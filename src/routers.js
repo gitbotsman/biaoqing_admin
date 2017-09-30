@@ -67,10 +67,12 @@ const routes = [
       {path: '/subjectmanage', component: resolve => require(['./components/biaoqing/subject-manage.vue'], resolve)},
       {path: '/topicmanage', component: resolve => require(['./components/biaoqing/topic-manage.vue'], resolve)},
       {path: '/topicexamine', component: resolve => require(['./components/biaoqing/topic-examine.vue'], resolve)},
+      {path: '/userlist', component: resolve => require(['./components/biaoqing/user-manage.vue'], resolve)},
       // 贴纸
       {path: '/stickerlist', component: resolve => require(['./components/sticker/sticker-list.vue'], resolve)},
-
-
+      //反馈
+      {path: '/feedback', component: resolve => require(['./components/biaoqing/feedback.vue'], resolve)},
+      {path: '/banner', component: resolve => require(['./components/sticker/banner-manage.vue'], resolve)},
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},
@@ -83,6 +85,7 @@ const permissive = ['/login', '/logout']
 const router = new VueRouter({
   linkActiveClass: 'active',
   routes: routes,
+  // mode: 'history',
   mode: 'hash',
   base: '/'
 })

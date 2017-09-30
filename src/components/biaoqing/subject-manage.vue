@@ -5,17 +5,32 @@
       <li class="breadcrumb-item">表情列表</li>
     </ol>
     <div class="biaoqing-container">
+    	<div class="search-subject clearfloat">
+    		<div class="input-group fl">
+		     	<input @keyup.enter="searchSuject" type="text" class="form-control" v-model="searchKey" placeholder="输入关键词" aria-label="Search for...">
+		      	<span class="input-group-btn">
+		          <button @click="searchSuject" class="btn btn-secondary" type="button">Search</button>
+		        </span>
+		    </div>
+    	</div>
     	<ul class="biaoqing-nav nav nav-tabs nav-justified nav-line"  role="tablist">
 			<li class="nav-item " v-for="tag in tags.data">
 				<a 
-				:class="{active:(keyword==tag.code || keyword==tag.name)}" 
+				:class="{active:((keyword==tag.code || keyword==tag.name)&& (enable==1))}" 
 				@click="goSubject(1,tag.name)">
 				{{tag.name}}
 				</a>
 			</li>
+			<li class="nav-item ">
+				<a
+				:class="{active:(enable==false)}"
+				@click="goSubject(1,'','','','0')">
+				回收站
+				</a>
+			</li>
 		</ul>
     	<div class="biaoqing-table">
-			<table class="table table-bordered table-hover">
+			<table class="table table-bordered table-hover ">
 				<thead>
 		    		<tr>
 				      <th>封面</th>
@@ -52,15 +67,15 @@
 				      <th>操作</th>
 				    </tr>
 		    	</thead>
-		    	<tbody>
-		    		<tr v-for="(work,index) in works.items" v-if="work.enable==true">
+		    	<tbody class="">
+		    		<tr v-for="(work,index) in works.items">
 		    			<td class="img-view" @mouseenter="bigImg"  @mouseleave="clearbigImg">
 		    				<div class="biaoqing-list-cover">
 		    					<img class="biaoqing-list-cover-img"  :data-height="work.coverHeight" :data-width="work.coverWidth" :src="[work.fullCover+'!thumb240']" alt="">
 		    				</div>
 		    			</td>
 		    			<td>{{work.id}}</td>
-		    			<td class="max-width200">
+		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
 		    			</td>
 		    			<td class="max-width20">
@@ -78,20 +93,25 @@
 		    			<td class="pl-num">
 		    				<span>{{work.commentNum}}</span>
 		    			</td>
-		    			<td class="change-num">
-		    				<span>{{work.source}}</span>
+		    			<td class="change-num max-width50">
+		    				<span :title="work.source">{{work.source}}</span>
 		    			</td>
 		    			<!-- <td class="max-width100 last-comment">
 		    				<span>2017-08-25 16:00</span>
 		    			</td> -->
-		    			<td class="publish-hot">
-		    				<span v-if="work.isHot=='-1'">仅作者可见</span>
-		    				<span v-if="work.isHot=='0'">正常</span>
-		    				<span v-if="work.isHot=='1'">热门</span>
+		    			<td class="cursor">
+		    				<span class="pass-fail" v-if="work.isHot=='-1'" ><i class="operation-icon fa fa-pencil"></i>仅作者可见</span>
+		    				<span @click="setHot(1,work.id,index)" class="pass-ing" v-if="work.isHot=='0'" ><i class="operation-icon fa fa-pencil"></i>正常</span>
+		    				<span @click="setHot(0,work.id,index)" class="pass-success" v-if="work.isHot=='1'" ><i class="operation-icon fa fa-pencil"></i>热门</span>
 		    			</td>
 		    			<td class="operation-item">
-		    				<span><i class="operation-icon fa fa-send"></i>详情</span>
-		    				<span class="text-danger" @click="deleteSubject(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>删除</span>
+		    				<template v-if="work.enable==true">
+		    					<!-- <span><i class="operation-icon fa fa-send"></i>详情</span> -->
+		    					<span class="text-danger" @click="deleteSubject(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>删除</span>
+		    				</template>
+		    				<template v-else>
+		    					<!-- <span class="text-danger" @click="cancelDelete(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>撤销删除</span> -->
+		    				</template>
 		    			</td>
 		    		</tr>
 		    	</tbody>
@@ -148,13 +168,17 @@
 </div>
 </template>
 <script>
+import '../../../static/css/biaoqing/biaoqing.css'
 import { Subject } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
+import swal2 from 'sweetalert2'
+import querystring from 'querystring'
 
 export default {
 	data: () => ({
 		loading: false,
+		searchKey:'',
 		works:'',
 		tags:'',
 		formPage:'',
@@ -171,6 +195,7 @@ export default {
 			keyword:'0'
 		}
 		Promise.all([Subject.works(params),Subject.tags()]).then(([works,tags]) => {
+			console.log(works)
 			for(var i = 0;i<works.data.data.items.length;i++){
 				works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
 			}
@@ -187,49 +212,102 @@ export default {
     },
     methods: {
     	clearbigImg(e){clearViewImg(e)},
-    	bigImg(e){viewImg(e,240)},
+    	bigImg(e){viewImg(e,400)},
     	deleteSubject(id,index){
     		var that = this;
-    		swal({
-			    type: 'warning',
-			    title: '您确定?',
-    			text: '删除的记录将不能恢复!',
-			    showCancelButton: true,
-			    cancelButtonText: '取消',
-			    confirmButtonText: '确定',
-			    confirmButtonColor: '#DD6B55',
-			    showLoaderOnConfirm: true,
-			    closeOnConfirm: false
-			}, function(){
-				that.$http.delete('/subject/'+id).then(response => {
-					console.log(response)
-					var works = that.works;
-			        if(response.data.code==200){
-			        	works.items[index].enable=false;
-						swal.close();
-	        			toastr.success('删除成功');
-			        }else{
-			        	swal.close();
-	        			toastr.error(response.data.msg);
-			        }
-			    })
-			})
+			swal2({
+			  	title: '请输入删除理由',
+		    	text:'谨慎操作！',
+				input: 'text',
+				showCancelButton: true,
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				showLoaderOnConfirm: true,
+				reverseButtons:true,
+			  	preConfirm:function(reason){
+			  		return new Promise(function(resolve,reject){
+			  			if(reason !=''){
+							swal2.close();
+							var params={
+								reason:reason
+							}
+							params=querystring.stringify(params)
+				  			that.$http.delete('/subject/'+id+'?reason='+reason).then(response => {
+								var works = that.works;
+						        if(response.data.code==200){
+						        	works.items[index].enable=false;
+									swal.close();
+				        			toastr.success('删除成功');
+						        }else{
+						        	swal.close();
+				        			toastr.error(response.data.msg);
+						        }
+						    })
+			  			}else{
+			  				reject('请输入删除理由');
+			  			}
+			  			
+			  		})
+			  	}
+			}).catch(swal2.noop)
+
     	},
-    	goSubject(page,keyword,sort,asc){
+    	cancelDelete(id,index){
+    		var that = this;
+  			// swal({
+			//     type: 'warning',
+			//     title: '您确定?',
+   			// 	   text: '撤销删除!',
+			//     showCancelButton: true,
+			//     cancelButtonText: '取消',
+			//     confirmButtonText: '确定',
+			//     confirmButtonColor: '#DD6B55',
+			//     showLoaderOnConfirm: true,
+			//     closeOnConfirm: false
+			// }, function(){
+			// 	that.$http.delete('/subject/'+id).then(response => {
+			// 		console.log(response)
+			// 		var works = that.works;
+			//         if(response.data.code==200){
+			//         	works.items[index].enable=false;
+			// 			swal.close();
+	 		// 	 		toastr.success('删除成功');
+			//         }else{
+			//         	swal.close();
+	  		//			toastr.error(response.data.msg);
+			//         }
+			//     })
+			// })
+    	},
+    	setHot(type,id,index){
+			var that = this;
+    		var params = {
+			  "id": id,
+			  "isHot": type
+			}
+			if(type){var msg = '设置成功'}else{var msg = '取消成功'}
+			that.$http.post('/subject/update', params).then(response => {
+		        if(response.data.code==200){
+		        	var works = that.works;
+		        	works.items[index].isHot=params.isHot;
+        			toastr.success(msg);
+		        }else{
+		        	toastr.error(response.data.msg);
+		        }
+		    })
+    	},
+    	goSubject(page,keyword,sort,asc,enable){
     		this.$emit('loaded',true);
     		var params = {
 				pageSize:15,
-				pageNum:page,
-				enable:this.enable
+				pageNum:page
 			}
-			if(sort){
-				params.sort = sort;
-				params.asc = asc;
+			if(enable){
+				params.enable=enable;
 			}else{
-				params.sort = this.sort;
-				params.asc = this.asc;
+				params.enable=this.enable;
 			}
-			if(keyword){
+			if(keyword && keyword!=''){
 				if(keyword=='最新'){
 					params.keyword='0';
 				}else if(keyword=='热门'){
@@ -237,8 +315,17 @@ export default {
 				}else{
 					params.keyword=keyword;
 				}
+				params.enable=1;
 			}else{
 				params.keyword=this.keyword;
+			}
+			if(sort && sort!=''){
+				params.sort = sort;
+				params.asc = asc;
+				params.enable=this.enable;
+			}else{
+				params.sort = this.sort;
+				params.asc = this.asc;
 			}
 			Promise.all([Subject.works(params)]).then(([works]) => {
 				for(var i = 0;i<works.data.data.items.length;i++){
@@ -248,9 +335,35 @@ export default {
 				this.asc=params.asc;
 				this.enable=params.enable;
 				this.$emit('loaded',false)
-    			this.keyword=params.keyword;
+				this.keyword=params.keyword;
 				this.works=works.data.data;
 			})
+    	},
+    	searchSuject(){
+    		this.$emit('loaded',true)
+    		var searchKey = this.searchKey;
+    		if(searchKey==''){
+    			searchKey='0';
+    		}
+			var params = {
+				pageSize:15,
+				pageNum:1,
+				enable:1,
+				keyword:searchKey
+			}
+			Promise.all([Subject.works(params)]).then(([works]) => {
+				console.log(works)
+				this.$emit('loaded',false)
+				if(works.data.code==200){
+					for(var i = 0;i<works.data.data.items.length;i++){
+						works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
+					}
+					this.keyword=params.keyword;
+					this.works=works.data.data;
+				}
+			})
+    		
+    		
     	}
     } 
 }
