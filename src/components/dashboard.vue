@@ -70,6 +70,7 @@
               </div>
             </div>
           </div>
+<<<<<<< HEAD
           <div class="flex-item mr-2">
             <div class="card mb-3 p-2" :class="[syns.diffNewUserCount>0?'b-primary':'b-danger']" v-ripple>
               <h2 class="m-0">{{syns.newWorkCount}}</h2>
@@ -81,6 +82,67 @@
               <div class="text-danger" v-else>
                 <i class="fa fa-long-arrow-down fa-2x"></i>
                 <span class="h5 m-0"> {{syns.diffNewWorkCount}}</span>
+=======
+        </div>
+
+        <div class="card mb-3 b-0">
+          <ul class="nav nav-tabs nav-line" role="tablist">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" data-target="#changlog" role="tab"><i class="fa fa-warning"></i> 待处理举报</a></li>
+          </ul>
+          <div class="biaoqing-container">
+            <div class="biaoqing-table">
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>目标ID</th>
+                  <th>举报类型</th>
+                  <th>举报原因</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item,index) in reports.items">
+                  <td class="max-width20">
+                    <span>{{item.valId}}</span>
+                  </td>
+                  <td>
+                    <span class="pass-ing" v-if="item.type=='1'" ><i class="operation-icon fa fa-check-circle"></i>作品</span>
+                    <span class="pass-fail" v-if="item.type=='2'" ><i class="operation-icon fa fa-bell"></i>评论</span>
+                    <span class="pass-fail" v-if="item.type=='3'" ><i class="operation-icon fa fa-bell"></i>用户</span>
+                  </td>
+                  <td>
+                    <span>{{item.subContent}}</span>
+                  </td>
+                  <td>
+                    <span class="pass-ing" v-if="item.status=='0'" ><i class="operation-icon fa fa-check-circle"></i>已处理</span>
+                    <span class="pass-fail" v-if="item.status=='1'" ><i class="operation-icon fa fa-bell"></i>处理中</span>
+                  </td>
+                  <td class="max-width100 publish-time">
+                    <span>{{item.createTime}}</span>
+                  </td>
+                  <td class="max-width20">
+                    <span></span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="card widget-weather">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="actual text-white" style="background:url(/static/img/london.jpg) center; background-size:cover">
+                <p>Today</p>
+                <h2 class="m-0"><i class="icon-map-marker"></i> London</h2>
+                <h3 class="m-0">73°</h3>
+>>>>>>> e1a22e983732d335eefa845e95c61ae446ac44d4
               </div>
             </div>
           </div>
@@ -157,6 +219,7 @@
 
 </template>
 <script>
+<<<<<<< HEAD
   import { Statistics } from '../resources'
   import { viewImg, clearViewImg,formatTime } from '../misc/utils'
   import toastr from '../misc/toastr.esm'
@@ -165,6 +228,11 @@
   import $ from 'jquery'
   import Schart from 'vue-schart';
 
+=======
+  import changelog from '../assets/changelog'
+  import { viewImg, clearViewImg,formatTime } from '../misc/utils'
+  import $ from 'jquery'
+>>>>>>> e1a22e983732d335eefa845e95c61ae446ac44d4
   export default {
     data: () => ({
       charts:{
@@ -183,6 +251,7 @@
         }
       },
       colors: ['success', 'info', 'danger', 'primary', 'warning', ''],
+<<<<<<< HEAD
       startTime:'',
       endYesterday:'',
       timeError:false,
@@ -190,7 +259,24 @@
       syns:'',
       time:'',
       queryTime:''
+=======
+      changelog: changelog,
+      reports:''
+>>>>>>> e1a22e983732d335eefa845e95c61ae446ac44d4
     }),
+    beforeRouteEnter (to,form,next) {
+      next(vm => {
+        vm.$http.get('/report').then(response => {
+          console.dir(response.data)
+          if(response.data && response.data.code==200){
+            for(var i=0;i<response.data.data.items.length;i++){
+              response.data.data.items[i].createTime=formatTime(response.data.data.items[i].createTime);
+            }
+            vm.reports=response.data.data;
+          }
+        })
+      })
+    },
     mounted () {
       this.$emit('loaded');
     },
