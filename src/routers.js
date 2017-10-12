@@ -65,6 +65,7 @@ const routes = [
       {path: '/filess/:type?', component: resolve => require(['./components/files/filess.vue'], resolve)},
       
       {path: '/subjectmanage', component: resolve => require(['./components/biaoqing/subject-manage.vue'], resolve)},
+      {path: '/subjectdetail/:id', component: resolve => require(['./components/biaoqing/subject-detail.vue'], resolve)},
       {path: '/topicmanage', component: resolve => require(['./components/biaoqing/topic-manage.vue'], resolve)},
       {path: '/topicexamine', component: resolve => require(['./components/biaoqing/topic-examine.vue'], resolve)},
       {path: '/userlist', component: resolve => require(['./components/biaoqing/user-manage.vue'], resolve)},

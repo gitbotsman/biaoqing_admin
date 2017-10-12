@@ -248,12 +248,14 @@ export default {
 			    closeOnConfirm: false
 			}, function(){
 				that.$http.post('/topicReview/audit', data).then(response => {
+					console.log(response)
 			        if(response.data.code==200){
 			        	var reviews = that.reviews;
 			        	reviews.items[index].audit=data.audit;
 						swal.close();
 	        			toastr.success('审核成功');
 			        }else{
+			        	swal.close();
 			        	toastr.error(response.data.msg);
 			        }
 			    })

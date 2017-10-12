@@ -69,7 +69,6 @@
         next(vm => {
           vm.roles = roles.data.data
           vm.perms = perms.data.data
-          
           if (id) {
             vm.role = vm.roles.find(r => r.id === to.params.id)
             vm.owns = owns.data.data

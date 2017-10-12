@@ -9,9 +9,16 @@
     		<div class="input-group fl">
 		     	<input @keyup.enter="searchSuject" type="text" class="form-control" v-model="searchKey" placeholder="输入关键词" aria-label="Search for...">
 		      	<span class="input-group-btn">
-		          <button @click="searchSuject" class="btn btn-secondary" type="button">Search</button>
+		          <button @click="searchSuject" class="btn btn-secondary" type="button">搜索内容</button>
 		        </span>
 		    </div>
+		    <div class="input-group fl ml-5">
+		     	<input @keyup.enter="searchSujectUser" type="text" class="form-control" v-model="searchUserKey" placeholder="输入用户昵称或ID" aria-label="Search for...">
+		      	<span class="input-group-btn">
+		          <button @click="searchSujectUser" class="btn btn-info" type="button" >搜索用户</button>
+		        </span>
+		    </div>
+		    <span class="cursor pass-success clear-model-user" @click="goSubject(1,'0','','',1,'clear')">清除用户搜索</span>
     	</div>
     	<ul class="biaoqing-nav nav nav-tabs nav-justified nav-line"  role="tablist">
 			<li class="nav-item " v-for="tag in tags.data">
@@ -67,7 +74,7 @@
 				      <th>操作</th>
 				    </tr>
 		    	</thead>
-		    	<tbody class="">
+		    	<tbody>
 		    		<tr v-for="(work,index) in works.items">
 		    			<td class="img-view" @mouseenter="bigImg"  @mouseleave="clearbigImg">
 		    				<div class="biaoqing-list-cover">
@@ -164,9 +171,58 @@
 			  </ul>
 			</nav>
 	    </div>	
+	    <div class="selecTagContainer" :class="{show:(modelUser!='')}">
+	    	<div class="selecTag-bg" @click="cancleSelect"></div> 
+	    	<div class="selecTag-main" :style="'margin-top:-'+modelUserHeight+'px'">
+	    		<div class="selecTag-title">选择用户：</div> 
+	    		<div class="clearfloat">
+	    			<table class="table table-bordered">
+	    				<thead>
+	    					<th>用户名</th>
+	    					<th>ID</th>
+	    					<th>操作</th>
+	    				</thead>
+	    				<tbody>
+	    					<tr v-for="model in modelUser.items">
+	    						<td class="text-overflow max-width200">{{model.name}}</td>
+	    						<td>{{model.id}}</td>
+	    						<td class="select-user cursor" @click="selectModelUser(model.id)">选择</td>
+	    					</tr>
+	    				</tbody>
+	    			</table>
+	    		</div> 
+	    		<div class="selecTag-btn-box">
+	    			<div class="selecTag-btn selecTag-cancle" @click="cancleSelect">取消</div> 
+	    		</div>
+	    	</div>
+	    </div>
     </div>
 </div>
 </template>
+<style>
+	.table td, .table th{
+		padding: 5px;
+		font-size: 13px;
+	}
+	.selecTagContainer .table thead th{
+		border-bottom: 1px;
+	}
+	.show{
+		display: block;
+	}
+	.select-user{
+		font-size: 13px;
+		color: #58c6ff;
+	}
+	.select-user:hover{
+		color: #17b0ff;
+	}
+	.clear-model-user{
+		font-size: 14px;
+		line-height: 38px;
+		margin-left: 20px;
+	}
+</style>
 <script>
 import '../../../static/css/biaoqing/biaoqing.css'
 import { Subject } from '../../resources'
@@ -174,17 +230,22 @@ import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
 import swal2 from 'sweetalert2'
 import querystring from 'querystring'
+import $ from 'jquery'
 
 export default {
 	data: () => ({
 		loading: false,
+		searchUserKey:'',
 		searchKey:'',
 		works:'',
+		modelUserHeight:'',
 		tags:'',
 		formPage:'',
 		keyword:'',
+		ModelUserId:'',
 		sort:'',
 		asc:'',
+		modelUser:'',
 		enable:''
 	}),
 	beforeRouteEnter (to,form,next) {
@@ -296,7 +357,7 @@ export default {
 		        }
 		    })
     	},
-    	goSubject(page,keyword,sort,asc,enable){
+    	goSubject(page,keyword,sort,asc,enable,clear){
     		this.$emit('loaded',true);
     		var params = {
 				pageSize:15,
@@ -307,6 +368,11 @@ export default {
 			}else{
 				params.enable=this.enable;
 			}
+			if(clear && clear=='clear'){this.ModelUserId="";this.searchUserKey=""}
+			if(this.ModelUserId !=''){
+				params.userId=this.ModelUserId;
+			}
+
 			if(keyword && keyword!=''){
 				if(keyword=='最新'){
 					params.keyword='0';
@@ -352,7 +418,6 @@ export default {
 				keyword:searchKey
 			}
 			Promise.all([Subject.works(params)]).then(([works]) => {
-				console.log(works)
 				this.$emit('loaded',false)
 				if(works.data.code==200){
 					for(var i = 0;i<works.data.data.items.length;i++){
@@ -362,8 +427,60 @@ export default {
 					this.works=works.data.data;
 				}
 			})
-    		
-    		
+    	},
+    	cancleSelect(){
+			this.modelUser='';
+    	},
+    	selectModelUser(id){
+    		var params = {
+				pageSize:15,
+				pageNum:1,
+				userId:id,
+				enable:1,
+				keyword:'0'
+			}
+			Promise.all([Subject.works(params)]).then(([works]) => {
+				if(works.data.code==200){
+					this.modelUser='';
+					if(works.data.data.items.length>0){
+						for(var i = 0;i<works.data.data.items.length;i++){
+							works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
+						}
+						this.keyword=params.keyword;
+						this.works=works.data.data;
+						this.ModelUserId = id;
+					}else{
+						swal({
+							type:'info',
+							title:'该用户没有作品',
+							confirmButtonText:'关闭'
+						})
+					}
+				}
+			})
+    	},
+    	searchSujectUser(){
+    		var searchUserKey = this.searchUserKey;
+    		if(searchUserKey != ''){
+    			this.$emit('loaded',true)
+    			var params = {
+    				pageSize:10,
+					pageNum:1,
+					keyword:searchUserKey
+				}
+				this.$http.get('/user',{params:params}).then( response => {
+					console.log(response)
+					this.$emit('loaded',false)
+					if(response.data.code==200 && response.data.data.items.length>0){
+						this.modelUser=response.data.data;
+						var modelUserHeight=(response.data.data.items.length*30+147)/2;
+						this.modelUserHeight=modelUserHeight;
+					}else{
+						this.$notice.error('没有找到任何用户')
+					}
+				})
+    		}
+			
     	}
     } 
 }

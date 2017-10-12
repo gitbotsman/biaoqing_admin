@@ -160,6 +160,12 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
 }
+.flex-item {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
 /* TEXT HELPERS */
 .text-link { color: #808080 !important; transition: color 218ms }
 .text-link.lt { color: #A6A6A6 !important }
@@ -986,4 +992,9 @@ body.preloader { overflow: hidden }
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1; 
+}
+.text-overflow{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

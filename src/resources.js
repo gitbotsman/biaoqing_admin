@@ -7,7 +7,7 @@ import Vue from 'vue'
 export const baseURL = process.env.NODE_ENV === 'production' ? '/' : '/api'  // 所有请求的根路径
 
 export const http = axios.create({
-  // baseURL:baseURL,
+  // baseURL:baseURL, 
   baseURL: "http://support.c3e1c0e165dda47f8957716f59db25d2d.cn-hangzhou.alicontainer.com/",
   timeout: 10000,
   withCredentials: true,
@@ -126,6 +126,7 @@ export const User = resource('user', http, {
 })
 
 export const Role = resource('role', http, {
+  role: (id) => http.get('role'),
   owns: (id) => http.get('role/owns?id=' + id || ''),     // 获取角色所有权限ID
   perms: (id) => http.get('role/perms?id=' + id),         // 获取角色所有权限字符串
   put_perms: (params) => http.put('role/perms', params),  // 保存角色权限更改
@@ -241,4 +242,8 @@ export const StickerManage = resource('stickerManage', http, {
 
 export const UserManage = resource('usermanage', http, {
   users: params => http.get('user',{params:params})
+})
+export const Statistics = resource('statistics', http, {
+  syn: params => http.get('searchHot/syn',{params:params}),
+  users: params => http.get('searchHot/user',{params:params})
 })

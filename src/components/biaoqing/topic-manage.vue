@@ -14,7 +14,7 @@
 		          	<button  @click="goTopics(topics.pageNumber,sort,asc,'all','1')" type="button" class="btn btn-outline-primary" :class="{active:(isSlider=='1')}" >轮播</button>
 		        </div>
 		        <div class="input-group search-topic fl">
-			     	<input @keyup.enter="searchSuject" type="text" class="form-control" v-model="searchTopicKey" placeholder="输入关键词" aria-label="Search for...">
+			     	<input @keyup.enter="searchTopic" type="text" class="form-control" v-model="searchTopicKey" placeholder="输入关键词" aria-label="Search for...">
 			      	<span class="input-group-btn">
 			          <button @click="searchTopic" class="btn btn-secondary" type="button">Search</button>
 			        </span>
