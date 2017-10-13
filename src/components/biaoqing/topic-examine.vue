@@ -6,12 +6,20 @@
     </ol>
     <div class="biaoqing-container">
     	<div class="biaoqing-table">
-    		<div class="btn-group btn-group-sm mb-2">
-    		  <button  @click="goTopicReview(reviews.pageNumber,sort,asc,'all')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='')}">全部</button>
-	          <button  @click="goTopicReview(reviews.pageNumber,sort,asc,'1')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='1')}" >审核中</button>
-	          <button  @click="goTopicReview(reviews.pageNumber,sort,asc,'2')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='2')}" >审核成功</button>
-	          <button @click="goTopicReview(reviews.pageNumber,sort,asc,'-1')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='-1')}" >审核失败</button>
-	        </div>
+    		<div class="clearfloat search-container flex-center">
+	    		<div class="btn-group btn-group-sm fl">
+	    		  <button  @click="goTopicReview(reviews.pageNumber,sort,asc,'all')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='')}">全部</button>
+		          <button  @click="goTopicReview(reviews.pageNumber,sort,asc,'1')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='1')}" >审核中</button>
+		          <button  @click="goTopicReview(reviews.pageNumber,sort,asc,'2')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='2')}" >审核成功</button>
+		          <button @click="goTopicReview(reviews.pageNumber,sort,asc,'-1')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='-1')}" >审核失败</button>
+		        </div>
+		        <!-- <div class="input-group search-topic fl">
+			     	<input @keyup.enter="searchTopic" type="text" class="form-control" v-model="searchTopicKey" placeholder="输入关键词" aria-label="Search for...">
+			      	<span class="input-group-btn">
+			          <button @click="searchTopic" class="btn btn-secondary" type="button">Search</button>
+			        </span>
+			    </div> -->
+		    </div>
 			<table class="table table-bordered table-hover">
 				<thead>
 		    		<tr>
@@ -134,13 +142,15 @@
 </template>
 
 <script>
-import { Topic } from '../../resources'
+import '../../../static/css/biaoqing/biaoqing.css'
+import { Topic,TopicManage } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
 import axios from 'axios'
 
 export default {
 	data: () => ({
+		searchTopicKey:'',
 		loading: false,
 		selectSort:false,
 		currentPage:1,
@@ -165,6 +175,7 @@ export default {
 				}
 				next(vm => {
 					if(reviews.data.data && reviews.data.code==200){
+						console.log(reviews)
 						vm.reviews = reviews.data.data;
 						vm.sort = params.sort;
 						vm.asc=params.asc
@@ -210,6 +221,7 @@ export default {
 					for(var i = 0;i<reviews.data.data.items.length;i++){
 						reviews.data.data.items[i].createTime=formatTime(reviews.data.data.items[i].createTime)
 					}
+
 					this.audit=	params.audit;
 					this.sort = params.sort;
 					this.asc = params.asc;
@@ -260,6 +272,32 @@ export default {
 			        }
 			    })
 			})
+    	},
+    	searchTopic(){
+    		var searchTopicKey = this.searchTopicKey;
+    		if(searchTopicKey!=''){
+	    		this.$emit('loaded',true)
+	    		var params = {
+					pageNum:1,
+					pageSize:15,
+					audit:'1',
+					keyword:searchTopicKey
+				}
+				Promise.all([TopicManage.topic(params)]).then(([topics]) => {
+					this.$emit('loaded',false)
+					console.log(topics)
+					if(topics.data.data && topics.data.code==200){
+						for(var i = 0;i<topics.data.data.items.length;i++){
+							topics.data.data.items[i].createTime=formatTime(topics.data.data.items[i].createTime)
+						}
+						if(topics.data.data && topics.data.code==200){
+							this.reviews = topics.data.data;
+						}
+					}else{
+						this.$notice.error(topics.data.msg)
+					}
+				})
+			}
     	}
     } 
 }

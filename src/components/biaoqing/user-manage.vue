@@ -34,6 +34,7 @@
 				      <th>用户ID</th>
 				      <th>用户名</th>
 				      <th>手机号</th>
+				      <th>注册平台</th>
 				      <th>个人描述</th>
 				      <th>操作</th>
 				      <th>注册时间
@@ -77,6 +78,7 @@
 						<td class="max-width20" :title="user.phone">
 		    				{{user.phone}}
 		    			</td>
+		    			<td>{{user.loginDevice}}</td>
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="user.summary">{{user.summary}}</span>
 		    			</td>
