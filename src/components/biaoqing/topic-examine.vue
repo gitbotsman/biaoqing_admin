@@ -54,7 +54,7 @@
 		    			</td>
 		    			<td>{{review.topicId}}</td>
 		    			<td class="max-width100">
-		    				<span class="biaoqing-table-content" :title="review.topicName"># {{review.topicName}} #</span>
+		    				<router-link class="biaoqing-table-content hover-line" :title="review.topicName":to="'/topicdetail/'+review.topicId+'?keyword='+review.topicName" v-ripple.stop># {{review.topicName}} #</router-link>
 		    			</td>
 		    			<td class="max-width200">
 		    				<span class="biaoqing-table-content" :title="review.summary">{{review.summary}}</span>
@@ -260,7 +260,6 @@ export default {
 			    closeOnConfirm: false
 			}, function(){
 				that.$http.post('/topicReview/audit', data).then(response => {
-					console.log(response)
 			        if(response.data.code==200){
 			        	var reviews = that.reviews;
 			        	reviews.items[index].audit=data.audit;
@@ -285,7 +284,6 @@ export default {
 				}
 				Promise.all([TopicManage.topic(params)]).then(([topics]) => {
 					this.$emit('loaded',false)
-					console.log(topics)
 					if(topics.data.data && topics.data.code==200){
 						for(var i = 0;i<topics.data.data.items.length;i++){
 							topics.data.data.items[i].createTime=formatTime(topics.data.data.items[i].createTime)

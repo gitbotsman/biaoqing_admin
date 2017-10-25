@@ -31,7 +31,7 @@
           <a href="#/logout" class="float-right">忘记密码?</a>
         </div> -->
       </div>
-      <div class="text-muted pt-2">v0.1</div>
+      <div class="text-muted pt-2">v1.1</div>
     </div>
   </div>
 </template>

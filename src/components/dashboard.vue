@@ -166,6 +166,7 @@
   export default {
     data: () => ({
       colors: ['success', 'info', 'danger', 'primary', 'warning', ''],
+      timeType:'',
       startTime:'',
       allUserNum:'',
       endYesterday:'',
@@ -178,28 +179,25 @@
     mounted () {
       this.$emit('loaded');
       var ctx = $('#user-data');
+
       Promise.all([Statistics.users()]).then(([usersData]) => {
-        /**
-         **** 用户来源数据分析 
-        **/
-        var  userArr= usersData.data.data
+        var userArr= usersData.data.data
         var ios_num =0;
         var android_num =0;
         var applet_num =0;
         var other_num =0;
         var pc_num =0;
         for (let i=0;i<userArr.length;i++) {
-            userArr[i].device=userArr[i].device.toUpperCase();
-            if(userArr[i].device=='APPLET'){
+            if(userArr[i].type==5){
               applet_num += userArr[i].userNum;
-            }else if(userArr[i].device=='未知'){
-              other_num += userArr[i].userNum;
-            }else if(userArr[i].device.indexOf('IPHONE')>=0 || userArr[i].device.indexOf('IPAD')>=0 || userArr[i].device.indexOf('IPOD')>=0){
+            }else if(userArr[i].type==2){
               ios_num += userArr[i].userNum;
-            }else if(userArr[i].device.indexOf('PC')>=0){
+            }else if(userArr[i].type==1){
               pc_num += userArr[i].userNum;
-            }else{
+            }else if(userArr[i].type==3){
               android_num += userArr[i].userNum;
+            }else{
+              other_num += userArr[i].userNum;
             }
         } 
         var allUserNum = applet_num+android_num + ios_num + pc_num + other_num;
@@ -208,7 +206,6 @@
             iosPercentage = ((ios_num/allUserNum)*100).toFixed(2)+'%',
             pcPercentage = ((pc_num/allUserNum)*100).toFixed(2)+'%',
             otherPercentage = ((other_num/allUserNum)*100).toFixed(2)+'%';
-
         var opt={
           labels:['小程序','安卓','IOS平台','PC','其他'],
           data:[applet_num,android_num,ios_num,pc_num,other_num],
@@ -216,6 +213,7 @@
         }
 
         this.allUserNum=allUserNum;
+        this.timeType='all';
         this.userPie(ctx,opt)
       })
       
@@ -232,7 +230,7 @@
       var endYesterday = yesterday.getFullYear()+"-" + (yesterday.getMonth()+1) + "-" + yesterday.getDate();
 
       var yesterdayTwo = new Date();
-      yesterdayTwo.setTime(yesterdayTwo.getTime()-24*60*60*1000*2);
+          yesterdayTwo.setTime(yesterdayTwo.getTime()-24*60*60*1000*2);
       var endYesterdayTwo = yesterdayTwo.getFullYear()+"-" + (yesterdayTwo.getMonth()+1) + "-" + yesterdayTwo.getDate();
       //昨天的参数
       var yesterOneData = {startDate:endYesterday,endDate:endYesterday}
@@ -373,7 +371,8 @@
           data: data,
           options: options
         });
-      }
+      },
+      
     }
   }
 </script>

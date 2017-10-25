@@ -21,7 +21,7 @@
 			    </div>
     		</div>
     		
-	        <!-- <div class="cursor btn btn-warning pb" @click="freshTopicCache" style="color:#fff;font-size:13px;right:10px;top:7px;">刷新热门缓存</div> -->
+	        <div class="cursor btn btn-warning pb" @click="freshTopicCache" style="color:#fff;font-size:13px;right:223px;top:7px;">刷新热门缓存</div>
 	        <div class="pb biaoqing-topic-info" style="right:13px"><i class="operation-icon fa fa-info-circle"></i>只有热门才能设置首页显示</div>
 			<table class="table table-bordered table-hover">
 				<thead>
@@ -66,7 +66,7 @@
 		    			</td>
 		    			<td>{{topic.id}}</td>
 		    			<td class="max-width100">
-		    				<span class="biaoqing-table-content" :title="topic.name"># {{topic.name}} #</span>
+		    				<router-link class="biaoqing-table-content hover-line" :title="topic.name":to="'/topicdetail/'+topic.id+'?keyword='+topic.name" v-ripple.stop># {{topic.name}} #</router-link>
 		    			</td>
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="topic.summary">{{topic.summary}}</span>
@@ -401,7 +401,6 @@ export default {
     	freshTopicCache(){
     		var that = this;
     		that.$http.get('/topic/updateCacheHots').then(response => {
-    			console.log(response)
 		        if(response.data.code==200){
 		        	toastr.success(response.data.msg);
 		        }else{

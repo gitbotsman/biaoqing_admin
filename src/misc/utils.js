@@ -16,6 +16,67 @@ export const shorten = function () {
   } while (seq != 0)
   return arr.join('')
 }
+export const base64_encode = function(a) {
+  var b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+  var c, d, e, f, g, h, i, j, k = 0,
+  l = 0,
+  m = "",
+  n = [];
+  if (!a) {
+    return a
+  }
+  a = utf8_encode(a + "");
+  do {
+    c = a.charCodeAt(k++), d = a.charCodeAt(k++), e = a.charCodeAt(k++), j = c << 16 | d << 8 | e, f = j >> 18 & 63, g = j >> 12 & 63, h = j >> 6 & 63, i = 63 & j, n[l++] = b.charAt(f) + b.charAt(g) + b.charAt(h) + b.charAt(i)
+  } while ( k < a . length );
+  switch (m = n.join(""), a.length % 3) {
+  case 1:
+    m = m.slice(0, -2) + "==";
+    break;
+  case 2:
+    m = m.slice(0, -1) + "="
+  }
+  return m
+}
+function utf8_encode(a) {
+    if (null === a || "undefined" == typeof a){
+      return ""
+    }
+    var b = a + "";
+    var c = "",
+    d, e, f = 0;
+    d = e = 0,
+    f = b.length;
+    for (var g = 0; f > g; g++) {
+      var h = b.charCodeAt(g);
+      var i = null;
+      if (128 > h) {
+        e++
+      } else {
+        if (h > 127 && 2048 > h) {
+          i = String.fromCharCode(h >> 6 | 192, 63 & h | 128)
+        } else {
+          if (63488 & h ^ !0) {
+            i = String.fromCharCode(h >> 12 | 224, h >> 6 & 63 | 128, 63 & h | 128)
+          } else {
+            if (64512 & h ^ !0) {
+              throw new RangeError("Unmatched trail surrogate at " + g)
+            }
+            var j = b.charCodeAt(++g);
+            if (64512 & j ^ !0) {
+              throw new RangeError("Unmatched lead surrogate at " + (g - 1))
+            }
+            h = ((1023 & h) << 10) + (1023 & j) + 65536,
+            i = String.fromCharCode(h >> 18 | 240, h >> 12 & 63 | 128, h >> 6 & 63 | 128, 63 & h | 128)
+          }
+        }
+      }
+      null !== i && (e > d && (c += b.slice(d, e)), c += i, d = e = g + 1)
+    }
+    return e > d && (c += b.slice(d, f)),
+    c
+  }
+
 
 export function treeify (el, expanded) {
   return new Treetable(el, {
@@ -252,9 +313,11 @@ export const viewImg = function (e, maxWidth) {
   var $this = $(e.target);
   var clientY = parseInt(e.clientY);
   var src = $this.find('.biaoqing-list-cover-img').attr('src');
-
   var orignWidth = $this.find('.biaoqing-list-cover-img').attr('data-width'),
       orignHeight = $this.find('.biaoqing-list-cover-img').attr('data-height');
+  
+  
+
   var width = parseInt(orignWidth);
   var height = parseInt(orignHeight);
 
@@ -272,7 +335,7 @@ export const viewImg = function (e, maxWidth) {
     }
   }//no width
 
-  if(width>maxWidth){
+  if(width > maxWidth){
     if(width!=height){
       height = (height/width)*maxWidth;
       width = maxWidth;
@@ -284,7 +347,7 @@ export const viewImg = function (e, maxWidth) {
   
   src=src.replace('!thumb240','')
   var html ="<div class='img-view-con'><img src="+src+"></div>"
-  if(clientY-50<height){
+  if(clientY-50 < height){
     height=clientY-50;
   }
   $this.prepend(html)

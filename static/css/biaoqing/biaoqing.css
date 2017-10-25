@@ -105,3 +105,114 @@
 .search-container{
   margin-bottom: 10px;
 }
+/*详情*/
+.detail-img-box{
+  display: inline-block;
+  
+}
+.w470{
+  width: 470px;
+}
+.detail-img-single img{
+  max-width: 350px;
+  max-height: 400px;
+}
+.detail-content-box{
+  margin: 0;
+  margin-left: 15px;
+}
+.detail-img-do img{
+  max-width: none !important;
+  min-height: 100%;
+  min-width: 100%;
+  position: absolute;
+}
+.albums-container{
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.albums-container span{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: inline-block;
+}
+.img-view-tc{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background: rgba(0,0,0,.1);
+  display: none;
+}
+.img-view-tc img{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+.detail-comment{
+  margin: 16px 16px 0 16px;
+}
+.comment-list{
+  background: #fff;
+}
+.select-comment{
+  width: 50px;
+  height: 100%;
+  vertical-align: middle !important;
+  text-align: center;
+}
+.comment-user-tx{
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 100%;
+}
+.comment-user-tx img{
+    border-radius: 100%;
+    width: 100%;
+    height: 100%;
+}
+.comment-user-info{
+  width: 100%;
+  margin-left: 10px;
+}
+.comment-user-info .name{
+  font-size: 14px;
+  color: #6dc3ff;
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: inline-block; 
+}
+.comment-user-info .comment-p{
+  margin-bottom: 0px;
+  font-size: 13px;
+}
+.select-comment-input{
+  display: block;
+  height: 100%;
+}
+.comment-user-info-tool{
+  text-align: right;
+  margin-right: 10px;
+}
+.comment-user-info-tool span{
+  font-size: 13px;
+}
+.comment-user-info-tool .replay{
+  width: 50px;
+  text-align: center;
+  display: inline-block;
+  color: #6dc3ff;
+}
+.delete-comment{
+  color: #6dc3ff;
+  padding-right: 15px;
+}

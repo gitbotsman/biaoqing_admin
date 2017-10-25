@@ -1,0 +1,32 @@
+.topic-img-box{
+	width: 850px;
+}
+.topic-banner{
+	width: 600px;
+}
+.topic-banner img,.topic-cover img{
+	width: 100%;
+}
+.topic-cover{
+	margin-left: 10px;
+	width: 240px;
+}
+.topic-cover-box{
+	width: 200px;
+}
+.topic-cover-content{
+	border:1px solid #ddd;
+	margin-left: 5px;
+	padding: 3px 6px;
+}
+.topic-cover-title{
+	font-size: 16px;
+	font-weight: bold;
+}
+.topic-cover-summary{
+	font-size: 14px;
+}
+.topic-content-box{
+	margin: 0 16px;
+	background: #fff;
+}

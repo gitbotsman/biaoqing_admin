@@ -9,9 +9,9 @@
 
       <div class="layer-loading" v-show="loading"><i></i><i></i><i></i></div>
 
-      <transition name="scale" mode="out-in" appear>
+      <!-- <transition name="scale" mode="out-in" appear> -->
         <router-view class="app-content-view" @loaded="loaded"></router-view>
-      </transition>
+      <!-- </transition> -->
 
       <div class="app-footer">
         <small>Copyright © 2004-2017 BiaoQing.com 表情网 | 闽ICP备16039073号-1</small>

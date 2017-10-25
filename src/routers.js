@@ -68,12 +68,16 @@ const routes = [
       {path: '/subjectdetail/:id', component: resolve => require(['./components/biaoqing/subject-detail.vue'], resolve)},
       {path: '/topicmanage', component: resolve => require(['./components/biaoqing/topic-manage.vue'], resolve)},
       {path: '/topicexamine', component: resolve => require(['./components/biaoqing/topic-examine.vue'], resolve)},
+      {path: '/topicdetail/:id', component: resolve => require(['./components/biaoqing/topic-detail.vue'], resolve)},
+
       {path: '/userlist', component: resolve => require(['./components/biaoqing/user-manage.vue'], resolve)},
       // 贴纸
       {path: '/stickerlist', component: resolve => require(['./components/sticker/sticker-list.vue'], resolve)},
       //反馈
       {path: '/feedback', component: resolve => require(['./components/biaoqing/feedback.vue'], resolve)},
       {path: '/banner', component: resolve => require(['./components/sticker/banner-manage.vue'], resolve)},
+
+      {path: '/systemdata', component: resolve => require(['./components/role/systemdata.vue'], resolve)},
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},

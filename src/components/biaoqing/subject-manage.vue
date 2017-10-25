@@ -81,7 +81,9 @@
 		    					<img class="biaoqing-list-cover-img"  :data-height="work.coverHeight" :data-width="work.coverWidth" :src="[work.fullCover+'!thumb240']" alt="">
 		    				</div>
 		    			</td>
-		    			<td>{{work.id}}</td>
+		    			<td>
+		    				<router-link class="hover-line" :to="'/subjectdetail/'+work.id" v-ripple.stop>{{work.id}}</router-link> 
+		    			</td>
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
 		    			</td>
@@ -103,21 +105,18 @@
 		    			<td class="change-num max-width50">
 		    				<span :title="work.source">{{work.source}}</span>
 		    			</td>
-		    			<!-- <td class="max-width100 last-comment">
-		    				<span>2017-08-25 16:00</span>
-		    			</td> -->
 		    			<td class="cursor">
-		    				<span class="pass-fail" v-if="work.isHot=='-1'" ><i class="operation-icon fa fa-pencil"></i>仅作者可见</span>
-		    				<span @click="setHot(1,work.id,index)" class="pass-ing" v-if="work.isHot=='0'" ><i class="operation-icon fa fa-pencil"></i>正常</span>
-		    				<span @click="setHot(0,work.id,index)" class="pass-success" v-if="work.isHot=='1'" ><i class="operation-icon fa fa-pencil"></i>热门</span>
+		    				<span @click="setHotM(1,work.id,index)" class="pass-fail" v-if="work.isHot=='-1'" ><i class="operation-icon fa fa-pencil"></i>仅作者可见</span>
+		    				<span @click="setHotM(1,work.id,index)" class="pass-ing" v-if="work.isHot=='0'" ><i class="operation-icon fa fa-pencil"></i>正常</span>
+		    				<span @click="setHotM(0,work.id,index)" class="pass-success" v-if="work.isHot=='1'" ><i class="operation-icon fa fa-pencil"></i>热门</span>
 		    			</td>
-		    			<td class="operation-item">
+		    			<td class="operation-item" style="width:70px;">
 		    				<template v-if="work.enable==true">
-		    					<!-- <span><i class="operation-icon fa fa-send"></i>详情</span> -->
-		    					<span class="text-danger" @click="deleteSubject(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>删除</span>
+		    					<span @click="setExcellent" class="hover-line">设为精选</span>
+		    					<span class="text-danger hover-line" @click="deleteSubject(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>删除</span>
 		    				</template>
 		    				<template v-else>
-		    					<!-- <span class="text-danger" @click="cancelDelete(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>撤销删除</span> -->
+		    					<span class="text-danger" @click="foreverDelete(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>彻底删除</span>
 		    				</template>
 		    			</td>
 		    		</tr>
@@ -171,6 +170,16 @@
 			  </ul>
 			</nav>
 	    </div>	
+	    <div class="selecTagContainer" :class="{show:(showSetHot==true)}">
+	    	<div class="selecTag-bg" @click="showSetHotHidden"></div>
+	    	<div class="selecTag-main">
+	    		<div class="clearfloat">
+	    			<div class="tag-name" @click="setHotM('0')">正常</div>
+	    			<div class="tag-name" @click="setHotM('1')">热门</div>
+	    			<div class="tag-name" @click="setHotM('-1')">仅作者可见</div>
+	    		</div>
+	    	</div>
+	    </div>
 	    <div class="selecTagContainer" :class="{show:(modelUser!='')}">
 	    	<div class="selecTag-bg" @click="cancleSelect"></div> 
 	    	<div class="selecTag-main" :style="'margin-top:-'+modelUserHeight+'px'">
@@ -199,30 +208,7 @@
     </div>
 </div>
 </template>
-<style>
-	.table td, .table th{
-		padding: 5px;
-		font-size: 13px;
-	}
-	.selecTagContainer .table thead th{
-		border-bottom: 1px;
-	}
-	.show{
-		display: block;
-	}
-	.select-user{
-		font-size: 13px;
-		color: #58c6ff;
-	}
-	.select-user:hover{
-		color: #17b0ff;
-	}
-	.clear-model-user{
-		font-size: 14px;
-		line-height: 38px;
-		margin-left: 20px;
-	}
-</style>
+
 <script>
 import '../../../static/css/biaoqing/biaoqing.css'
 import { Subject } from '../../resources'
@@ -245,6 +231,9 @@ export default {
 		ModelUserId:'',
 		sort:'',
 		asc:'',
+		page:'',
+		showSetHot:false,
+		setHot:'',
 		modelUser:'',
 		enable:''
 	}),
@@ -256,7 +245,7 @@ export default {
 			keyword:'0'
 		}
 		Promise.all([Subject.works(params),Subject.tags()]).then(([works,tags]) => {
-			console.log(works)
+			
 			for(var i = 0;i<works.data.data.items.length;i++){
 				works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
 			}
@@ -310,38 +299,60 @@ export default {
 			  			
 			  		})
 			  	}
-			}).catch(swal2.noop)
-
+			}).catch(swal2.noop);
     	},
-    	cancelDelete(id,index){
+    	foreverDelete(id,index){
     		var that = this;
-  			// swal({
-			//     type: 'warning',
-			//     title: '您确定?',
-   			// 	   text: '撤销删除!',
-			//     showCancelButton: true,
-			//     cancelButtonText: '取消',
-			//     confirmButtonText: '确定',
-			//     confirmButtonColor: '#DD6B55',
-			//     showLoaderOnConfirm: true,
-			//     closeOnConfirm: false
-			// }, function(){
-			// 	that.$http.delete('/subject/'+id).then(response => {
-			// 		console.log(response)
-			// 		var works = that.works;
-			//         if(response.data.code==200){
-			//         	works.items[index].enable=false;
-			// 			swal.close();
-	 		// 	 		toastr.success('删除成功');
-			//         }else{
-			//         	swal.close();
-	  		//			toastr.error(response.data.msg);
-			//         }
-			//     })
-			// })
+  			swal({
+			    type: 'warning',
+			    title: '您确定?',
+   				text: '永久删除该主题!',
+			    showCancelButton: true,
+			    cancelButtonText: '取消',
+			    confirmButtonText: '确定',
+			    confirmButtonColor: '#DD6B55',
+			    showLoaderOnConfirm: true,
+			    closeOnConfirm: false
+			}, function(){
+				var params={
+					ids:id
+				}
+				that.$http.delete('/subject/',{params:params}).then(response => {
+					that.goSubject(that.page)
+					var works = that.works;
+			        if(response.data.code==200){
+						swal.close();
+	 			 		toastr.success('删除成功');
+			        }else{
+			        	swal.close();
+	  					toastr.error(response.data.msg);
+			        }
+			    })
+			})
     	},
-    	setHot(type,id,index){
+    	showSetHotHidden(){
+    		this.showSetHot=false;
+    	},
+    	showSetHotM(type,id,index){
+    		var setHot={
+    			type:type,
+    			id:id,
+    			index:index
+    		}
+    		this.setHot=setHot;
+    		this.showSetHot=true;
+    	},
+    	setHotM(type,id,index){
 			var that = this;
+			this.showSetHot=false;
+			if(id){
+				var id=id;
+				var index=index;
+			}else{
+				var id=this.setHot.id;
+				var index=this.setHot.index;
+			}
+			var type=type;
     		var params = {
 			  "id": id,
 			  "isHot": type
@@ -394,9 +405,11 @@ export default {
 				params.asc = this.asc;
 			}
 			Promise.all([Subject.works(params)]).then(([works]) => {
+				$('body,html').animate({scrollTop:0},10);
 				for(var i = 0;i<works.data.data.items.length;i++){
 					works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
 				}
+				this.page=params.pageNum
 				this.sort=params.sort;
 				this.asc=params.asc;
 				this.enable=params.enable;
@@ -469,7 +482,6 @@ export default {
 					keyword:searchUserKey
 				}
 				this.$http.get('/user',{params:params}).then( response => {
-					console.log(response)
 					this.$emit('loaded',false)
 					if(response.data.code==200 && response.data.data.items.length>0){
 						this.modelUser=response.data.data;
@@ -480,8 +492,34 @@ export default {
 					}
 				})
     		}
-			
+    	},
+    	setExcellent(){
+    		
     	}
     } 
 }
 </script>
+<style>
+	.table td, .table th{
+		padding: 5px;
+		font-size: 13px;
+	}
+	.selecTagContainer .table thead th{
+		border-bottom: 1px;
+	}
+	.show{
+		display: block;
+	}
+	.select-user{
+		font-size: 13px;
+		color: #58c6ff;
+	}
+	.select-user:hover{
+		color: #17b0ff;
+	}
+	.clear-model-user{
+		font-size: 14px;
+		line-height: 38px;
+		margin-left: 20px;
+	}
+</style>

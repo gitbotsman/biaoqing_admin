@@ -177,7 +177,6 @@ export const jsonRequest = function (path, method, data) {
  * @returns the resource object
  */
 function resource (path, http, actions) {
-  
   var obj = {
     get: id => http.get(path + '/' + id),
     save: obj => http.post(path, obj),
@@ -210,7 +209,10 @@ function resource (path, http, actions) {
  */
 export const Subject = resource('subject', http, {
   works: params => http.get('subject',{params:params}),     // 获取作品列表
-  tags: params => http.get('tag/all',{params:params})     // 获取标签
+  tags: params => http.get('tag/all',{params:params}),     // 获取标签
+  detail: params => http.get('subject/'+params.id),
+  album: params => http.get('album/'+params.id),
+  comment:params => http.get('comment',{params:params})
 })
 
 /**
@@ -222,6 +224,7 @@ export const Subject = resource('subject', http, {
  */
 export const Topic = resource('topicReview', http, {
   topicReview: params => http.get('topicReview',{params:params}),     // 话题申请列表
+  topicDetail: params => http.get('topic/'+params.id)
 })
 /**
  * 话题管理
@@ -236,7 +239,8 @@ export const TopicManage = resource('topicManage', http, {
 })
 
 export const StickerManage = resource('stickerManage', http, {
-  materia: params => http.get('material',{params:params}),     // 
+  materia: params => http.get('material',{params:params}),    
+  category: params => http.get('category',{params:params}),     
   materialHot: params => http.get('/materialHot',{params:params})     // 获取标签
 })
 
@@ -246,4 +250,8 @@ export const UserManage = resource('usermanage', http, {
 export const Statistics = resource('statistics', http, {
   syn: params => http.get('searchHot/syn',{params:params}),
   users: params => http.get('searchHot/user',{params:params})
+})
+
+export const SystemData = resource('SystemData', http, {
+  system: params => http.get('systemParam',{params:params})
 })

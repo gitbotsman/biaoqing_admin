@@ -20,14 +20,15 @@
         <button class="btn btn-outline-info"><i class="fa ti-search"></i> 搜索</button>
         <router-link class="btn btn-outline-info rounded ml-sm-auto" to="/dict/new"><i class="fa fa-plus-square"></i> 新增</router-link>
       </form>
+      
       <table class="table table-hover table-advanced m-0">
         <thead>
-        <tr>
-          <th class="text-xs-center">#</th>
-          <th>编码</th>
-          <th class="hidden-md-down">描述</th>
-          <th class="text-xs-center">操作</th>
-        </tr>
+          <tr>
+            <th class="text-xs-center">#</th>
+            <th>编码</th>
+            <th class="hidden-md-down">描述</th>
+            <th class="text-xs-center">操作</th>
+          </tr>
         </thead>
         <tbody>
         <tr v-for="(item, index) in page.items" :key="item.id">

@@ -66,9 +66,10 @@
 		    	</thead>
 		    	<tbody>
 		    		<tr v-for="(user,index) in users.items">
-		    			<td class="img-view" @mouseenter="bigImg"  @mouseleave="clearbigImg">
-		    				<div class="full-avatar">
-		    					<img class="biaoqing-list-cover-img" style="display:inline-block;" :src="[user.fullAvatar]">
+		    			<td class="img-view" style="vertical-align: middle;" @mouseenter="bigImg"  @mouseleave="clearbigImg">
+		    				<div class="full-avatar pr">
+		    					<img class="biaoqing-list-cover-img" style="display:block;" :src="[user.fullAvatar]">
+		    					<span v-if="user.userType=='3' || user.userType=='2'" class="auth_icon_wb"></span>
 		    				</div>
 		    			</td>
 		    			<td>{{user.id}}</td>
@@ -113,7 +114,6 @@
 		    			<td class="max-width20">
 		    				{{user.workNum}}
 		    			</td>
-		    			
 		    		</tr>
 		    	</tbody>
 			</table>
@@ -280,11 +280,6 @@
 </div>
 
 </template>
-<style>
-/*.sweet-alert input{
-	display: inline-block;
-}*/
-</style>
 <script>
 import '../../../static/css/biaoqing/user.css'
 import querystring from 'querystring'
@@ -343,6 +338,7 @@ export default {
 			}
 			Promise.all([UserManage.users(params)]).then(([users]) => {
 				this.$emit('loaded',false);
+				$('body,html').animate({scrollTop:0},10);
 				if(users.data.data && users.data.code==200){
 					for(var i = 0;i<users.data.data.items.length;i++){
 						users.data.data.items[i].createTime=formatTime(users.data.data.items[i].createTime)
@@ -479,8 +475,6 @@ export default {
 						userId:userid
 					}
     			}
-    			
-
 				this.$http.get(url,{params:params}).then(response => {
 					this.$emit('loaded',false);
 					if(response.data.code==200){
@@ -503,8 +497,7 @@ export default {
     	},
     	timeFilter(expire){  
     		var msg = '';
-    		var expire=parseInt(expire)
-
+    		var expire=parseInt(expire);
 		    if (expire > 0) {
 	            if (expire < 60) {
 	               msg = expire+"秒";

@@ -23,6 +23,11 @@ import 'bootstrap/js/src/dropdown'
 import 'bootstrap/js/src/util'
 import 'jstree/dist/jstree.min'
 
+
+// import '../static/js/upyun.js'
+// import '../static/js/plupload.full.min.js'
+
+
 // register custom validators
 Object.keys(validators).forEach(v => VeeValidate.Validator.extend(v, validators[v]))
 

@@ -2,7 +2,7 @@
 <div>
 	<ol class="breadcrumb">
       <li class="breadcrumb-item">贴纸管理</li>
-      <li class="breadcrumb-item">贴纸列表</li>
+      <li class="breadcrumb-item">分类列表</li>
     </ol>
 	<div class="biaoqing-container">
 		<div class="biaoqing-table">
@@ -10,7 +10,8 @@
 				<thead>
 		    		<tr>
 				      <th>封面</th>
-				      <th>贴纸ID</th>
+				      <th>name</th>
+				      <th>分类ID</th>
 				      <th>创建时间</th>
 				      <th>操作</th>
 				    </tr>
@@ -19,15 +20,18 @@
 		    		<tr v-for="(materia,index) in materias.items">
 		    			<td class="img-view" @mouseenter="bigImg"  @mouseleave="clearbigImg">
 		    				<div class="biaoqing-list-cover">
-		    					<img class="biaoqing-list-cover-img"  :data-height="materia.imageHeight" :data-width="materia.imageWidth" :src="[materia.fullImage+'!thumb240']" alt="">
+		    					<img class="biaoqing-list-cover-img"  :data-height="materia.coverHeight" :data-width="materia.coverWidth" :src="[materia.fullCover+'!thumb240']" alt="">
 		    				</div>
 		    			</td>
+		    			<td class="max-width20 biaoqing-table-content">{{materia.name}}</td>
 		    			<td>{{materia.id}}</td>
 		    			<td class="max-width100 publish-time">
 		    				<span>{{materia.createTime}}</span>
 		    			</td>
 		    			<td class="max-width20">
-		    				<span></span>
+		    				<span @click="setMateria('1',materia.id,index)" v-if="materia.isHot=='0'" class="pass-ing hover-line cursor">正常</span>
+		    				<span @click="setMateria('-1',materia.id,index)" v-if="materia.isHot=='1'" class="pass-success hover-line cursor">热门</span>
+		    				<span @click="setMateria('0',materia.id,index)" v-if="materia.isHot=='-1'" class="text-danger hover-line cursor">不推荐</span>
 		    			</td>
 		    		</tr>
 		    	</tbody>
@@ -93,20 +97,23 @@ import toastr from '../../misc/toastr.esm'
 export default {
 	data: () => ({
 		loading: false,
+		formPage:'',
+		type:'',
 		materias:''
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
 			pageSize:15,
 			pageNum:1,
-			keyword:'0'
+			type:1
 		}
-		Promise.all([StickerManage.materia(params),StickerManage.materialHot()]).then(([materias,hots]) => {
+		Promise.all([StickerManage.category(params),StickerManage.materialHot()]).then(([materias,hots]) => {
 			console.log(materias)
 			for(var i = 0;i<materias.data.data.items.length;i++){
 				materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
 			}
     		next(vm => {
+    			vm.type=params.type;
     			vm.materias = materias.data.data;
     		})
 		})
@@ -123,17 +130,33 @@ export default {
 			var params = {
 				pageSize:15,
 				pageNum:page,
-				keyword:'0'
+				type:1
 			}
-			Promise.all([StickerManage.materia(params),StickerManage.materialHot()]).then(([materias,hots]) => {
-				console.log(materias)
+			Promise.all([StickerManage.category(params)]).then(([materias]) => {
 				this.$emit('loaded',false)
 				for(var i = 0;i<materias.data.data.items.length;i++){
 					materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
 				}
+				this.type=params.type;
 				this.materias=materias.data.data;
 			})
     	},
+    	setMateria(type,id,index){
+    		var data={
+			  "id": id,
+			  "isHot": type
+			}
+			this.$http.post('/category/update',data).then(res => {
+				var materias = this.materias;
+				if(res.data.code==200){
+					materias.items[index].isHot=data.isHot
+					this.$notice.success(res.data.msg)
+				}else{
+					this.$notice.error(res.data.msg)
+				}
+				
+			})
+    	}
     } 
 }
 </script>
