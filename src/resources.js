@@ -7,7 +7,7 @@ import Vue from 'vue'
 export const baseURL = process.env.NODE_ENV === 'production' ? '/' : '/api'  // 所有请求的根路径
 
 export const http = axios.create({
-  baseURL:baseURL, 
+  baseURL:baseURL,
   // baseURL: "http://support.c3e1c0e165dda47f8957716f59db25d2d.cn-hangzhou.alicontainer.com/",
   timeout: 10000,
   withCredentials: true,
@@ -99,7 +99,7 @@ export const Permission = resource('permission', http, {
 export const User = resource('user', http, {
   current: request => {
     if (request) {
-      return http.get('user/current')
+      return http.get('admin/current')
     }
     var value = storage.getItem('user')
     if (value) {
@@ -107,7 +107,7 @@ export const User = resource('user', http, {
     }
   },
   paging: params => http.get('user', {params}),
-  query: params => http.get('user/query', {params}),
+  query: params => http.get('admin/query', {params}),
   /*
    * 搜索用户
    * keyword        搜索关键字
@@ -122,6 +122,35 @@ export const User = resource('user', http, {
   status: (id, status) => http.put('user/status', {id, status}),  // 更新状态
   role: (id, roleId) => http.put('user/role', {id, roleId}),      // 更新角色
   partial: (params) => http.put('user/partial', params)           // 局部更新用户信息
+})
+
+export const Admin = resource('admin',http,{
+  current: request => {
+  if (request) {
+    return http.get('admin/current')
+  }
+  var value = storage.getItem('user')
+
+  if (value) {
+    return JSON.parse(value)
+  }
+},
+  paging: params => http.get('admin', {params}),
+  query: params => http.get('admin/query', {params}),
+  /*
+   * 搜索用户
+   * keyword        搜索关键字
+   * type           过滤用户类型
+   * dept           过滤部门ID
+   * include        需包含的用户
+   * excludeCurrent 是否排除当前用户
+   */
+  search: params => http.get('admin/search', {params}),
+  roles: (id = '') => http.get('admin/roles?id=' + id),  // 获取所有用户
+  profile: (user) => user ? http.put('admin/profile', user) : http.get('admin/profile'),
+  status: (id, enable) => http.put('admin/status', {id, enable}),  // 更新状态
+  role: (id, roleId) => http.put('admin/role', {id, roleId}),      // 更新角色
+  partial: (params) => http.put('admin/partial', params)           // 局部更新用户信息
 })
 
 export const Role = resource('role', http, {
@@ -233,13 +262,13 @@ export const Topic = resource('topicReview', http, {
  * @returns {AxiosPromise}
  */
 export const TopicManage = resource('topicManage', http, {
-  topic: params => http.get('topic',{params:params}),     // 
+  topic: params => http.get('topic',{params:params}),     //
   tags: params => http.get('tag/all',{params:params})     // 获取标签
 })
 
 export const StickerManage = resource('stickerManage', http, {
-  materia: params => http.get('material',{params:params}),    
-  category: params => http.get('category',{params:params}),     
+  materia: params => http.get('material',{params:params}),
+  category: params => http.get('category',{params:params}),
   materialHot: params => http.get('materialHot',{params:params}),     // 获取标签
   faceCategory: params => http.get('sticker/category',{params:params}),
   faceSticker: params => http.get('sticker',{params:params})

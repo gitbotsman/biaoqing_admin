@@ -1,14 +1,13 @@
 <template>
   <div class="selectize" :class="index > 5 ? 'dropup' : 'dropdown'" ref="dropdown">
-
-    <a v-if="!user.status" data-toggle="dropdown" class="text-link">已停用 <i class="fa fa-angle-down"></i></a>
+    <a v-if="!user.enable" data-toggle="dropdown" class="text-link">已停用 <i class="fa fa-angle-down"></i></a>
     <span v-else-if="user.admin && !current.admin" class="text-muted"><span>{{user.roleName}}</span></span>
     <a v-else data-toggle="dropdown" class="text-link">{{user.roleName}} <i class="fa fa-angle-down"></i></a>
 
     <div class="dropdown-menu dropdown-menu-right">
       <div class="dropdown-title"><i class="ti-angle-left left" v-show="action != 'main'" @click="action = 'main'"></i>{{actions[action]}}</div>
 
-      <div class="selectize-items" v-if="user.status && action == 'main'">
+      <div class="selectize-items" v-if="user.enable && action == 'main'">
         <label class="selectize-item" v-for="item in roles" :key="item.id">
           <input type="radio" :value="item.id" v-model="user.roleId" @change="role(item)">
           <span class="info">{{item.name}}</span>
@@ -18,7 +17,7 @@
         <label class="selectize-item text-danger" @click.stop="action = 'del'">删除用户</label>
       </div>
 
-      <div class="selectize-items" v-if="!user.status && action == 'main'">
+      <div class="selectize-items" v-if="!user.enable && action == 'main'">
         <label class="selectize-item" @click.stop="action = 'unban'">启用用户</label>
         <label class="selectize-item text-danger" @click.stop="del">删除用户</label>
       </div>
@@ -48,7 +47,7 @@
 </template>
 
 <script>
-  import {User} from '../../resources'
+  import {Admin} from '../../resources'
   import toastr from '../../misc/toastr.esm'
 
   export default {
@@ -57,7 +56,7 @@
     data () {
       return {
         initial: this.user.roleId,
-        current: User.current(),
+        current: Admin.current(),
         actions: {
           main: '用户菜单',
           unban: '启用用户',
@@ -69,8 +68,8 @@
     },
     methods: {
       role (role) {  // 更改用户角色
-        User.role(this.user.id, role.id).then(response => {
-          if (response.data.success) {
+        Admin.role(this.user.id, role.id).then(response => {
+          if (response.data.code == 200) {
             this.user.roleName = role.name
             toastr.success('角色修改成功')
             return this.close()
@@ -80,19 +79,19 @@
         })
       },
       del (exec) {
-        User.delete(this.user.id).then(response => {
-          if (response.data.success) {
+        Admin.delete(this.user.id).then(response => {
+          if (response.data.code == 200) {
             toastr.success('删除用户成功!')
             this.action = 'menu'
             this.close()
           }
         })
       },
-      ban (status) { // 启用用户
-        User.status(this.user.id, status).then(response => {
-          if (response.data.success) {
+      ban (enable) { // 启用用户
+        Admin.status(this.user.id, enable).then(response => {
+          if (response.data.code == 200) {
             toastr.success(this.actions[this.action] + '成功!')
-            this.user.status = status
+            this.user.enable = enable
             this.action = 'menu'
             this.close()
           }

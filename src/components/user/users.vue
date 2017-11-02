@@ -66,7 +66,7 @@
   </div>
 </template>
 <script>
-  import { User, Role, Department } from '../../resources'
+  import { Admin, Role, Department } from '../../resources'
   import Pagination from '../../widgets/pagination.vue'
   import { debounce } from '../../misc/utils'
   import AddUserMenu from './add-user-menu.vue'
@@ -93,17 +93,17 @@
       page: {}      // 分页对象
     }),
     beforeRouteEnter (to, from, next) {
-      Promise.all([User.query(to.params), Department.tree(true), Role.all()]).then(([users, depts, roles]) => {
-        console.log(users)
+      Promise.all([Admin.query(to.params), Department.tree(true), Role.all()]).then(([users, depts, roles]) => {
+        console.log(roles.data.data)
         next(vm => {
-          vm.depts = depts.data.tree.map(mapAttr)
-          vm.roles = roles.data
-          deptMap = depts.data.map  // 备份部门数据
+          vm.depts = depts.data.data.tree.map(mapAttr)
+          vm.roles = roles.data.data
+          deptMap = depts.data.data.map  // 备份部门数据
           vm.type = to.params.type || 'all'
           vm.dept = to.params.dept
-          vm.page = users.data
+          vm.page = users.data.data
           if (vm.type === 'all') {  // 备份默认数据
-            pageBackup = users.data
+            pageBackup = users.data.data
           }
           vm.$nextTick(() => {
             vm.$emit('loaded')
@@ -121,8 +121,8 @@
     methods: {
       paging (pn, cb) {  // 分页查询用户
         this.loading = 1
-        User.query({keyword: this.keyword, type: this.type, dept: this.dept, pn: pn || 1}).then(response => {
-          this.page = response.data
+        Admin.query({keyword: this.keyword, type: this.type, dept: this.dept, pn: pn || 1}).then(response => {
+          this.page = response.data.data
           this.loading = 0
           cb && cb()
         })
@@ -136,8 +136,8 @@
       },
       del (dept) {  // 删除部门
         Department.tree().then(response => {
-          this.depts = response.data.tree.map(mapAttr)
-          deptMap = response.data.map  // 备份部门数据
+          this.depts = response.data.data.tree.map(mapAttr)
+          deptMap = response.data.data.map  // 备份部门数据
         })
       }
     },

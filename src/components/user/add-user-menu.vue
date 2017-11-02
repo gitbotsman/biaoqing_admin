@@ -1,4 +1,4 @@
-<template>
+ e<template>
   <div class="dropdown selectize" ref="dropdown">
     <a class="ml-3 text-link" @click.stop="show"><span class="img-btn">┼</span> 添加成员</a>
     <div class="dropdown-menu dropdown-menu-right" :class="{'loading' : dirty || loading}" style="min-width: 18rem">
@@ -37,7 +37,7 @@
 
 <script>
   import {debounce} from '../../misc/utils'
-  import {User} from '../../resources'
+  import {Admin} from '../../resources'
   import toastr from '../../misc/toastr.esm'
   import $ from 'jquery'
   var backup = [] // 初始用户列表备份, 当用户清空查询时, 直接使用备份数据而不再执行查询请求
@@ -72,7 +72,7 @@
       },
       paging: debounce(function () { // 查询(支持分页)
         this.loading = 1
-        User.search({keyword: this.keyword}).then(response => {
+        Admin.search({keyword: this.keyword}).then(response => {
           this.items = response.data
           this.loading = 0
           this.dirty = 0
@@ -82,7 +82,7 @@
         })
       }, 500),
       add (user, index) {  // 添加用户到部门
-        User.partial({id: user.id, departmentId: this.dept}).then(response => {
+        Admin.partial({id: user.id, departmentId: this.dept}).then(response => {
           if (response.data.success) {
             toastr.success('添加用户成功!')
             user.departmentId = this.dept

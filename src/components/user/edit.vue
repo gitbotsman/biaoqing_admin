@@ -26,13 +26,13 @@
             <span class="form-control-feedback">{{ errors.first('pass') }}</span>
           </div>
         </div>
-        <div class="form-group row" v-styling="'email'">
-          <label class="col-form-label col-sm-2">邮箱</label>
-          <div class="col-sm-10">
-            <input name="email" v-model="user.email" class="form-control" v-validate="'required|email'" placeholder="邮箱">
-            <span class="form-control-feedback">{{ errors.first('email') }}</span>
-          </div>
-        </div>
+        <!--<div class="form-group row" v-styling="'email'">-->
+          <!--<label class="col-form-label col-sm-2">邮箱</label>-->
+          <!--<div class="col-sm-10">-->
+            <!--<input name="email" v-model="user.email" class="form-control" v-validate="'required|email'" placeholder="邮箱">-->
+            <!--<span class="form-control-feedback">{{ errors.first('email') }}</span>-->
+          <!--</div>-->
+        <!--</div>-->
         <div class="form-group row" v-styling="'phone'">
           <label class="col-form-label col-sm-2">手机号</label>
           <div class="col-sm-10">
@@ -69,9 +69,9 @@
         <div class="form-group row">
           <label class="col-form-label col-sm-2">用户状态</label>
           <div class="col-sm-10">
-            <select v-model="user.status" title="用户状态" class="form-control">
-              <option value="1">启用</option>
-              <option value="0">停用</option>
+            <select v-model="user.enable" title="用户状态" class="form-control">
+              <option value="true">启用</option>
+              <option value="false">停用</option>
             </select>
           </div>
         </div>
@@ -91,7 +91,7 @@
 <script>
   import DateSelect from '../../widgets/dateselect.vue'
   import jstree from '../../widgets/jstree.vue'
-  import {User, Department} from '../../resources'
+  import {Admin, Department} from '../../resources'
   import {showResponse} from '../../misc/utils'
 
   export default {
@@ -104,23 +104,24 @@
     }),
     beforeRouteEnter (to, from, next) {
       var id = to.params.id
-      Promise.all([User.get(id), User.roles(id), Department.jstree()]).then(([user, roles, depts]) => {
+      Promise.all([Admin.get(id), Admin.roles(id), Department.jstree()]).then(([user, roles, depts]) => {
         next(vm => {
-          vm.depts = depts.data
-          vm.roles = roles.data.roles
-          vm.user = user.data
-          vm.owns = roles.data.owns || []
+          console.log(roles)
+          vm.depts = depts.data.data
+          vm.roles = roles.data.data.roles
+          vm.user = user.data.data
+          vm.owns = roles.data.data.owns || []
           vm.$nextTick(() => vm.$emit('loaded'))
         })
       })
     },
     beforeRouteUpdate (to, from, next) {
       var id = to.params.id
-      Promise.all([User.get(id), User.roles(id), Department.jstree()]).then(([user, roles, depts]) => {
-        this.depts = depts.data
-        this.roles = roles.data.roles
-        this.owns = roles.data.owns
-        this.user = user.data
+      Promise.all([Admin.get(id), Admin.roles(id), Department.jstree()]).then(([user, roles, depts]) => {
+        this.depts = depts.data.data
+        this.roles = roles.data.data.roles
+        this.owns = roles.data.data.owns
+        this.user = user.data.data
       })
     },
     methods: {
@@ -128,7 +129,7 @@
         this.$validator.validateAll().then(success => {
           if (!success) return
           this.user.roles = this.owns
-          User.update(this.user).then(response => {
+          Admin.update(this.user).then(response => {
             showResponse(response, () => this.$router.back())
           })
         })

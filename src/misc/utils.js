@@ -128,7 +128,7 @@ export class Modal {
 }
 
 export const showResponse = function (response, success, fail) {
-  if (response.data.success) {
+  if (response.data.code == 200) {
     return swal({type: 'success', title: '操作成功', text: '您的操作已经执行成功!'}, () => {
       success && success()
     })
@@ -315,8 +315,8 @@ export const viewImg = function (e, maxWidth) {
   var src = $this.find('.biaoqing-list-cover-img').attr('src');
   var orignWidth = $this.find('.biaoqing-list-cover-img').attr('data-width'),
       orignHeight = $this.find('.biaoqing-list-cover-img').attr('data-height');
-  
-  
+
+
 
   var width = parseInt(orignWidth);
   var height = parseInt(orignHeight);
@@ -344,7 +344,7 @@ export const viewImg = function (e, maxWidth) {
       height = maxWidth;
     }
   }
-  
+
   src=src.replace('!thumb240','')
   var html ="<div class='img-view-con'><img src="+src+"></div>"
   if(clientY-50 < height){

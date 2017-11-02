@@ -29,13 +29,13 @@
             <span class="form-control-feedback">{{ errors.first('pass') }}</span>
           </div>
         </div>
-        <div class="form-group row" v-styling="'email'">
-          <label class="col-form-label col-sm-2">邮箱</label>
-          <div class="col-sm-10">
-            <input name="email" v-model="user.email" class="form-control" v-validate="'required|email'" placeholder="邮箱" title="邮箱">
-            <span class="form-control-feedback">{{ errors.first('email') }}</span>
-          </div>
-        </div>
+        <!--<div class="form-group row" v-styling="'email'">-->
+          <!--<label class="col-form-label col-sm-2">邮箱</label>-->
+          <!--<div class="col-sm-10">-->
+            <!--<input name="email" v-model="user.email" class="form-control" v-validate="'required|email'" placeholder="邮箱" title="邮箱">-->
+            <!--<span class="form-control-feedback">{{ errors.first('email') }}</span>-->
+          <!--</div>-->
+        <!--</div>-->
         <div class="form-group row" v-styling="'phone'">
           <label class="col-form-label col-sm-2">手机号</label>
           <div class="col-sm-10">
@@ -73,9 +73,9 @@
         <div class="form-group row">
           <label class="col-form-label col-sm-2">用户状态</label>
           <div class="col-sm-10">
-            <select v-model="user.status" title="用户状态" class="form-control">
-              <option value="1">启用</option>
-              <option value="0">停用</option>
+            <select v-model="user.enable" title="用户状态" class="form-control">
+              <option value="true">启用</option>
+              <option value="false">停用</option>
             </select>
           </div>
         </div>
@@ -91,7 +91,7 @@
 <script>
   import DateSelect from '../../widgets/dateselect.vue'
   import jstree from '../../widgets/jstree.vue'
-  import {User, Department} from '../../resources'
+  import {Admin, Department} from '../../resources'
   import {showResponse} from '../../misc/utils'
 
   export default {
@@ -101,16 +101,16 @@
       user: {
         departmentId: -1,
         roleId: 0,  // 默认为普通用户角色
-        status: 1,
+        enable: 1,
         name: '',
         type: 1
       }
     }),
     beforeRouteEnter (to, from, next) {
-      Promise.all([User.roles(), Department.jstree()]).then(([user, depts]) => {
+      Promise.all([Admin.roles(), Department.jstree()]).then(([user, depts]) => {
         next(vm => {
-          vm.roles = user.data.roles
-          vm.depts = depts.data
+          vm.roles = user.data.data.roles
+          vm.depts = depts.data.data
           vm.$nextTick(() => vm.$emit('loaded'))
         })
       })
@@ -119,8 +119,12 @@
       submit () {
         this.$validator.validateAll().then(success => {
           if (!success) return
-          this.user.birthday = this.birth.join('-')
-          User.save(this.user).then(response => {
+
+          if (this.user.birthday != undefined || this.user.birthday != null) {
+            this.user.birthday = this.birth.join('-')
+
+          }
+          Admin.save(this.user).then(response => {
             showResponse(response, () => this.$router.back())
           })
         })
