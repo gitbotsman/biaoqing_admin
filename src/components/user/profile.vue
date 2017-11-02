@@ -32,10 +32,10 @@
         <label class="form-group d-block">密码 (无需修改请留空)
           <input type="password" name="pass" v-model="user.pass" class="form-control" minlength="5" maxlength="32" placeholder="密码">
         </label>
-        <label class="form-group d-block" v-styling="'email'">邮箱
-          <input name="email" type="email" v-model="user.email" v-validate="'email'" class="form-control" title="邮箱地址" placeholder="请输入邮箱地址">
-          <span class="form-control-feedback">{{ errors.first('email') }}</span>
-        </label>
+        <!--<label class="form-group d-block" v-styling="'email'">邮箱-->
+          <!--<input name="email" type="email" v-model="user.email" v-validate="'email'" class="form-control" title="邮箱地址" placeholder="请输入邮箱地址">-->
+          <!--<span class="form-control-feedback">{{ errors.first('email') }}</span>-->
+        <!--</label>-->
         <label class="form-group d-block" v-styling="'phone'">手机号码
           <input name="phone" v-model="user.phone" v-validate="{rules: { required: true, regex: /^\d{11}$/} }" class="form-control" title="手机号码" placeholder="手机号码">
           <span class="form-control-feedback">{{ errors.first('phone') }}</span>
@@ -59,7 +59,7 @@
 
 <script>
   import DateSelect from '../../widgets/dateselect.vue'
-  import {User} from '../../resources'
+  import {Admin} from '../../resources'
   import toastr from '../../misc/toastr.esm'
 
   export default {
@@ -68,17 +68,18 @@
       role: {}
     }),
     beforeRouteEnter (to, from, next) {
-      User.profile().then(response => {
+      Admin.profile().then(response => {
         next(vm => {
-          vm.user = response.data.user
+          vm.user = response.data.data
+          console.log(response.data)
           vm.$nextTick(() => vm.$emit('loaded'))
         })
       })
     },
     methods: {
       done () {
-        User.profile(this.user).then(response => {
-          if (response.data.success) {
+        Admin.profile(this.user).then(response => {
+          if (response.data.code == 200) {
             toastr.success('用户信息更新成功!')
           }
         })
