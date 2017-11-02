@@ -35,13 +35,13 @@ module.exports = {
           '^/biaoqingimg': ''
         }
       },
-      // '/api': {
-      //   target: 'http://192.168.0.37:1889/',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/api': ''
-      //   }
-      // }
+      '/api': {
+        target: 'http://192.168.0.37:1889/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
