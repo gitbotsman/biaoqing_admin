@@ -295,7 +295,39 @@
     padding: 5px;
     border:1px solid #ccc;
   }
+  .block{
+    display: block !important;
+  }
   .add-info{
     color: #999;
     font-size: 12px;
+  }
+  .replay-comment-container{
+    display: none;
+  }
+  .replay-comment{
+    padding: 10px;
+    width: 380px;
+    top: 50%;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -95px;
+  }
+  .comment-subject{
+    margin: 10px 16px 0 16px;
+    padding: 10px;
+    background: #fff;
+    
+  }
+  .comment-subject-box{
+    width: 500px;
+  }
+  .comment-subject textarea{
+    resize: none;
+  }
+  .comment-subject .input-group{
+    width: 70%;
+  }
+  .comment-subject-majia-input{
+    width: 180px;
   }

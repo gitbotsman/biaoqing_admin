@@ -105,6 +105,7 @@
     beforeRouteEnter (to, from, next) {
       var id = to.params.id
       Promise.all([User.get(id), User.roles(id), Department.jstree()]).then(([user, roles, depts]) => {
+        
         next(vm => {
           vm.depts = depts.data
           vm.roles = roles.data.roles

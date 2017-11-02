@@ -324,10 +324,11 @@ export default {
 		background: rgba(0,0,0,.2)
 	}
 	.add-banner-mask-main{
-		position: absolute;
-		top: 30%;
-		left: 50%;
-		margin-left: -200px;
+		position: absolute !important;
+		left: 50% !important;
+		top:50% !important;
+		margin-top: -172px !important;
+		margin-left: -200px !important;
 		background: #fff;
 		z-index: 998;
 		padding: 10px;

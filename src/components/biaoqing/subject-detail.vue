@@ -102,6 +102,16 @@
 	        </div>
         </div>
     </div>
+    <div class="comment-subject">
+    	<div class="comment-subject-box">
+	    	<div style="color:#666">我要评论</div>
+			<textarea class="form-control mt-2" placeholder="评论内容" v-model="commentContent"></textarea>
+	        <div class="mt-2 comment-subject-majia cleafloat">
+	        	<input type="text" class="form-control fl comment-subject-majia-input" style="padding: .3rem .75rem;" placeholder="马甲号ID" v-model="commentUserId">
+				<button @click="toComment(detailData.id)" class="btn btn-sm fr btn-info ml-5">评论</button>
+	        </div>
+        </div>
+    </div>
     <div class="detail-comment" v-if="comments.totalCount>0">
     	<div class="detail-comment-title mb-2">全部评论({{comments.totalCount}})</div>
     	<div class="comment-list">
@@ -126,7 +136,10 @@
 								</div>
 								<div class="comment-user-info">
 									<p class="name">{{comment.user.name}}</p>
-									<p class="comment-p">{{comment.content}}</p>
+									<p class="comment-p">
+										<span class="" v-if="comment.replayUser">回复 <span class="pass-success">{{comment.replayUser.name}}: </span></span>
+										{{comment.content}}
+									</p>
 									<div class="comment-user-info-tool pr">
 										<div class="pr" style="display:inline-block;">
 											<div class="btn-group mr-4 ">
@@ -144,12 +157,13 @@
 											</div>
 										</div>
 										<span @click="deleteComment(comment.id)" class="delete-comment cursor">删除评论</span>
+										<span @click="replayComment(comment.id,comment.user.id)" class="replay cursor">回复</span>
 										<span class="time">{{comment.createTime}}</span>
-										<!-- <span class="replay cursor">回复</span> -->
 									</div>
-
 								</div>
 							</div>
+							
+
 						</td>
 					</tr>
 				</tbody>
@@ -204,6 +218,23 @@
     	</div>
     </div>
     <div @click='hiddenimg' class="img-view-tc cursor"><img src=""></div>
+	<div class="mask replay-comment-container" :class="{'block':(replayCommentId!='')}">
+		<div @click="closeReplayComment" class="mask-bg"></div>
+		<div class="mask-main replay-comment">
+			<div class="add-banner-mask-input mb-3 mt-2">
+				<div  class="md-form-group pr" :class="[replayContent==''?'md-float-label':'']" style="padding-bottom:0;">
+		          <input @keyup.enter="" class="md-input pr" v-model="replayContent" > <label>回复的内容</label>
+		        </div>
+				<div  class="md-form-group pr mt-2" :class="[replayUserId==''?'md-float-label':'']" style="padding-bottom:0;">
+		          <input @keyup.enter="" class="md-input pr" v-model="replayUserId" > <label>马甲号ID</label>
+		        </div>
+			</div>
+			<div class="add-banner-mask-btn mt-3">
+				<button @click="closeReplayComment" class="btn mr-3 btn-secondary">取消</button>
+				<button @click="addReplayComment" class="btn btn-primary">评论</button>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 <script>
@@ -218,10 +249,17 @@ export default{
 	data:() => ({
 		loading: false,
 		detailData:'',
+		commentContent:'',
+		commentUserId:'',
+		page:1,
 		albums:'',
 		formPage:'',
 		detailDataUser:'',
-		comments:''
+		comments:'',
+		replayCommentId:'',
+		replayUserId:'',
+		replayContent:'',
+		subjectId:''
 	}),
 	beforeRouteEnter(to,form,next){
 		var subjectId = to.params.id;
@@ -231,7 +269,6 @@ export default{
 		}
 		var request = [Subject.detail(params),Subject.album(params),Subject.comment(params)]
 		Promise.all(request).then(([detail,albums,comments]) => {
-			console.log(comments)
 			detail.data.data.createTime=formatTime(detail.data.data.createTime);
 			for(var i=0;i<albums.data.data.length;i++){
 				var imgW = albums.data.data[i].imageWidth;
@@ -266,6 +303,61 @@ export default{
     	hiddenimg(){
     		$('.img-view-tc').fadeOut('fast');
     	},
+    	closeReplayComment(){
+    		this.replayCommentId='';
+    		this.replayContent='';
+    		this.replayUserId='';
+    		this.beReplyId = '';
+    	},
+    	replayComment(commentId,beReplyId){
+    		this.replayCommentId=commentId;
+    		this.beReplyId = beReplyId;
+    	},
+    	// 回复
+    	addReplayComment(){
+    		var replayCommentId = this.replayCommentId;
+    		var replayContent = this.replayContent;
+    		var replayUserId = this.replayUserId;
+    		var subjectId = this.subjectId;
+    		var beReplyId = this.beReplyId;
+    		var data={
+			  "beReplyCommentId": replayCommentId,
+			  "beReplyId": beReplyId,
+			  "content": replayContent,
+			  "subjectId": subjectId,
+			  "userId": replayUserId
+			}
+			this.$http.post('/comment',data).then(res => {
+				if(res.data.code){
+					this.closeReplayComment();
+					this.goComments(this.page);
+					this.$notice.success(res.data.msg)
+				}else{
+					this.$notice.error(res.data.msg)
+				}
+			})
+    	},
+    	// 评论
+    	toComment(subjectid){
+    		var commentContent = this.commentContent;
+			var commentUserId = this.commentUserId;
+    		var data={
+			  "content": commentContent,
+			  "subjectId": subjectid,
+			  "userId": commentUserId
+			}
+			this.$http.post('/comment',data).then(res => {
+				if(res.data.code){
+					this.commentUserId='';
+					this.commentContent='';
+					this.goComments(this.page);
+					this.$notice.success(res.data.msg)
+				}else{
+					this.$notice.error(res.data.msg)
+				}
+			})
+			
+    	},
     	lookimg(src,width,height){
     		var ml = width/2;
     		var mt = height/2;
@@ -289,6 +381,7 @@ export default{
 				for(var j=0;j<comments.data.data.items.length;j++){
 					comments.data.data.items[j].createTime=formatTime(comments.data.data.items[j].createTime);
 				}
+				this.page=page;
 				this.comments=comments.data.data;
 			})
     	},
@@ -299,15 +392,6 @@ export default{
     		var $this=this;
     		this.$http.delete('/ban/'+id,{params:params}).then(response => {
 				if(response.data.code==200){
-					// if(type && type=='ban'){
-					// 	var bans = $this.bans;
-					// 	bans.items[index].isExpire=1;
-					// 	bans.items[index].reason='';
-					// }else{
-					// 	var users = $this.users;
-					// 	users.items[index].banPublishDuration='-2';
-					// 	users.items[index].reason='';
-					// }
 					$this.$notice.success('解除成功')
 				}
 			})
@@ -377,6 +461,7 @@ export default{
 			}, function(){
 				$this.$http.delete('/comment/'+id,{params:params}).then(response => {
 					if(response.data.code==200){
+						$this.goComments($this.page);
 						$this.$notice.success('删除成功');
 					}else{
 						$this.$notice.error('删除失败');

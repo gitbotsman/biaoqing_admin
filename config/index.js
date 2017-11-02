@@ -28,20 +28,20 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // '*': {
-      //   target: 'https://v0.api.upyun.com/',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/biaoqingimg': ''
-      //   }
-      // },
-      '/api': {
-        target: 'http://192.168.0.37:1889/',
+      '*': {
+        target: 'https://v0.api.upyun.com/',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          '^/biaoqingimg': ''
         }
-      }
+      },
+      // '/api': {
+      //   target: 'http://192.168.0.37:1889/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/api': ''
+      //   }
+      // }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
