@@ -18,23 +18,31 @@
 		          <button @click="searchSujectUser" class="btn btn-info" type="button" >搜索用户</button>
 		        </span>
 		    </div>
-		    <span class="cursor pass-success clear-model-user" @click="goSubject(1,'0','','',1,'clear')">清除用户搜索</span>
+		    <span class="cursor pass-success clear-model-user" @click="clearUserSearch">清除用户搜索</span>
     	</div>
     	<ul class="biaoqing-nav nav nav-tabs nav-justified nav-line"  role="tablist">
 			<li class="nav-item " v-for="tag in tags.data">
 				<a 
-				:class="{active:((keyword==tag.code || keyword==tag.name)&& (enable==1))}" 
-				@click="goSubject(1,tag.name)">
+				:class="{active:((keyword==tag.code || keyword==tag.name) && (enable==1) && (you=='') )}" 
+				@click="tagSubject(1,tag.name)">
 				{{tag.name}}
 				</a>
 			</li>
 			<li class="nav-item ">
 				<a
 				:class="{active:(enable==false)}"
-				@click="goSubject(1,'','','','0')">
+				@click="goDelete">
 				回收站
 				</a>
 			</li>
+			<li class="nav-item ">
+				<a
+				:class="{active:(you==1)}"
+				@click="youSubject">
+				精选
+				</a>
+			</li>
+			
 		</ul>
     	<div class="biaoqing-table">
 			<table class="table table-bordered table-hover ">
@@ -112,7 +120,8 @@
 		    			</td>
 		    			<td class="operation-item" style="width:70px;">
 		    				<template v-if="work.enable==true">
-		    					<span @click="setExcellent" class="hover-line">设为精选</span>
+		    					<span v-if="work.you==0" @click="setExcellent(work.id,true,index)" class="hover-line pass-ing">设为精选</span>
+		    					<span v-if="work.you==1" @click="setExcellent(work.id,false,index)" class="hover-line ">取消精选</span>
 		    					<span class="text-danger hover-line" @click="deleteSubject(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>删除</span>
 		    				</template>
 		    				<template v-else>
@@ -226,6 +235,7 @@ export default {
 		works:'',
 		modelUserHeight:'',
 		tags:'',
+		you:'',
 		formPage:'',
 		keyword:'',
 		ModelUserId:'',
@@ -245,7 +255,6 @@ export default {
 			keyword:'0'
 		}
 		Promise.all([Subject.works(params),Subject.tags()]).then(([works,tags]) => {
-			
 			for(var i = 0;i<works.data.data.items.length;i++){
 				works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
 			}
@@ -368,21 +377,83 @@ export default {
 		        }
 		    })
     	},
-    	goSubject(page,keyword,sort,asc,enable,clear){
-    		this.$emit('loaded',true);
+    	tagSubject(page,keyword){
     		var params = {
 				pageSize:15,
-				pageNum:page
+				pageNum:page,
+				enable:1
 			}
-			if(enable){
-				params.enable=enable;
+			if(keyword=='最新'){
+				params.keyword='0';
+			}else if(keyword=='热门'){
+				params.keyword='1';
 			}else{
-				params.enable=this.enable;
+				params.keyword=keyword;
 			}
-			if(clear && clear=='clear'){this.ModelUserId="";this.searchUserKey=""}
-			if(this.ModelUserId !=''){
-				params.userId=this.ModelUserId;
+
+			this.$emit('loaded',true);
+			Promise.all([Subject.works(params)]).then(([works]) => {
+				$('body,html').animate({scrollTop:0},10);
+				this.$emit('loaded',false);
+				for(var i = 0;i<works.data.data.items.length;i++){
+					works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
+				}
+				this.init();
+				this.enable=1;
+				this.keyword=params.keyword;
+				this.works=works.data.data;
+			})
+
+    	},
+    	goDelete(){
+    		var params = {
+				pageSize:15,
+				pageNum:1,
+				enable:0
 			}
+			this.$emit('loaded',true);
+			Promise.all([Subject.works(params)]).then(([works]) => {
+				$('body,html').animate({scrollTop:0},10);
+				this.$emit('loaded',false)
+				for(var i = 0;i<works.data.data.items.length;i++){
+					works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
+				}
+				this.init();
+				this.enable=0;
+				this.works=works.data.data;
+			})
+    	},
+    	clearUserSearch(){
+    		this.ModelUserId="";
+    		this.searchUserKey="";
+    		var params = {
+				pageSize:15,
+				pageNum:1,
+				enable:1,
+				keyword:'0'
+			}
+			this.$emit('loaded',true);
+			Promise.all([Subject.works(params)]).then(([works]) => {
+				this.$emit('loaded',false);
+				for(var i = 0;i<works.data.data.items.length;i++){
+					works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
+				}
+    			this.enable=1;
+    			this.keyword=params.keyword;
+    			this.works = works.data.data;
+			})
+    	},
+    	goSubject(page,keyword,sort,asc,enable){
+    		this.$emit('loaded',true);
+    		var you = this.you;
+    		var params = {
+				pageSize:15,
+				pageNum:page,
+				you:you,
+				enable:this.enable,
+				userId:this.ModelUserId
+			}
+			if(params.enable=='0') params.you="";
 
 			if(keyword && keyword!=''){
 				if(keyword=='最新'){
@@ -396,6 +467,7 @@ export default {
 			}else{
 				params.keyword=this.keyword;
 			}
+			
 			if(sort && sort!=''){
 				params.sort = sort;
 				params.asc = asc;
@@ -404,16 +476,19 @@ export default {
 				params.sort = this.sort;
 				params.asc = this.asc;
 			}
+
 			Promise.all([Subject.works(params)]).then(([works]) => {
 				$('body,html').animate({scrollTop:0},10);
+				this.$emit('loaded',false)
 				for(var i = 0;i<works.data.data.items.length;i++){
 					works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
 				}
+
+				this.you=params.you;
 				this.page=params.pageNum
 				this.sort=params.sort;
 				this.asc=params.asc;
 				this.enable=params.enable;
-				this.$emit('loaded',false)
 				this.keyword=params.keyword;
 				this.works=works.data.data;
 			})
@@ -436,6 +511,7 @@ export default {
 					for(var i = 0;i<works.data.data.items.length;i++){
 						works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
 					}
+					this.you=''
 					this.keyword=params.keyword;
 					this.works=works.data.data;
 				}
@@ -493,8 +569,55 @@ export default {
 				})
     		}
     	},
-    	setExcellent(){
-    		
+    	youSubject(){
+    		var params = {
+				pageSize:15,
+				pageNum:1,
+				you:1,
+				enable:1,
+				keyword:''
+			}
+			this.ModelUserId='';
+			this.$emit('loaded',true);
+			Promise.all([Subject.works(params)]).then(([works]) => {
+				this.$emit('loaded',false);
+				this.init();
+				for(var i = 0;i<works.data.data.items.length;i++){
+					works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
+				}
+				this.enable=1;
+	    		this.works = works.data.data;
+	    		this.you=1;
+			})
+
+    	},
+    	init(){
+    		this.enable=''
+    		this.you='';
+    		this.keyword='';
+			this.ModelUserId='';
+			this.sort='';
+			this.asc='';
+    	},
+    	setExcellent(id,you,index){
+    		var data={
+    			subjectId:id,
+    			you:you
+    		}
+    		data=querystring.stringify(data)
+    		this.$http.post('/subject/setYou',data).then(res => {
+    			if(res.data.code==200){
+    				var works = this.works;
+    				if(you==true){
+    					works.items[index].you=1;
+    				}else{
+    					works.items[index].you=0;
+    				}
+    				this.$notice.success('操作成功')
+    			}else{
+    				this.$notice.error(res.data.msg)
+    			}
+    		})
     	}
     } 
 }

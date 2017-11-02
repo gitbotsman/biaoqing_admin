@@ -44,6 +44,7 @@
     beforeRouteEnter (to, form, next) {
       // 进入首页前先进行登录验证
       Auth.authorizationCheck(function (success) {
+        
         if (!success) {
           return next('/login?redirect=' + to.path) // 登录验证操失败, 转到登录页并带上当前请求路径
         }

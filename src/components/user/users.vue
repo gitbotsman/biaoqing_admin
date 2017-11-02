@@ -22,7 +22,6 @@
 
           <children class="mt-2" :depts="depts"></children>
 
-
           <router-link to="/department/new" class="list-group-item text-primary font-sm b-0 mt-2">
             <span class="img-btn">┼</span>&nbsp;&nbsp;创建部门
           </router-link>
@@ -95,6 +94,7 @@
     }),
     beforeRouteEnter (to, from, next) {
       Promise.all([User.query(to.params), Department.tree(true), Role.all()]).then(([users, depts, roles]) => {
+        console.log(users)
         next(vm => {
           vm.depts = depts.data.tree.map(mapAttr)
           vm.roles = roles.data

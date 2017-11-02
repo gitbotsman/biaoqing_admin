@@ -49,7 +49,7 @@
 
 				      </th>
 				      <th>APP轮播<div style="font-weight:normal;font-size:12px;">(点击修改)</div></th>
-				      <!-- <th>操作</th> -->
+				      <th>操作</th>
 				    </tr>
 		    	</thead>
 		    	<tbody>
@@ -78,18 +78,21 @@
 		    			<td class="max-width100 publish-time">
 		    				<span>{{topic.createTime}}</span>
 		    			</td>
-		    			<td class="max-width20">
+		    			<td class="max-width20" style="width:20px;">
 		    				<span @click="setIndex(topic.id,index,topic.tags)" class="pass-success cursor" v-if="topic.tags" title="topic.tags">{{topic.tags}}</span>
 							<span @click="setIndex(topic.id,index,topic.tags)" class="pass-ing cursor" 
 							v-if="(!topic.tags || topic.tags==' ') && topic.isHot==true" title="设置"><i class="operation-icon fa fa-pencil"></i>设置</span>
 		    			</td>
-		    			<td class="max-width100 cursor" @click="setHot(!topic.isHot,topic.id,index,topic.sort)">
+		    			<td style="width:40px;" class="max-width100 cursor" @click="setHot(!topic.isHot,topic.id,index,topic.sort)">
 		    				<span class="pass-success" v-if="topic.isHot==true">热门({{topic.sort}})</span>
 		    				<span class="pass-ing" v-else>正常</span>
 		    			</td>
-		    			<td class="max-width100 cursor" @click="setSlider(!topic.isSlider,topic.id,index)">
+		    			<td style="width:20px;" class="max-width100 cursor" @click="setSlider(!topic.isSlider,topic.id,index)">
 		    				<span class="pass-success" v-if="topic.isSlider==true">是</span>
-		    				<span class="pass-ing " v-else>否</span>
+		    				<span class="pass-ing" v-else>否</span>
+		    			</td>
+		    			<td style="width:80px;">
+		    				<span @click="editOpen(index)" class="cursor hover-line text-danger">修改</span>
 		    			</td>
 		    		</tr>
 		    	</tbody>
@@ -161,6 +164,36 @@
     		</div>
     	</div>
     </div>
+    <!-- 修改话题 -->
+    <div class="add-banner-mask" :class="{'none':add==false}">
+		<div class="add-banner-mask-bg" @click="closeAdd"></div>
+		<div class="add-banner-mask-main">
+			<div class="add-banner-mask-container pr flex">
+				<input class="up-banner" type="file" accept="image/png,image/gif,image/jpeg" @change="upBanner"  multiple>
+				<img class="add-img" :src="editBanner" alt="750*300">
+			</div>
+			<div class="add-banner-mask-input flex mt-2">
+				<div class="add-banner-mask-cover mr-2 flex pr">
+					<input @change="upCover" class="up-banner" type="file" accept="image/png,image/gif,image/jpeg"   multiple>
+					<img class="add-img-cover " :src="editCover" alt="300*300">
+				</div>
+				<div class="flex-item">
+					<textarea class="editSummary" v-model="editSummary" placeholder="修改话题描述"></textarea>
+		        </div>
+			</div>
+			<div  class="md-form-group pr mt-2" :class="[editOwnerId==''?'md-float-label':'']" style="padding-bottom:0;">
+			    <input class="md-input pr" v-model="editOwnerId" ><label>修改主持人Id</label>
+			</div>
+			<div class="add-info mt-2">
+				<i class="operation-icon fa fa-info-circle"></i>
+				Banner尺寸为750*300，封面尺寸300*300
+			</div>
+			<div class="add-banner-mask-btn mt-3">
+				<button @click="closeAdd" class="btn mr-3 btn-secondary">取消</button>
+				<button @click="editTopic" class="btn btn-primary">创建</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 </template>
@@ -171,6 +204,8 @@ import { TopicManage } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
 import swal2 from 'sweetalert2'
+import Uploader from '../../misc/uploader'
+var uploader = new Uploader('https://v0.api.upyun.com/biaoqingimg')
 
 export default {
 	data: () => ({
@@ -178,6 +213,7 @@ export default {
 		searchTopicKey:'',
 		currentPage:1,
 		topicId:'',
+		add:false,
 		index:'',
 		ch:'',
 		tags:'',
@@ -187,7 +223,13 @@ export default {
 		sort:'',
 		isSlider:'',
 		isHot:'',
-		asc:''
+		asc:'',
+		editOwnerId:'',
+		editSummary:'',
+		editBanner:'',
+		editCover:'',
+		editTopicId:'',
+		upFileArray:[]
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
@@ -252,6 +294,7 @@ export default {
 						this.isSlider=params.isSlider;
 						this.isHot=params.isHot;
 						this.topics = topics.data.data;
+						this.currentPage=params.pageNum;
 					}
 				}else{
 					toastr.error(topics.data.msg)
@@ -277,7 +320,6 @@ export default {
     	},
     	setHot(type,id,index,sort){
 			var that = this;
-
 			swal2({
 			  text:'请选择排序值,数字越小越靠前,设置-1取消热门',
 			  input: 'number',
@@ -325,7 +367,6 @@ export default {
 			  	})
 			  }
 			}).catch(swal2.noop)
-    		
     	},
     	selectTag(e){
     		var $this= $(e.target);
@@ -407,6 +448,126 @@ export default {
 		        	toastr.error(response.data.msg);
 		        }
 		    })
+    	},
+    	upCover(e){
+    		var that = this;
+			var key="topic/cover/"+uploader.bannergetFileName(e.target.files[0].name);
+			uploader.addFile(e.target.files,key).then(([img,file,fileOption])=>{
+				if(img.width==300 && img.height==300){
+		        	that.upFileArray.push(fileOption);
+		        	that.editCover = img.src;
+		        }else{
+		        	that.$notice.error('图片尺寸错误')	
+		        }
+			})
+    	},
+    	upBanner(e){
+    		var that = this;
+			var key="topic/banner/"+uploader.bannergetFileName(e.target.files[0].name);
+			uploader.addFile(e.target.files,key).then(([img,file,fileOption])=>{
+				if(img.width==750 && img.height==300){
+		        	that.upFileArray.push(fileOption);
+		        	that.editBanner = img.src;
+		        }else{
+		        	that.$notice.error('图片尺寸错误')	
+		        }
+			})
+    	},
+    	closeAdd(){
+    		this.add=false;
+    		this.editBanner='';
+    		this.editCover='';
+    		this.editOwnerId='';
+    		this.editSummary='';
+    		this.editTopicId='';
+    		this.upFileArray=[];
+    	},
+    	editOpen(index){
+    		this.add=true;
+    		var topics = this.topics;
+    		this.editBanner=topics.items[index].fullBanner;
+    		this.editCover=topics.items[index].fullCover;
+    		this.editOwnerId = topics.items[index].ownerId;
+			this.editSummary = topics.items[index].summary;
+			this.editTopicId=topics.items[index].id;
+    	},
+    	editTopic(){
+    		var that = this;
+    		var editBanner=this.editBanner;
+    		var editCover=this.editCover;
+    		var editOwnerId=this.editOwnerId;
+    		var editSummary=this.editSummary;
+    		var editTopicId=this.editTopicId;
+    		var upFileArray = this.upFileArray;
+    		var upOk={}
+    		editCover=editCover.replace('http://img.biaoqing.com/','');
+    		editBanner=editBanner.replace('http://img.biaoqing.com/','');
+    		var params={
+    		  "coverHeight": 300,
+			  "coverWidth": 300,
+			  "enable": true,
+			  "id": editTopicId,
+			  "ownerId": editOwnerId,
+			  "summary": editSummary,
+			  "banner": editBanner,
+			  "cover": editCover
+			}
+			that.$emit('loaded',true);
+			if(upFileArray.length>0){
+				upFileArray.forEach((item,index)=>{
+    				uploader.start(item.file, item.options,function(res){
+    					if(res.url.includes('topic/banner')){
+    						params.banner=res.url;
+    						upOk.banner='ok'
+    					}else if(res.url.includes('topic/cover')){
+    						params.cover=res.url;
+    						upOk.cover='ok'
+    					}
+    					// 检测是否长传成功
+    					if(upFileArray.length==1){
+    						if(upOk.cover=='ok' || upOk.banner=='ok'){
+	    						that.$http.post('/topic/update',params).then( res =>{
+									that.$emit('loaded',false);
+									if(res.data.code==200){
+										that.closeAdd();
+										that.goTopics(that.currentPage);
+										that.$notice.success('修改成功')
+									}else{
+										that.$notice.error(res.data.msg);
+									}
+								})
+	    					}
+    					}else{
+    						if(upOk.cover=='ok' && upOk.banner=='ok'){
+	    						that.$http.post('/topic/update',params).then( res =>{
+									that.$emit('loaded',false);
+									if(res.data.code==200){
+										that.closeAdd();
+										that.goTopics(that.currentPage);
+										that.$notice.success('修改成功')
+									}else{
+										that.$notice.error(res.data.msg);
+									}
+								})
+	    					}
+    					}
+    					
+				    })
+				    
+    			})
+			}else{
+				that.$http.post('/topic/update',params).then( res =>{
+					that.$emit('loaded',false);
+					if(res.data.code==200){
+						that.closeAdd();
+						that.goTopics(that.currentPage);
+						that.$notice.success('修改成功')
+					}else{
+						that.$notice.error(res.data.msg);
+					}
+				})
+			}
+
     	}
     } 
 }

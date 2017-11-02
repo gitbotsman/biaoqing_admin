@@ -4,8 +4,10 @@
       <li class="breadcrumb-item">系统管理</li>
       <li class="breadcrumb-item">系统参数</li>
     </ol>
-    <div class="biaoqing-container">
+    <div class="biaoqing-container pr">
       <div @click="openAdd" class="btn cursor btn-primary btn-sm mt-2 "><i class="fa fa-plus-circle mr-2"></i>新增</div>
+      <div @click="freshCache" class="cursor btn btn-sm btn-warning mt-2 ml-3" style="color:#fff;">刷新缓存</div>
+
       <div class="biaoqing-table">
       <table class="table table-bordered table-hover ">
           <thead>
@@ -41,7 +43,7 @@
     </div>
     <div class="add-banner-mask" :class="{'none':openAddData==false}">
       <div class="add-banner-mask-bg" @click="closeAdd"></div>
-      <div class="add-banner-mask-main">
+      <div class="add-banner-mask-main2">
         <div class="h5 add-title">新增系统参数</div>
         <div class="add-banner-mask-input mb-3 mt-2">
           <div  class="md-form-group pr" :class="[addName==''?'md-float-label':'']" style="padding-bottom:0;">
@@ -87,6 +89,7 @@
       })
     },
     mounted () {
+        
         this.$emit('loaded',false)
     },
     methods:{
@@ -141,7 +144,7 @@
             "remark": addName,
             "value": addValue
           }
-          this.$http.post('/systemParam',params).then(res => {
+          this.$http.post('/systemParam',params).then( res => {
             if(res.data.code==200){
               this.$notice.success('请求成功');
               this.openAddData=false;
@@ -159,6 +162,16 @@
         }else{
           this.$notice.error('请填写正确的参数')
         }
+      },
+      // 刷新缓存
+      freshCache(){
+        this.$http.get('/systemParam/refreshCache').then(res=>{
+          if(res.data.code==200){
+            this.$notice.success('刷新成功')
+          }else{
+            this.$notice.error(res.data.msg)
+          }
+        })
       }
     }
   }
@@ -187,11 +200,12 @@
     z-index: 997;
     background: rgba(0,0,0,.2)
   }
-  .add-banner-mask-main{
+  .add-banner-mask-main2{
     position: absolute;
-    top: 30%;
+    top: 50%;
     left: 50%;
     margin-left: -200px;
+    margin-top: -164px;
     background: #fff;
     z-index: 998;
     padding: 10px 20px;

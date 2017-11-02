@@ -125,7 +125,6 @@ export default {
 				type:1
 			}
 			vm.$http.get('/banner',{params:params}).then(response => {
-				console.log(response)
 				if(response.data && response.data.code==200){
 					for(var i=0;i<response.data.data.items.length;i++){
 						var item = response.data.data.items;
