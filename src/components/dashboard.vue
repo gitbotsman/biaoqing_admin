@@ -179,8 +179,8 @@
     mounted () {
       this.$emit('loaded');
       var ctx = $('#user-data');
-
       Promise.all([Statistics.users()]).then(([usersData]) => {
+        console.log(usersData)
         var userArr= usersData.data.data
         var ios_num =0;
         var android_num =0;

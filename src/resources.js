@@ -7,8 +7,8 @@ import Vue from 'vue'
 export const baseURL = process.env.NODE_ENV === 'production' ? '/' : '/api'  // 所有请求的根路径
 
 export const http = axios.create({
-  baseURL:baseURL,
-  // baseURL: "http://support.c3e1c0e165dda47f8957716f59db25d2d.cn-hangzhou.alicontainer.com/",
+  // baseURL:baseURL,
+  baseURL: "http://support.c3e1c0e165dda47f8957716f59db25d2d.cn-hangzhou.alicontainer.com/",
   timeout: 10000,
   withCredentials: true,
   headers: {'X-Requested-With': 'XMLHttpRequest'},
@@ -278,8 +278,8 @@ export const UserManage = resource('usermanage', http, {
   users: params => http.get('user',{params:params})
 })
 export const Statistics = resource('statistics', http, {
-  syn: params => http.get('searchHot/syn',{params:params}),
-  users: params => http.get('searchHot/user',{params:params})
+  syn: params => http.get('statistics/syn',{params:params}),
+  users: params => http.get('statistics/user',{params:params})
 })
 
 export const SystemData = resource('SystemData', http, {
