@@ -94,7 +94,6 @@
     }),
     beforeRouteEnter (to, from, next) {
       Promise.all([Admin.query(to.params), Department.tree(true), Role.all()]).then(([users, depts, roles]) => {
-        console.log(roles.data.data)
         next(vm => {
           vm.depts = depts.data.data.tree.map(mapAttr)
           vm.roles = roles.data.data
