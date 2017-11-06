@@ -4,27 +4,6 @@
     <div class=" pb-2 text-md-left">
       <span class="align-middle"><i class="fa fa-paper-plane-o mr-2"></i> 昨日数据<span class="font-xxxs">（{{endYesterday}}）</span></span>
     </div>
-    
-    <!-- <div class="row row-gap-5 text-center">
-      <div class="col-lg-2 col-sm-4 pointer">
-        <div class="card mb-3 p-2" v-ripple>
-          <div class="to-corner h5 m-0">
-            <div class="bg-primary rad-15 px-2 py-1 text-white">615</div>
-          </div>
-          <div class="my-3"><i class="fa fa-flag fa-3x"></i></div>
-          <div class="text-center h4 m-0 text-muted">直播主题</div>
-        </div>
-      </div>
-      <router-link class="col-lg-2 col-sm-4 pointer" to="/html/ui.font-awesome-icons.html">
-        <div class="card mb-3 p-2" v-ripple>
-          <div class="to-corner h5 m-0">
-            <div class="bg-primary rad-15 px-2 py-1 text-white">138</div>
-          </div>
-          <div class="my-3"><i class="fa fa-users fa-3x"></i></div>
-          <div class="text-center h4 m-0 text-muted">系统用户</div>
-        </div>
-      </router-link>
-    </div> -->
     <div class="row row-gap-5 text-center">
       <div class="col-sm-12 pointer text-left">
         <div class="flex">
@@ -180,7 +159,6 @@
       this.$emit('loaded');
       var ctx = $('#user-data');
       Promise.all([Statistics.users()]).then(([usersData]) => {
-        console.log(usersData)
         var userArr= usersData.data.data
         var ios_num =0;
         var android_num =0;

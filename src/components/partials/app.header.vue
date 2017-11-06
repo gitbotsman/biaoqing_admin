@@ -50,28 +50,29 @@
 
     <a class="nav-item" title="打开搜索" @click="toggleSearch" v-ripple><i class="ti-search"></i></a>
 
-    <div class="dropdown ml-auto">
-      <a class="nav-item" data-toggle="dropdown">
-        <span class="badge badge-pill badge-primary absolute r-0 t-0"></span>
-        <i class="fa fa-comment-o font-lg"></i>
-        <span class="hidden-sm-down">Messages</span>
+    <div class="dropdown ml-auto mr-4 border">
+      <a class="nav-item" data-toggle="dropdown" style="line-height: 30px;">
+        <div class="flex-center">
+          <span class="d-inline-block relative">
+            <img :src="shadow.selectShadow.user.fullAvatar" class="rounded-circle thumb-xxs">
+            <i class="network on bottom"></i>
+          </span>
+          <span class="hidden-sm-down ml-1 flex-center text-overflow" style="width:100px;">
+            {{shadow.selectShadow.user.name}}
+          </span>
+          <i class="fa fa-angle-down text-primary fr"></i>
+        </div>
       </a>
-      <div class="dropdown-menu dropdown-menu-right m-0" style="width: 350px">
-        <div class="px-3">MESSAGES <a class="float-right"><i class="fa fa-check"></i> all read</a></div>
-        <ul class="list-unstyled scrollable with-image font-xs">
-          <li v-for="item in 3">
-            <img src="/static/img/avatar.svg" class="thumb-xxs rounded">
-            <div>
-              <p class="m-0"><strong>Jesse Holmes</strong> <span class="float-right time font-xs">Now</span></p>
-              <p class="m-0">Pork chop brisket corned</p>
-            </div>
-          </li>
-        </ul>
-        <div class="text-center"><a><i class="fa fa-eye"></i> view all</a></div>
+      <div class="dropdown-menu dropdown-menu-right pt-0 m-0 ">
+        <div v-for="(shadowItem,index) in shadow.shadow" @click="selectShadow(index)" class="dropdown-item p-3 flex-center">
+           <span class="d-inline-block relative">
+              <img :src="shadowItem.user.fullAvatar" class="rounded-circle thumb-xxs">
+            </span>
+            <span class="hidden-sm-down ml-1 max-width100 text-overflow" :title="shadowItem.user.name">{{shadowItem.user.name}}</span>
+        </div>
       </div>
     </div>
-
-    <div class="dropdown px-3">
+    <div class="dropdown px-3 ">
       <a class="nav-item p-0" data-toggle="dropdown">
         <span class="d-inline-block relative">
           <img :src="user.avatar" class="rounded-circle thumb-xxs">
@@ -104,7 +105,8 @@
 
 <script>
   import {User} from '../../resources'
-
+  import {Shadow} from '../../resources'
+  
   function hander (e) {
     var left = e.pageX || e.clientX
     if (left > 220) {
@@ -112,11 +114,19 @@
       document.querySelector('#app').removeEventListener('click', hander, true)
     }
   }
-
   export default {
     data: () => ({
-      user: User.current()
+      user: User.current(),
+      shadow:Shadow.current()
     }),
+    mounted(){
+      console.log(this)
+    },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        console.log(vm)
+      })
+    },
     methods: {
       toggleQuickview: () => document.querySelector('.app-quickview').classList.toggle('app-quickview-show'),
       toggleSettings: () => document.querySelector('.app-settings').classList.toggle('app-settings-show'),
@@ -131,6 +141,10 @@
           document.querySelector('#app').removeEventListener('click', hander)
           document.body.classList.remove('aside-pushed')
         }
+      },
+      selectShadow(index){
+        var shadow = this.shadow;
+        this.shadow=Shadow.select(shadow.shadow[index])
       }
     }
   }

@@ -13,30 +13,8 @@
     <router-link class="aside-item" to="/users" v-permission="'user.view'" v-ripple.stop><i class="fa fa-users"></i><span>用户</span></router-link>
     <router-link class="aside-item" to="/department" v-permission="'department.view'" v-ripple.stop><i class="fa fa-building-o"></i><span>部门</span></router-link>
     <router-link class="aside-item" to="/systemdata" v-permission="'dict.view'" v-ripple.stop><i class="fa fa-book"></i><span>系统参数</span></router-link>
-    <!-- <router-link class="aside-item" to="/files" v-permission="'files'" v-ripple><i class="fa fa-files-o"></i><span>文件库</span></router-link> -->
     <div class="aside-divider"></div>
     <div class="aside-title">LIST</div>
-    <!-- <div class="aside-item parent" v-ripple>
-      <i class="fa fa-star-o"></i><span>UI</span>
-      <div class="children">
-        <div class="fold-header">UI</div>
-        <router-link class="aside-item" to="/html/ui.general.html" v-ripple.stop><span>General</span></router-link>
-        <router-link class="aside-item" to="/html/ui.buttons.html" v-ripple.stop><span>Buttons</span></router-link>
-        <router-link class="aside-item" to="/html/ui.tabs-accordions.html" v-ripple.stop><span>Tabs &amp Accordions</span></router-link>
-        <router-link class="aside-item" to="/html/ui.typography.html" v-ripple.stop><span>Typography</span></router-link>
-        <router-link class="aside-item" to="/html/ui.font-awesome-icons.html" v-ripple.stop><span>FontAwesome Icons</span></router-link>
-        <router-link class="aside-item" to="/html/ui.themify-icons.html" v-ripple.stop><span>Themify Icons</span></router-link>
-      </div>
-    </div>
-    <div class="aside-item parent" v-ripple>
-      <i class="fa fa-file-text-o"></i><span>Forms</span>
-      <div class="children">
-        <div class="fold-header">Forms</div>
-        <router-link class="aside-item" to="/html/forms.elements.html" v-ripple.stop><span>Elements</span></router-link>
-        <router-link class="aside-item" to="/html/forms.layouts.html" v-ripple.stop><span>Layouts</span></router-link>
-        <router-link class="aside-item" to="/html/forms.wizard.html" v-ripple.stop><span>Form wizard</span></router-link>
-      </div>
-    </div> -->
     <div class="aside-item parent" v-ripple>
       <i class="fa fa-tint"></i><span>表情管理</span>
       <div class="children">

@@ -29,14 +29,13 @@ http.interceptors.response.use(response => {
 })
 
 Vue.prototype.$http = http  // 为vue实例添加`$http`属性, 方便组件内随时调用
-
 export const Auth = {
   authorizationCheck (cb) { // 身份验证, 成功后返回当前用户所有权限
-    console.log('authorizationCheck')
     http.get('/authorization-check').then(response => {
       this.permissions = response.data.data
       if(response.data.code==401){      //code返回401,登录失效
         toastr.error('会话已过期, 请重新登录.')
+        storage.removeItem('shadow')
         storage.removeItem('user')
         cb(false, error)
       }else{
@@ -44,6 +43,7 @@ export const Auth = {
       }
     }).catch(error => { // 验证失败后台会抛出401异常, 注销当前用户
       toastr.error('会话已过期, 请重新登录.')
+      storage.removeItem('shadow')
       storage.removeItem('user')
       cb(false, error)
     })
@@ -52,6 +52,16 @@ export const Auth = {
     data=querystring.stringify(data)
     return new Promise((resolve, reject) => {
       http.post('/login', data).then(response => {
+        var params = {
+          sysUserId:response.data.data.id
+        }
+        http.get('/shadow/all').then(res => {
+          var shadowObj = {
+            selectShadow:res.data.data[0],
+            shadow:res.data.data
+          }
+          storage.setItem('shadow', JSON.stringify(shadowObj))
+        })
         if (response.data.code==200) {
           storage.setItem('user', JSON.stringify(response.data.data))
         }
@@ -60,6 +70,7 @@ export const Auth = {
     })
   },
   logout: (to, from, next) => {
+    storage.removeItem('shadow')
     storage.removeItem('user')
     http.get('/logout')
     next('/login')
@@ -94,6 +105,31 @@ export const Permission = resource('permission', http, {
   jstree: () => http.get('permission/jstree'),
   perms: () => http.get('permission/perms'),
   tree: () => http.get('permission/tree')
+})
+// 马甲号
+export const Shadow = resource('Shadow',http,{
+  current: request => {
+    if (request) {
+      return http.get('shadow/all')
+    }
+    var value = storage.getItem('shadow');
+    if (value) {
+      return JSON.parse(value)
+    }
+  },
+  select: params =>{
+    if(params){
+        var shadow=JSON.parse(storage.getItem('shadow'));
+        shadow.selectShadow=params;
+        storage.setItem('shadow',JSON.stringify(shadow));
+        console.log(shadow.selectShadow)
+        return shadow
+    }else{
+        var shadow=JSON.parse(storage.getItem('shadow'));
+        return shadow
+    }
+   
+  }
 })
 
 export const User = resource('user', http, {

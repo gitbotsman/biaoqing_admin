@@ -48,7 +48,6 @@
       loading: false
     }),
     beforeRouteEnter (to, from, next) {
-      console.log('beforeRouteEnter', to)
       next()
     },
     methods: {
