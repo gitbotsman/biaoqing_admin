@@ -155,9 +155,10 @@ export default {
     }
     var request = [Shadow.list(params)]
     Promise.all(request).then(([shadowList]) => {
-      for(var i = 0;i<shadowList.data.data.items.length;i++){
-        shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
-      }
+        for(var i = 0;i<shadowList.data.data.items.length;i++){
+          shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
+        }
+      
       next(vm=>{
         vm.shadowList=shadowList.data.data;
       })
@@ -184,8 +185,10 @@ export default {
       }
       this.$http.get('/user',{params:params}).then(shadowList => {
         this.$emit('loaded',false)
-        for(var i = 0;i<shadowList.data.data.items.length;i++){
-          shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
+        if(shadowList.data.data){
+          for(var i = 0;i<shadowList.data.data.items.length;i++){
+            shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
+          }
         }
         this.shadowList=shadowList.data.data;
       })
@@ -199,13 +202,12 @@ export default {
      this.$http.post('/shadow',params).then(res => {
         if(res.data.code==200){
           this.$notice.success('分配成功');
-          Shadow.current('req')
+          this.$emit('fresh');
           this.cancleSelect()
         }else{
           this.$notice.error(res.data.msg);
         }
      })
-      
     },
     searchAdminUser(newAdminUser){
       var params = {

@@ -1,8 +1,7 @@
 <template>
   <nav class="app-header navbar navbar-toggleable-sm">
-
     <a class="nav-item hidden-sm-down" title="展开菜单" @click="toggleAside"><i class="fa fa-bars"></i></a>
-
+  
     <div class="dropdown static">
       <a class="nav-item" data-toggle="dropdown" v-ripple>Menu</a>
       <div class="dropdown-menu m-0 p-3" style="width: 99%">
@@ -50,21 +49,21 @@
 
     <a class="nav-item mr-auto" title="打开搜索" @click="toggleSearch" v-ripple><i class="ti-search"></i></a>
 
-    <div v-if="shadow" class="dropdown mr-4 border">
+    <div v-if="shadowData" class="dropdown mr-4 border">
       <a class="nav-item" data-toggle="dropdown" style="line-height: 30px;">
         <div class="flex-center">
           <span class="d-inline-block relative">
-            <img :src="shadow.selectShadow.user.fullAvatar" class="rounded-circle thumb-xxs">
+            <img :src="shadowData.selectShadow.user.fullAvatar" class="rounded-circle thumb-xxs">
             <i class="network on bottom"></i>
           </span>
-          <span :title="shadow.selectShadow.user.name" class="hidden-sm-down ml-1 flex-center text-overflow" style="width:100px;">
-            {{shadow.selectShadow.user.name}}
+          <span :title="shadowData.selectShadow.user.name" class="hidden-sm-down ml-1 flex-center text-overflow" style="width:100px;">
+            {{shadowData.selectShadow.user.name}}
           </span>
           <i class="fa fa-angle-down text-primary fr"></i>
         </div>
       </a>
       <div class="dropdown-menu dropdown-menu-right pt-0 m-0 pre-scrollable">
-        <div v-for="(shadowItem,index) in shadow.shadow" @click="selectShadow(index)" class="dropdown-item p-3 flex-center">
+        <div v-for="(shadowItem,index) in shadowData.shadow" @click="selectShadow(index)" class="dropdown-item p-3 flex-center">
            <span class="d-inline-block relative">
               <img :src="shadowItem.user.fullAvatar" class="rounded-circle thumb-xxs">
             </span>
@@ -104,7 +103,7 @@
 <script>
   import {User} from '../../resources'
   import {Shadow} from '../../resources'
-  
+
   function hander (e) {
     var left = e.pageX || e.clientX
     if (left > 220) {
@@ -113,12 +112,17 @@
     }
   }
   export default {
-    data: () => ({
-      user: User.current(),
-      shadow:Shadow.current()
-    }),
-    mounted(){
-      Shadow.fresh()
+    props: ['shadow'],
+    data () {
+      return {
+        user: User.current(),
+        shadowData:this.shadow
+      }
+    },
+    watch:{
+      shadow:function(val){
+        this.shadowData=val;
+      }
     },
     methods: {
       toggleQuickview: () => document.querySelector('.app-quickview').classList.toggle('app-quickview-show'),
@@ -138,7 +142,7 @@
       selectShadow(index){
         var shadow = this.shadow;
         Shadow.select(shadow.shadow[index])
-        this.shadow=Shadow.current()
+        this.shadowData=Shadow.current()
       }
     }
   }

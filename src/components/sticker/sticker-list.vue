@@ -149,6 +149,8 @@
 </template>
 
 <script>
+
+import '../../../static/css/biaoqing/biaoqing.css'
 import { StickerManage } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
@@ -174,7 +176,8 @@ export default {
       keyword:'0'
 		}
 		Promise.all([StickerManage.category(params),StickerManage.materialHot()]).then(([materias,hots]) => {
-			for(var i = 0;i<materias.data.data.items.length;i++){
+			 console.log(hots)
+      for(var i = 0;i<materias.data.data.items.length;i++){
 				materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
 			}
       next(vm => {

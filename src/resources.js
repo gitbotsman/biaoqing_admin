@@ -115,12 +115,22 @@ export const Shadow = resource('Shadow',http,{
       return JSON.parse(value)
     }
   },
+  get(){
+    http.get('/shadow/all').then(res => {
+      if(!res.data.data) return;
+      var shadowObj = {
+        selectShadow:res.data.data[0],
+        shadow:res.data.data
+      }
+      return shadowObj;
+    })
+  },
   fresh(){
-    console.log('freshShadow')
-    var value = JSON.parse(storage.getItem('shadow'));
+    var value = storage.getItem('shadow');
     http.get('/shadow/all').then(res => {
       if(!res.data.data) return;
       if(value){
+        value=JSON.parse(value);
         value.shadow=res.data.data;
         storage.setItem('shadow', JSON.stringify(value))
       }else{
@@ -130,7 +140,7 @@ export const Shadow = resource('Shadow',http,{
         }
         storage.setItem('shadow', JSON.stringify(shadowObj))
       }
-      return res;
+      return JSON.parse(storage.getItem('shadow'));
     })
   },
   select: params =>{
@@ -321,7 +331,7 @@ export const TopicManage = resource('topicManage', http, {
 export const StickerManage = resource('stickerManage', http, {
   materia: params => http.get('material',{params:params}),
   category: params => http.get('category',{params:params}),
-  materialHot: params => http.get('materialHot',{params:params}),     // 获取标签
+  materialHot: params => http.get('materialHot/all',{params:params}),     // 获取标签
   faceCategory: params => http.get('sticker/category',{params:params}),
   faceSticker: params => http.get('sticker',{params:params})
 })

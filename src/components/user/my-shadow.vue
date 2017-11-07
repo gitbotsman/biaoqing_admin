@@ -4,7 +4,8 @@
     <li class="breadcrumb-item">我的马甲</li>
   </ol>
   <div class="biaoqing-container">
-    <div class="biaoqing-table" v-if="shadowList !==''">
+    <div class="cursor btn btn-warning btn-sm mt-2 " @click="freshShadowCache" style="color:#FFF;"> 刷新马甲缓存</div>
+    <div class="biaoqing-table">
       <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -56,9 +57,6 @@
           </tbody>
       </table>
     </div>
-    <div class="biaoqing-table" v-else>
-      <h6 class="text-success">您还没有马甲号</h6>
-    </div>
   </div>
 </div>
 
@@ -74,15 +72,16 @@ export default {
   data: () => ({
     loading: false,
     formPage:'',
-    page:'1',
     shadowList:''
   }),
   beforeRouteEnter (to,form,next) {
     var params={}
     var request = [Shadow.my(params)]
     Promise.all(request).then(([shadowList]) => {
-      for(var i = 0;i<shadowList.data.data.length;i++){
-        shadowList.data.data[i].createTime=formatTime(shadowList.data.data[i].createTime)
+      if(shadowList.data.data){
+        for(var i = 0;i<shadowList.data.data.length;i++){
+          shadowList.data.data[i].createTime=formatTime(shadowList.data.data[i].createTime)
+        }
       }
       next(vm=>{
         vm.shadowList=shadowList.data.data;
@@ -93,24 +92,28 @@ export default {
     this.$emit('loaded')
   },
   methods: {
-    goUser(page){
+    freshShadowCache(){
+      this.$emit('fresh');
+    },
+    goUser(){
       this.$emit('loaded',true)
-      var params={
-        pageNum:page
-      }
+      var params={}
       this.$http.get('/shadow/all',{params:params}).then(shadowList => {
         this.$emit('loaded',false)
-        for(var i = 0;i<shadowList.data.data.length;i++){
-          shadowList.data.data[i].createTime=formatTime(shadowList.data.data[i].createTime)
+
+        if(shadowList.data.data){
+          for(var i = 0;i<shadowList.data.data.length;i++){
+            shadowList.data.data[i].createTime=formatTime(shadowList.data.data[i].createTime)
+          }
         }
-        this.page=page;
         this.shadowList=shadowList.data.data;
       })
     },
     deleteShadow(id){
       this.$http.delete('/shadow/'+id).then(res => {
         if(res.data.code==200){
-          this.goUser(this.page);
+          this.goUser();
+          this.$emit('fresh',id);
           this.$notice.success('移除成功')
         }else{
           this.$notice.error(res.data.msg)
