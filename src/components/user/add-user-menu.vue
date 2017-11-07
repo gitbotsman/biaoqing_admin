@@ -1,4 +1,4 @@
- e<template>
+<template>
   <div class="dropdown selectize" ref="dropdown">
     <a class="ml-3 text-link" @click.stop="show"><span class="img-btn">┼</span> 添加成员</a>
     <div class="dropdown-menu dropdown-menu-right" :class="{'loading' : dirty || loading}" style="min-width: 18rem">

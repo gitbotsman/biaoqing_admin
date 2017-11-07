@@ -8,7 +8,7 @@
     	<div class="biaoqing-table pb-2">
     		<div @click="openAdd" class="btn cursor btn-outline-success btn-sm mb-2"><i class="fa fa-plus-circle mr-2"></i>添加贴纸</div>
     		<div @click="addCategory" class="btn cursor btn-outline-success btn-sm ml-2 mb-2"><i class="fa fa-plus-circle mr-2"></i>添加分类</div>
-    		<div v-if="stickers.items.length==0" @click="deleteCategory" class="btn cursor btn-outline-danger btn-sm ml-2 mb-2"><i class="fa fa-trash-o mr-2"></i>删除分类</div>
+    		<div v-if="stickersLength==0" @click="deleteCategory" class="btn cursor btn-outline-danger btn-sm ml-2 mb-2"><i class="fa fa-trash-o mr-2"></i>删除分类</div>
 
     		<div class="clearfloat search-container flex-center mt-2">
     			<div class="btn-group btn-group-sm fl">
@@ -83,7 +83,8 @@ export default {
 		addThumb:'',
 		addName:'',
 		addResource:'',
-		upArry:[]
+		upArry:[],
+		stickersLength:''
 
 	}),
 	beforeRouteEnter (to,form,next) {
@@ -92,11 +93,12 @@ export default {
 		}
 		var resources = [StickerManage.faceCategory(),StickerManage.faceSticker(params)];
 		Promise.all(resources).then(([category,sticker]) => {
-
+			console.log(sticker)
 			next(vm => {
 				vm.categoryId = params.categoryId
 				vm.categorys=category.data.data;
-				vm.stickers=sticker.data.data
+				vm.stickers=sticker.data.data;
+				vm.stickersLength = sticker.data.data.items.length
 			})
 		})
 	},
@@ -263,6 +265,7 @@ export default {
     		}
     		Promise.all([StickerManage.faceSticker(params)]).then(([sticker]) => {
 				this.stickers=sticker.data.data;
+				this.stickersLength = sticker.data.data.items.length
 				this.categoryId=categoryId;
 			})
     	},

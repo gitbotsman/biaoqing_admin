@@ -79,6 +79,8 @@ const routes = [
       {path: '/banner', component: resolve => require(['./components/sticker/banner-manage.vue'], resolve)},
 
       {path: '/systemdata', component: resolve => require(['./components/role/systemdata.vue'], resolve)},
+      {path: '/shadowmanage', component: resolve => require(['./components/user/shadow.vue'], resolve)},
+      {path: '/myshadow', component: resolve => require(['./components/user/my-shadow.vue'], resolve)},
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},

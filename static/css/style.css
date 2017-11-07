@@ -918,8 +918,11 @@ body.preloader { overflow: hidden }
   max-width: 400px;
 }
 .max-width100{
-  display: inline-block;
+  
   max-width: 100px;
+}
+.inlblock{
+  display: inline-block;
 }
 .max-width200{
   max-width: 200px;
