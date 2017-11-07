@@ -6,7 +6,7 @@
     </ol>
     <div class="card mx-3">
       <div class="layer-loading" v-show="loading"><i></i><i></i><i></i></div>
-      <div class="text-muted p-3 pb-0">系统部门树.</div>
+      <div class="text-muted p-3 pb-0">系统部门树</div>
       <form action="/permission" class="form-inline px-3 mb-3" autocomplete="off" @submit.prevent="paging">
         <div class="btn-group btn-group-sm mr-sm-2">
           <button type="button" class="btn btn-outline-info" title="expandAll" @click="toggle">展开全部</button>

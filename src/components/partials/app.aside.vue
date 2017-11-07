@@ -6,13 +6,16 @@
     </router-link>
     <div class="aside-title">SYSTEM</div>
     <router-link class="aside-item" to="/" title="Dashboard" v-ripple exact>
-      <i class="fa fa-dashboard"></i><span>Dashboard</span>
+      <i class="fa fa-dashboard"></i><span>控制台</span>
     </router-link>
     <router-link class="aside-item" to="/permission" v-permission="'permission.view'" v-ripple.stop><i class="fa fa-lock"></i><span>权限</span></router-link>
     <router-link class="aside-item" to="/roles" v-permission="'role.view'" v-ripple.stop><i class="fa fa-vcard"></i><span>角色</span></router-link>
     <router-link class="aside-item" to="/users" v-permission="'user.view'" v-ripple.stop><i class="fa fa-users"></i><span>用户</span></router-link>
-    <router-link class="aside-item" to="/department" v-permission="'department.view'" v-ripple.stop><i class="fa fa-building-o"></i><span>部门</span></router-link>
+    <!-- <router-link class="aside-item" to="/department" v-permission="'department.view'" v-ripple.stop><i class="fa fa-building-o"></i><span>部门</span></router-link> -->
     <router-link class="aside-item" to="/systemdata" v-permission="'dict.view'" v-ripple.stop><i class="fa fa-book"></i><span>系统参数</span></router-link>
+    <router-link class="aside-item" to="/shadowmanage" v-permission="'shadow.view'" v-ripple.stop><i class="fa fa-address-book"></i><span>马甲管理</span></router-link>
+    <router-link class="aside-item" to="/myshadow" v-ripple.stop><i class="fa fa-user-secret"></i><span>我的马甲</span></router-link>
+
     <div class="aside-divider"></div>
     <div class="aside-title">LIST</div>
     <div class="aside-item parent" v-ripple>

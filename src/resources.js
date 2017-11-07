@@ -20,13 +20,14 @@ http.interceptors.response.use(response => {
   return response
 }, error => {
   var response = error.response
-  console.error(error)
   if (!response) {
     return toastr.error('系统繁忙，请稍后再试。')
   }
   toastr.error(response.data.msg || '系统内部错误，请联系管理员。')
   return Promise.reject(error)
 })
+
+
 
 Vue.prototype.$http = http  // 为vue实例添加`$http`属性, 方便组件内随时调用
 export const Auth = {
@@ -52,15 +53,15 @@ export const Auth = {
     data=querystring.stringify(data)
     return new Promise((resolve, reject) => {
       http.post('/login', data).then(response => {
-        var params = {
-          sysUserId:response.data.data.id
-        }
         http.get('/shadow/all').then(res => {
-          var shadowObj = {
-            selectShadow:res.data.data[0],
-            shadow:res.data.data
+          if(res.data.data){
+            var shadowObj = {
+              selectShadow:res.data.data[0],
+              shadow:res.data.data
+            }
+            storage.setItem('shadow', JSON.stringify(shadowObj))
           }
-          storage.setItem('shadow', JSON.stringify(shadowObj))
+          return res;
         })
         if (response.data.code==200) {
           storage.setItem('user', JSON.stringify(response.data.data))
@@ -109,27 +110,42 @@ export const Permission = resource('permission', http, {
 // 马甲号
 export const Shadow = resource('Shadow',http,{
   current: request => {
-    if (request) {
-      return http.get('shadow/all')
-    }
     var value = storage.getItem('shadow');
     if (value) {
       return JSON.parse(value)
     }
+  },
+  fresh(){
+    console.log('freshShadow')
+    var value = JSON.parse(storage.getItem('shadow'));
+    http.get('/shadow/all').then(res => {
+      if(!res.data.data) return;
+      if(value){
+        value.shadow=res.data.data;
+        storage.setItem('shadow', JSON.stringify(value))
+      }else{
+        var shadowObj = {
+          selectShadow:res.data.data[0],
+          shadow:res.data.data
+        }
+        storage.setItem('shadow', JSON.stringify(shadowObj))
+      }
+      return res;
+    })
   },
   select: params =>{
     if(params){
         var shadow=JSON.parse(storage.getItem('shadow'));
         shadow.selectShadow=params;
         storage.setItem('shadow',JSON.stringify(shadow));
-        console.log(shadow.selectShadow)
         return shadow
     }else{
         var shadow=JSON.parse(storage.getItem('shadow'));
         return shadow
     }
-   
-  }
+  },
+  my:params  => http.get('/shadow/all',{params:params}),
+  list:params  => http.get('/user',{params:Object.assign(params,{userType:5})})
 })
 
 export const User = resource('user', http, {

@@ -48,27 +48,27 @@
       </div>
     </div>
 
-    <a class="nav-item" title="打开搜索" @click="toggleSearch" v-ripple><i class="ti-search"></i></a>
+    <a class="nav-item mr-auto" title="打开搜索" @click="toggleSearch" v-ripple><i class="ti-search"></i></a>
 
-    <div class="dropdown ml-auto mr-4 border">
+    <div v-if="shadow" class="dropdown mr-4 border">
       <a class="nav-item" data-toggle="dropdown" style="line-height: 30px;">
         <div class="flex-center">
           <span class="d-inline-block relative">
             <img :src="shadow.selectShadow.user.fullAvatar" class="rounded-circle thumb-xxs">
             <i class="network on bottom"></i>
           </span>
-          <span class="hidden-sm-down ml-1 flex-center text-overflow" style="width:100px;">
+          <span :title="shadow.selectShadow.user.name" class="hidden-sm-down ml-1 flex-center text-overflow" style="width:100px;">
             {{shadow.selectShadow.user.name}}
           </span>
           <i class="fa fa-angle-down text-primary fr"></i>
         </div>
       </a>
-      <div class="dropdown-menu dropdown-menu-right pt-0 m-0 ">
+      <div class="dropdown-menu dropdown-menu-right pt-0 m-0 pre-scrollable">
         <div v-for="(shadowItem,index) in shadow.shadow" @click="selectShadow(index)" class="dropdown-item p-3 flex-center">
            <span class="d-inline-block relative">
               <img :src="shadowItem.user.fullAvatar" class="rounded-circle thumb-xxs">
             </span>
-            <span class="hidden-sm-down ml-1 max-width100 text-overflow" :title="shadowItem.user.name">{{shadowItem.user.name}}</span>
+            <span class="hidden-sm-down ml-1 text-overflow" :title="shadowItem.user.name" style="width:110px;">{{shadowItem.user.name}}</span>
         </div>
       </div>
     </div>
@@ -78,7 +78,7 @@
           <img :src="user.avatar" class="rounded-circle thumb-xxs">
           <i class="network on bottom"></i>
         </span>
-        <span class="hidden-sm-down ml-1">{{user.name}} <i class="fa fa-angle-down text-primary"></i></span>
+        <span class="hidden-sm-down ml-1">{{user.nick}} <i class="fa fa-angle-down text-primary"></i></span>
       </a>
       <div class="dropdown-menu dropdown-menu-right pt-0 m-0">
         <div class="dropdown-item bg-light bb-eee mb-2 p-3">
@@ -95,12 +95,10 @@
         <router-link class="dropdown-item py-2" to="/logout"><i class="fa fa-sign-out"></i> 退出登录</router-link>
       </div>
     </div>
-
     <a class="nav-item" @click="toggleQuickview" title="打开右边栏" v-ripple>
       <i class="fa fa-ellipsis-v"></i>
     </a>
   </nav>
-
 </template>
 
 <script>
@@ -120,12 +118,7 @@
       shadow:Shadow.current()
     }),
     mounted(){
-      console.log(this)
-    },
-    beforeRouteEnter (to, from, next) {
-      next(vm => {
-        console.log(vm)
-      })
+      Shadow.fresh()
     },
     methods: {
       toggleQuickview: () => document.querySelector('.app-quickview').classList.toggle('app-quickview-show'),
@@ -144,7 +137,8 @@
       },
       selectShadow(index){
         var shadow = this.shadow;
-        this.shadow=Shadow.select(shadow.shadow[index])
+        Shadow.select(shadow.shadow[index])
+        this.shadow=Shadow.current()
       }
     }
   }

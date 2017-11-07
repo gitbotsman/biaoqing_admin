@@ -5,6 +5,7 @@
 .app-aside .children,
 .app-aside .aside-item.opened { background-color: #f7f7f7 !important }
 .app-aside .aside-item, .app-aside .children .fold-header { color: #454648 }
+
 .app-aside .aside-item > i { color: #454648; background-color: #eee }
 .app-aside .aside-item.parent:after { color: #454648 }
 .app-aside .aside-item:hover { background-color: #f7f7f7 !important; color: #007aff }

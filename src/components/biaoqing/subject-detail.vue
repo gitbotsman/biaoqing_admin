@@ -102,34 +102,33 @@
 	        </div>
         </div>
     </div>
-    <div class="comment-subject">
+    <div v-if="shadow" class="comment-subject">
     	<div class="comment-subject-box">
 	    	<div style="color:#666">我要评论</div>
 			<textarea class="form-control mt-2" placeholder="评论内容" v-model="commentContent"></textarea>
 	        <div class="mt-2 comment-subject-majia cleafloat">
-	        	<input type="text" class="form-control fl comment-subject-majia-input" style="padding: .3rem .75rem;" placeholder="马甲号ID" v-model="commentUserId">
 				<button @click="toComment(detailData.id)" class="btn btn-sm fr btn-info ml-5">评论</button>
 	        </div>
         </div>
     </div>
     <div class="detail-comment" v-if="comments.totalCount>0">
     	<div class="detail-comment-title mb-2">全部评论({{comments.totalCount}})</div>
-    	<div class="comment-list">
+    	<div class="comment-list" style="padding:10px;">
     		<table class="table table-bordered">
 				<thead>
 					<tr>
-						<th class="select-comment" style="width:50px;">选择</th>
+						<!-- <th class="select-comment" style="width:50px;">选择</th> -->
 						<th class="tc">内容</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(comment,index) in comments.items">
-						<td class="select-comment">
+						<!-- <td class="select-comment">
 							<div class="select-comment-input">
 								<input  type="checkbox" name="select">
 							</div>
-						</td>
-						<td>
+						</td> -->
+						<td class="replay-container">
 							<div class="flex flex-center">
 								<div class="comment-user-tx">
 									<img :src="comment.user.fullAvatar" />
@@ -157,12 +156,23 @@
 											</div>
 										</div>
 										<span @click="deleteComment(comment.id)" class="delete-comment cursor">删除评论</span>
-										<span @click="replayComment(comment.id,comment.user.id)" class="replay cursor">回复</span>
+										<span v-if="shadow" @click="replayComment" class="replay cursor">回复</span>
 										<span class="time">{{comment.createTime}}</span>
 									</div>
 								</div>
 							</div>
-							
+							<div v-if="shadow" class="mt-2 replay-input">
+								<div>
+									<input 
+										@keyup.enter="addReplayComment(comment.id,comment.user.id)" 
+										v-model="replayContent" 
+										placeholder="请输入回复的内容" 
+										type="text" class="form-control">
+								</div>
+								<div class="mt-2 clearfloat">
+									<button @click="addReplayComment(comment.id,comment.user.id)" class="btn btn-sm fr btn-info ml-5">回复</button>
+								</div>
+							</div>
 
 						</td>
 					</tr>
@@ -218,23 +228,7 @@
     	</div>
     </div>
     <div @click='hiddenimg' class="img-view-tc cursor"><img src=""></div>
-	<div class="mask replay-comment-container" :class="{'block':(replayCommentId!='')}">
-		<div @click="closeReplayComment" class="mask-bg"></div>
-		<div class="mask-main replay-comment">
-			<div class="add-banner-mask-input mb-3 mt-2">
-				<div  class="md-form-group pr" :class="[replayContent==''?'md-float-label':'']" style="padding-bottom:0;">
-		          <input @keyup.enter="" class="md-input pr" v-model="replayContent" > <label>回复的内容</label>
-		        </div>
-				<div  class="md-form-group pr mt-2" :class="[replayUserId==''?'md-float-label':'']" style="padding-bottom:0;">
-		          <input @keyup.enter="" class="md-input pr" v-model="replayUserId" > <label>马甲号ID</label>
-		        </div>
-			</div>
-			<div class="add-banner-mask-btn mt-3">
-				<button @click="closeReplayComment" class="btn mr-3 btn-secondary">取消</button>
-				<button @click="addReplayComment" class="btn btn-primary">评论</button>
-			</div>
-		</div>
-	</div>
+
 </div>
 </template>
 <script>
@@ -244,20 +238,18 @@ import { formatTime } from '../../misc/utils'
 import swal2 from 'sweetalert2'
 import querystring from 'querystring'
 import $ from 'jquery'
-
+import {Shadow} from '../../resources'
 export default{
 	data:() => ({
+		shadow:Shadow.current(),
 		loading: false,
 		detailData:'',
 		commentContent:'',
-		commentUserId:'',
 		page:1,
 		albums:'',
 		formPage:'',
 		detailDataUser:'',
 		comments:'',
-		replayCommentId:'',
-		replayUserId:'',
 		replayContent:'',
 		subjectId:''
 	}),
@@ -304,22 +296,26 @@ export default{
     		$('.img-view-tc').fadeOut('fast');
     	},
     	closeReplayComment(){
-    		this.replayCommentId='';
     		this.replayContent='';
-    		this.replayUserId='';
-    		this.beReplyId = '';
     	},
-    	replayComment(commentId,beReplyId){
-    		this.replayCommentId=commentId;
-    		this.beReplyId = beReplyId;
+    	replayComment(e){
+    		var replayInput = $(e.target).parents('.replay-container').find('.replay-input');
+    		if(replayInput.hasClass('replay-input-opend')){
+    			replayInput.removeClass('replay-input-opend')
+    		}else{
+    			$('.replay-input').removeClass('replay-input-opend');
+    			replayInput.addClass('replay-input-opend')
+    		}
+    		this.closeReplayComment()
     	},
     	// 回复
-    	addReplayComment(){
-    		var replayCommentId = this.replayCommentId;
+    	addReplayComment(commentId,beReplyId){
+    		var replayCommentId = commentId;
+    		var beReplyId = beReplyId;
     		var replayContent = this.replayContent;
-    		var replayUserId = this.replayUserId;
     		var subjectId = this.subjectId;
-    		var beReplyId = this.beReplyId;
+    		
+    		var replayUserId=Shadow.current().selectShadow.user.id;
     		var data={
 			  "beReplyCommentId": replayCommentId,
 			  "beReplyId": beReplyId,
@@ -340,7 +336,8 @@ export default{
     	// 评论
     	toComment(subjectid){
     		var commentContent = this.commentContent;
-			var commentUserId = this.commentUserId;
+			var commentUserId=Shadow.current().selectShadow.user.id;
+
     		var data={
 			  "content": commentContent,
 			  "subjectId": subjectid,
@@ -348,7 +345,6 @@ export default{
 			}
 			this.$http.post('/comment',data).then(res => {
 				if(res.data.code){
-					this.commentUserId='';
 					this.commentContent='';
 					this.goComments(this.page);
 					this.$notice.success(res.data.msg)
@@ -427,7 +423,6 @@ export default{
 							params=querystring.stringify(params)
 							$this.$http.post('/ban',params).then(response => {
 								if(response.data.code==200){
-									
 									$this.$notice.success('禁言成功：'+days)
 								}
 							})

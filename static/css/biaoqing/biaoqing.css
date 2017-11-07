@@ -331,3 +331,13 @@
   .comment-subject-majia-input{
     width: 180px;
   }
+  .replay-input{
+    height: 0px;
+    overflow: hidden;
+    transition: all 0.7s;
+    -webkit-transition: all 0.3s;
+  }
+  .replay-input-opend{
+    height: 77px;
+    overflow: hidden;
+  }
