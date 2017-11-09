@@ -22,8 +22,8 @@
     	</div>
     	<ul class="biaoqing-nav nav nav-tabs nav-justified nav-line"  role="tablist">
 			<li class="nav-item " v-for="tag in tags.data">
-				<a 
-				:class="{active:((keyword==tag.code || keyword==tag.name) && (enable==1) && (you=='') )}" 
+				<a
+				:class="{active:((keyword==tag.code || keyword==tag.name) && (enable==1) && (you=='') )}"
 				@click="tagSubject(1,tag.name)">
 				{{tag.name}}
 				</a>
@@ -42,7 +42,7 @@
 				精选
 				</a>
 			</li>
-			
+
 		</ul>
     	<div class="biaoqing-table">
 			<table class="table table-bordered table-hover ">
@@ -51,6 +51,7 @@
 				      <th>封面</th>
 				      <th>表情ID</th>
 				      <th>内容</th>
+				      <th>标签</th>
 				      <th>发布人</th>
 				      <th>发布时间
 				      	<span class="biaoqing-sort clearfloat" @click="goSubject(works.prevPageNumber,keyword,'create_time',!asc)">
@@ -90,11 +91,17 @@
 		    				</div>
 		    			</td>
 		    			<td>
-		    				<router-link target="_blank" class="hover-line" :to="'/subjectdetail/'+work.id" v-ripple.stop>{{work.id}}</router-link> 
+		    				<router-link target="_blank" class="hover-line" :to="'/subjectdetail/'+work.id" v-ripple.stop>{{work.id}}</router-link>
 		    			</td>
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
 		    			</td>
+              <td>
+                <span v-if="work.tag" @click="setTags(work.id,index,work.tag)" class="pass-ing cursor hover-line">
+                  {{work.tag}}
+                </span>
+                <span v-else @click="setTags(work.id,index,work.tag)" class="hover-line cursor pass-success">设置</span>
+              </td>
 		    			<td class="max-width20">
 		    				<span :title="work.userName">{{work.userName}}</span>
 		    			</td>
@@ -135,7 +142,7 @@
 			<nav v-if="works.lastPageNumber!=1" aria-label="Page navigation example " class="">
 			  <ul class="pagination">
 			    <li v-if="!works.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous" 
+			      <a class="page-link" href="javascript:;" aria-label="Previous"
 			      @click="goSubject(works.prevPageNumber)">
 			        <span aria-hidden="true">&laquo;</span>
 			      </a>
@@ -143,7 +150,7 @@
 			    <!-- 回到第一页 -->
 			    <template v-if="(works.pageNumber-4)>1">
 			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
+				    	<a class="page-link" href="javascript:;"
 				    	@click="goSubject(1)">1</a>
 				    </li>
 				    <li class="page-item disabled ">
@@ -152,7 +159,7 @@
 			    </template>
 			    <template v-for="page in works.pageNumbers">
 				    <li class="page-item" :class="{active:(page==works.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"  
+				    	<a class="page-link" href="javascript:;"
 				    	@click="goSubject(page)">{{page}}</a>
 				    </li>
 				</template>
@@ -162,7 +169,7 @@
 				    	<a class="page-link">...</a>
 				    </li>
 				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
+				    	<a class="page-link" href="javascript:;"
 				    	@click="goSubject(works.lastPageNumber)">{{works.lastPageNumber}}</a>
 				    </li>
 			    </template>
@@ -179,7 +186,7 @@
 				</div>
 			  </ul>
 			</nav>
-	    </div>	
+	    </div>
 	    <div class="selecTagContainer" :class="{show:(showSetHot==true)}">
 	    	<div class="selecTag-bg" @click="showSetHotHidden"></div>
 	    	<div class="selecTag-main">
@@ -191,9 +198,9 @@
 	    	</div>
 	    </div>
 	    <div class="selecTagContainer" :class="{show:(modelUser!='')}">
-	    	<div class="selecTag-bg" @click="cancleSelect"></div> 
+	    	<div class="selecTag-bg" @click="cancleSelect"></div>
 	    	<div class="selecTag-main" :style="'margin-top:-'+modelUserHeight+'px'">
-	    		<div class="selecTag-title">选择用户：</div> 
+	    		<div class="selecTag-title">选择用户：</div>
 	    		<div class="clearfloat">
 	    			<table class="table table-bordered">
 	    				<thead>
@@ -209,13 +216,35 @@
 	    					</tr>
 	    				</tbody>
 	    			</table>
-	    		</div> 
+	    		</div>
 	    		<div class="selecTag-btn-box">
-	    			<div class="selecTag-btn selecTag-cancle" @click="cancleSelect">取消</div> 
+	    			<div class="selecTag-btn selecTag-cancle" @click="cancleSelect">取消</div>
 	    		</div>
 	    	</div>
 	    </div>
     </div>
+
+  <div class="selecTagContainer">
+    <div class="selecTag-bg" @click="selectCancle"></div>
+    <div class="selecTag-main">
+      <div class="selecTag-title">添加标签：</div>
+      <div class="clearfloat">
+        <div v-for="tag in tags.data"
+             class="tag-name"
+             :class="{active:(ch==tag.name)}"
+             @click="selectTags(tag.name)"
+        >{{tag.name}}</div>
+      </div>
+      <div>
+        <input type="text" class="form-control mt-2" v-model="ch">
+        <div class="tip mt-2" style="font-size:13px; color:#999;">标签之间请用逗号（,） 隔开</div>
+      </div>
+      <div class="selecTag-btn-box">
+        <div class="selecTag-btn selecTag-cancle" @click="selectCancle">取消</div>
+        <div @click="setTagsView(subjectId,ch)" class="selecTag-btn selecTag-ok">确定</div>
+      </div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -246,7 +275,9 @@ export default {
 		showSetHot:false,
 		setHot:'',
 		modelUser:'',
-		enable:''
+		enable:'',
+    subjectId:'',
+    ch:''
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
@@ -306,7 +337,7 @@ export default {
 			  			}else{
 			  				reject('请输入删除理由');
 			  			}
-			  			
+
 			  		})
 			  	}
 			}).catch(swal2.noop);
@@ -378,6 +409,50 @@ export default {
 		        }
 		    })
     	},
+      setTags(id,index,tags){
+        this.subjectId = id;
+        this.index = index;
+        if(tags){
+          this.ch = tags;
+        }else{
+          this.ch = '';
+        }
+        $('.selecTagContainer').fadeIn('fast')
+      },
+      selectCancle(e){
+        $('.selecTagContainer').fadeOut('fast')
+        this.ch = '';
+      },
+      selectTags(tag){
+        if(this.ch.indexOf(tag)<0){
+          this.ch=this.ch+','+tag;
+        }
+      },
+      setTagsView(id,ch) {
+        var index = this.index;
+        var that = this;
+        var params = {
+          "id": id,
+          "tag": ch
+        }
+        if (ch != '') {
+          var msg = '设置成功'
+        } else {
+          var msg = '取消成功'
+        }
+        that.$http.post('/subject/update', params).then(response => {
+          if (response.data.code == 200) {
+            var works = that.works;
+            works.items[index].tag = params.tag;
+            toastr.success(msg);
+            that.ch = '';
+            that.subjectId = ''
+            $('.selecTagContainer').fadeOut('fast');
+          } else {
+            toastr.error(response.data.msg);
+          }
+        })
+      },
     	tagSubject(page,keyword){
     		var params = {
 				pageSize:15,
@@ -468,7 +543,7 @@ export default {
 			}else{
 				params.keyword=this.keyword;
 			}
-			
+
 			if(sort && sort!=''){
 				params.sort = sort;
 				params.asc = asc;
@@ -620,7 +695,7 @@ export default {
     			}
     		})
     	}
-    } 
+    }
 }
 </script>
 <style>
