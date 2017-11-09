@@ -117,28 +117,33 @@
     		<table class="table table-bordered">
 				<thead>
 					<tr>
-						<!-- <th class="select-comment" style="width:50px;">选择</th> -->
 						<th class="tc">内容</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(comment,index) in comments.items">
-						<!-- <td class="select-comment">
-							<div class="select-comment-input">
-								<input  type="checkbox" name="select">
-							</div>
-						</td> -->
 						<td class="replay-container">
 							<div class="flex flex-center">
-								<div class="comment-user-tx">
+								<router-link class="comment-user-tx" :to="'/userdetail/'+comment.user.id" >
 									<img :src="comment.user.fullAvatar" />
-								</div>
+								</router-link>
 								<div class="comment-user-info">
-									<p class="name">{{comment.user.name}}</p>
+									<router-link class="name" :to="'/userdetail/'+comment.user.id">
+										{{comment.user.name}}
+									</router-link>
 									<p class="comment-p">
-										<span class="" v-if="comment.replayUser">回复 <span class="pass-success">{{comment.replayUser.name}}: </span></span>
-										{{comment.content}}
+										<span class="" v-if="comment.replayUser">回复 
+											<span class="pass-success">{{comment.replayUser.name}}: </span></span>
+										<span :class="{'text-danger':(comment.user.userType=='5')}">{{comment.content}}</span>
 									</p>
+									<div class="comment-img" v-if="comment.images">
+										<span v-for="img in comment.images">
+											<img class="cursor"  
+											     @click="lookimg(img.fullImage,img.imageWidth,img.imageHeight)" 
+											     :src="img.fullImage" 
+											     :style="img.style">
+										</span>
+									</div>
 									<div class="comment-user-info-tool pr">
 										<div class="pr" style="display:inline-block;">
 											<div class="btn-group mr-4 ">
@@ -262,24 +267,21 @@ export default{
 		var request = [Subject.detail(params),Subject.album(params),Subject.comment(params)]
 		Promise.all(request).then(([detail,albums,comments]) => {
 			detail.data.data.createTime=formatTime(detail.data.data.createTime);
-			for(var i=0;i<albums.data.data.length;i++){
-				var imgW = albums.data.data[i].imageWidth;
-				var imgH = albums.data.data[i].imageHeight;
-				if (imgW>imgH){
-					var ml = ((imgW/imgH)*150)/2
-					var style="height:100%;left:50%;top: 0;margin-left: -"+ml+"px";
-				}else if(imgW<imgH){
-					var mt = ((imgH/imgW)*150)/2
-					var style="width:100%;left:0;top: 50%;margin-top: -"+mt+"px";
-				}else{
-					var style="width:100%;height:100%";
-				}
-				albums.data.data[i].style=style;
-			}
-			for(var j=0;j<comments.data.data.items.length;j++){
-				comments.data.data.items[j].createTime=formatTime(comments.data.data.items[j].createTime);
-			}
     		next(vm => {
+    			albums.data.data.forEach(item => {
+    				var imgW = item.imageWidth;
+					var imgH = item.imageHeight;
+					item.style=vm.formatStyle(imgW,imgH,150);
+    			})
+
+				comments.data.data.items.forEach(function(item,index){
+					item.createTime=formatTime(item.createTime);
+					if(item.images){
+						item.images.forEach(img=>{
+							img.style=vm.formatStyle(img.imageWidth,img.imageHeight,100);
+						})
+					}
+				})
     			vm.subjectId=subjectId;
     			vm.comments=comments.data.data;
     			vm.albums=albums.data.data;
@@ -365,6 +367,7 @@ export default{
     		})
     	},
     	goComments(page){
+    		var $this = this;
     		this.$emit('loaded',true)
     		var subjectId=this.subjectId;
     		var params = {
@@ -374,9 +377,16 @@ export default{
 			Promise.all([Subject.comment(params)]).then(([comments]) => {
 				this.$emit('loaded',false)
 				$('body,html').animate({scrollTop:0},10);
-				for(var j=0;j<comments.data.data.items.length;j++){
-					comments.data.data.items[j].createTime=formatTime(comments.data.data.items[j].createTime);
-				}
+
+				comments.data.data.items.forEach(function(item,index){
+					item.createTime=formatTime(item.createTime);
+					if(item.images){
+						item.images.forEach(img=>{
+							img.style=$this.formatStyle(img.imageWidth,img.imageHeight,100);
+						})
+					}
+				})
+
 				this.page=page;
 				this.comments=comments.data.data;
 			})
@@ -464,9 +474,26 @@ export default{
 				})
 				swal.close()
 			})
+    	},
+    	formatStyle(imgW,imgH,width){
+			if (imgW>imgH){
+				var ml = ((imgW/imgH)*width)/2
+				var style="height:100%;left:50%;top: 0;margin-left: -"+ml+"px";
+			}else if(imgW<imgH){
+				var mt = ((imgH/imgW)*width)/2
+				var style="width:100%;left:0;top: 50%;margin-top: -"+mt+"px";
+			}else{
+				var style="width:100%;height:100%";
+			}
+			return style;
     	}
-    }
+    }//metho
 }
 
 
 </script>
+<style>
+.orange{
+	color: #f47110;
+}
+</style>

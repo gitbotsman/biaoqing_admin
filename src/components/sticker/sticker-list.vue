@@ -7,7 +7,7 @@
 	<div class="biaoqing-container">
 
     <ul class="biaoqing-nav nav nav-tabs nav-justified nav-line"  role="tablist">
-
+      
       <li class="nav-item ">
         <a
           :class="{active:(keyword=='1')}"
@@ -29,21 +29,21 @@
           {{hot.value}}
         </a>
       </li>
-      <li class="nav-item ">
+      <!-- <li class="nav-item ">
         <a
           :class="{active:(enable==false)}"
           @click="goDelete">
           回收站
         </a>
-      </li>
+      </li> -->
     </ul>
 		<div class="biaoqing-table">
 			<table class="table table-bordered table-hover">
-				<thead>
+				  <thead>
 		    		<tr>
 				      <th>封面</th>
-				      <th>name</th>
-				      <th>TAGS</th>
+				      <th>名称</th>
+				      <th>标签</th>
 				      <th>分类ID</th>
 				      <th>贴纸数量</th>
 				      <th>创建时间</th>
@@ -59,7 +59,7 @@
 		    			</td>
 		    			<td class="max-width20 biaoqing-table-content">{{materia.name}}</td>
 		    			<td class="max-width20 biaoqing-table-content">
-                <span @click="setTags(materia.id,index,materia.tags)" class="pass-success cursor" v-if="materia.tags" title="materia.tags">{{materia.tags}}</span>
+                <span @click="setTags(materia.id,index,materia.tags)" class="pass-success cursor" v-if="materia.tags" :title="materia.tags">{{materia.tags}}</span>
                 <span @click="setTags(materia.id,index,materia.tags)" class="pass-ing cursor"
                       v-if="(!materia.tags || materia.tags==' ')" title="设置"><i class="operation-icon fa fa-pencil"></i>设置</span>
               </td>
@@ -129,12 +129,17 @@
   <div class="selecTagContainer">
     <div class="selecTag-bg" @click="selectCancle"></div>
     <div class="selecTag-main">
-      <div class="selecTag-title">选择所展示的频道：</div>
+      <div class="selecTag-title">添加标签：</div>
       <div class="clearfloat">
-        <div v-for="hot in hots"
-             class="hot-name"
+        <div v-for="hot in hots.data"
+             class="tag-name"
              :class="{active:(ch==hot.value)}"
+             @click="selectTags(hot.value)"
         >{{hot.value}}</div>
+      </div>
+      <div>
+        <input type="text" class="form-control mt-2" v-model="ch">
+        <div class="tip mt-2" style="font-size:13px; color:#999;">标签之间请用逗号（,） 隔开</div>
       </div>
       <div class="selecTag-btn-box">
         <div class="selecTag-btn selecTag-cancle" @click="selectCancle">取消</div>
@@ -176,7 +181,6 @@ export default {
       keyword:'0'
 		}
 		Promise.all([StickerManage.category(params),StickerManage.materialHot()]).then(([materias,hots]) => {
-			 console.log(hots)
       for(var i = 0;i<materias.data.data.items.length;i++){
 				materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
 			}
@@ -197,22 +201,22 @@ export default {
     	bigImg(e){viewImg(e,400)},
     	goMaterial(page,keyword){
     		this.$emit('loaded',true);
-			var params = {
-				pageSize:15,
-				pageNum:page,
-				type:1
-			}
-			Promise.all([StickerManage.category(params)]).then(([materias]) => {
-				this.$emit('loaded',false)
-				for(var i = 0;i<materias.data.data.items.length;i++){
-					materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
-				}
-				this.type=params.type;
-				this.materias=materias.data.data;
-				this.keyword = 0
-			})
+  			var params = {
+  				pageSize:15,
+  				pageNum:page,
+          enable:this.enable,
+          keyword:this.keyword
+  			}
+  			Promise.all([StickerManage.category(params)]).then(([materias]) => {
+  				this.$emit('loaded',false)
+  				for(var i = 0;i<materias.data.data.items.length;i++){
+  					materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
+  				}
+          this.enable=params.enable;
+  				this.materias=materias.data.data;
+  				this.keyword = params.keyword
+  			})
     	},
-
       setTags(id,index,tags){
         this.categoryId = id;
         this.index = index;
@@ -223,7 +227,15 @@ export default {
         }
         $('.selecTagContainer').fadeIn('fast')
       },
-      selectCancle(e){$('.selecTagContainer').fadeOut('fast')},
+      selectCancle(e){
+        $('.selecTagContainer').fadeOut('fast')
+        this.ch = '';
+      },
+      selectTags(tag){
+        if(this.ch.indexOf(tag)<0){
+          this.ch=this.ch+','+tag;
+        }
+      },
       setTagsView(id,ch) {
         var index = this.index;
         var that = this;
@@ -267,11 +279,9 @@ export default {
         Promise.all([StickerManage.category(params)]).then(([materias]) => {
           $('body,html').animate({scrollTop:0},10);
           this.$emit('loaded',false);
-          console.dir(materias)
           for(var i = 0;i<materias.data.data.items.length;i++){
             materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
           }
-          console.dir(this)
           this.init();
           this.enable=1;
           this.keyword=params.keyword;
@@ -286,7 +296,7 @@ export default {
           enable:0
         }
         this.$emit('loaded',true);
-        Promise.all([Subject.category(params)]).then(([materias]) => {
+        Promise.all([StickerManage.category(params)]).then(([materias]) => {
           $('body,html').animate({scrollTop:0},10);
           this.$emit('loaded',false)
           for(var i = 0;i<materias.data.data.items.length;i++){
@@ -299,12 +309,8 @@ export default {
       },
 
       init(){
-        this.enable=''
-        this.you='';
-        this.keyword='';
-        this.ModelUserId='';
-        this.sort='';
-        this.asc='';
+        this.enable=1
+        this.keyword='0';
       },
     	setMateria(type,id,index){
     		var data={

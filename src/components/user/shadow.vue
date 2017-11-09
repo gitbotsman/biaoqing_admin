@@ -4,6 +4,9 @@
     <li class="breadcrumb-item">马甲管理</li>
   </ol>
   <div class="biaoqing-container">
+    <div @click="tagShadow()" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot==='')}">所有马甲</div>
+    <div @click="tagShadow('false')" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot===false)}">未分配马甲</div>
+    <!-- <div @click="tagShadow('true')" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot===true)}">已分配马甲</div> -->
     <div class="biaoqing-table" v-if="shadowList.items">
       <table class="table table-bordered table-hover">
         <thead>
@@ -12,6 +15,7 @@
               <th>用户ID</th>
               <th>用户名</th>
               <th>账号</th>
+              <th>密码</th>
               <th>注册时间
               </th>
               <th>粉丝数
@@ -20,38 +24,47 @@
               </th>
               <th>作品数
               </th>
-              <th>操作</th>
+              <th>
+                操作
+                <div style="font-weight:normal;font-size:12px;">(点击姓名取消绑定)</div>
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(user,index) in shadowList.items">
               <td class="img-view" style="vertical-align: middle;">
                 <div class="full-avatar pr">
-                  <img class="biaoqing-list-cover-img" style="display:block;" :src="[user.fullAvatar]">
+                  <img class="biaoqing-list-cover-img" style="display:block;" :src="[user.user.fullAvatar]">
                   <span v-if="user.userType=='3' || user.userType=='2'" class="auth_icon_wb"></span>
                 </div>
               </td>
-              <td>{{user.id}}</td>
+              <td>{{user.user.id}}</td>
               <td class="max-width100">
-                <span class="biaoqing-table-content" :title="user.name">{{user.name}}</span>
+                <span class="biaoqing-table-content" :title="user.name">{{user.user.name}}</span>
               </td>
               <td class="max-width20" :title="user.phone">
-                {{user.phone}}
+                {{user.user.account}}
               </td>
+              <td>{{user.passwd}}</td>
               <td class="max-width100 publish-time">
                 <span>{{user.createTime}}</span>
               </td>
               
               <td class="max-width20">
-                {{user.fansNum}}
+                {{user.user.fansNum}}
               </td>
               <td class="max-width20">
-                {{user.followNum}}
+                {{user.user.followNum}}
               </td>
               <td class="max-width20">
-                {{user.workNum}}
+                {{user.user.workNum}}
               </td>
-              <td><span @click="showSelect(user.id)" class="hover-line cursor pass-success">分配</span></td>
+              <td>
+                <span v-if="user.sysUser" @click="deleteShadow(user.id)" class="pass-ing cursor hover-line">
+                  {{user.sysUser.nick}}
+                </span>
+                <span v-else @click="showSelect(user.id)" class="hover-line cursor pass-success">分配</span>
+              </td>
             </tr>
           </tbody>
       </table>
@@ -147,7 +160,9 @@ export default {
     shadowShow:false,
     modelUser:'',
     shadowId:'',
-    adminUser:''
+    adminUser:'',
+    page:1,
+    isAllot:''
   }),
   beforeRouteEnter (to,form,next) {
     var params={
@@ -155,10 +170,9 @@ export default {
     }
     var request = [Shadow.list(params)]
     Promise.all(request).then(([shadowList]) => {
-        for(var i = 0;i<shadowList.data.data.items.length;i++){
-          shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
-        }
-      
+      for(var i = 0;i<shadowList.data.data.items.length;i++){
+        shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
+      }
       next(vm=>{
         vm.shadowList=shadowList.data.data;
       })
@@ -177,19 +191,41 @@ export default {
     }
   },
   methods: {
-    goUser(page){
-      this.$emit('loaded',true)
+    tagShadow(isAllot){
+      if(isAllot==='false') isAllot=false;
+      if(isAllot==='true') isAllot=true;
+      if(isAllot==='') isAllot='';
       var params={
-        pageNum:page,
-        userType:5
+        pageNum:1,
+        isAllot:isAllot
       }
-      this.$http.get('/user',{params:params}).then(shadowList => {
+      this.$emit('loaded',true)
+      this.$http.get('/shadow',{params:params}).then(shadowList => {
         this.$emit('loaded',false)
         if(shadowList.data.data){
           for(var i = 0;i<shadowList.data.data.items.length;i++){
             shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
           }
         }
+        this.isAllot=params.isAllot
+        this.page=params.pageNum
+        this.shadowList=shadowList.data.data;
+      })
+    },
+    goUser(page){
+      this.$emit('loaded',true)
+      var params={
+        pageNum:page,
+        isAllot:this.isAllot
+      }
+      this.$http.get('/shadow',{params:params}).then(shadowList => {
+        this.$emit('loaded',false)
+        if(shadowList.data.data){
+          for(var i = 0;i<shadowList.data.data.items.length;i++){
+            shadowList.data.data.items[i].createTime=formatTime(shadowList.data.data.items[i].createTime)
+          }
+        }
+        this.page=page
         this.shadowList=shadowList.data.data;
       })
     },
@@ -197,12 +233,13 @@ export default {
       var shadowId = this.shadowId;
       var params ={
         "sysUserId":id,
-        "userId": shadowId
+        "id": shadowId
       }
-     this.$http.post('/shadow',params).then(res => {
+     this.$http.put('/shadow',params).then(res => {
         if(res.data.code==200){
           this.$notice.success('分配成功');
           this.$emit('fresh');
+          this.goUser(this.page)
           this.cancleSelect()
         }else{
           this.$notice.error(res.data.msg);
@@ -230,6 +267,18 @@ export default {
       this.shadowId=''
       this.adminUser=''
       this.shadowShow=false
+    },
+    deleteShadow(id){
+      this.$http.delete('/shadow/'+id).then(res => {
+        if(res.data.code==200){
+          this.goUser();
+          this.$emit('fresh',id);
+          this.$notice.success('移除成功')
+          this.goUser(this.page)
+        }else{
+          this.$notice.error(res.data.msg)
+        }
+      })
     }
   }
 }

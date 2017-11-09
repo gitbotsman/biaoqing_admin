@@ -155,7 +155,7 @@ export const Shadow = resource('Shadow',http,{
     }
   },
   my:params  => http.get('/shadow/all',{params:params}),
-  list:params  => http.get('/user',{params:Object.assign(params,{userType:5})})
+  list:params  => http.get('/shadow',{params:params})
 })
 
 export const User = resource('user', http, {
@@ -337,7 +337,8 @@ export const StickerManage = resource('stickerManage', http, {
 })
 
 export const UserManage = resource('usermanage', http, {
-  users: params => http.get('user',{params:params})
+  users: params => http.get('user',{params:params}),
+  detail:params => http.get('user/'+params.id),
 })
 export const Statistics = resource('statistics', http, {
   syn: params => http.get('statistics/syn',{params:params}),
@@ -346,4 +347,11 @@ export const Statistics = resource('statistics', http, {
 
 export const SystemData = resource('SystemData', http, {
   system: params => http.get('systemParam',{params:params})
+})
+
+export const Tags = resource('Tags', http, {
+  index: params => http.get('/tag',{params:params}),
+  material: params => http.get('/materialHot',{params:params}),
+  search:params => http.get('/searchHot',{params:params})
+  
 })

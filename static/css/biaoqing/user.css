@@ -30,3 +30,53 @@
 	max-width: 300px;
 	margin-top: 7px;
 }
+.users-container{
+	margin: 0 16px;
+    background: #fff;
+    padding: 10px;
+}
+.users-d-tx{
+	text-align: center;
+}
+.users-d-info{
+}
+.users-d-tx-img{
+	display: inline-block;
+	width: 120px;
+	height: 120px;
+	border-radius: 100%;
+	border: 1px solid #ddd;
+}
+.users-d-tx-img img{
+	width: 100%;
+	height:100%;
+	border-radius: 100%;
+}
+.user-auth{
+	width: 24px;
+    height: 24px;
+    display: inline-block;
+    background: url(../../img/touxiang_renzheng.png) no-repeat;
+    background-size: 100%;
+    position: absolute;
+    right: 8px;
+    bottom: 4px;
+    z-index: 100;
+}
+.users-d-info-title{
+	border: 1px solid #DDD;
+	padding: 0 10px;
+	margin-right:15px;
+	font-size: 15px;
+}
+.users-d-info-value{
+	font-size: 15px;
+}
+.users-d-info-item{
+	margin-right: 40px;
+}
+.text-over{
+	white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

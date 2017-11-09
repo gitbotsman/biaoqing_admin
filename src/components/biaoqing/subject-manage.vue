@@ -90,7 +90,7 @@
 		    				</div>
 		    			</td>
 		    			<td>
-		    				<router-link class="hover-line" :to="'/subjectdetail/'+work.id" v-ripple.stop>{{work.id}}</router-link> 
+		    				<router-link target="_blank" class="hover-line" :to="'/subjectdetail/'+work.id" v-ripple.stop>{{work.id}}</router-link> 
 		    			</td>
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
@@ -114,7 +114,7 @@
 		    				<span :title="work.source">{{work.source}}</span>
 		    			</td>
 		    			<td class="cursor">
-		    				<span @click="setHotM(1,work.id,index)" class="pass-fail" v-if="work.isHot=='-1'" ><i class="operation-icon fa fa-pencil"></i>仅作者可见</span>
+		    				<span @click="setHotM(0,work.id,index)" class="pass-fail" v-if="work.isHot=='-1'" ><i class="operation-icon fa fa-pencil"></i>仅作者可见</span>
 		    				<span @click="setHotM(1,work.id,index)" class="pass-ing" v-if="work.isHot=='0'" ><i class="operation-icon fa fa-pencil"></i>正常</span>
 		    				<span @click="setHotM(0,work.id,index)" class="pass-success" v-if="work.isHot=='1'" ><i class="operation-icon fa fa-pencil"></i>热门</span>
 		    			</td>
@@ -122,6 +122,7 @@
 		    				<template v-if="work.enable==true">
 		    					<span v-if="work.you==0" @click="setExcellent(work.id,true,index)" class="hover-line pass-ing">设为精选</span>
 		    					<span v-if="work.you==1" @click="setExcellent(work.id,false,index)" class="hover-line ">取消精选</span>
+		    					<span @click="setHotM('-1',work.id,index)" class="pass-fail " v-if="work.isHot!='-1'" >不推荐</span>
 		    					<span class="text-danger hover-line" @click="deleteSubject(work.id,index)"><i class="operation-icon fa fa-trash-o"></i>删除</span>
 		    				</template>
 		    				<template v-else>

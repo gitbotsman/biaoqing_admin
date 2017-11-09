@@ -39,6 +39,53 @@
             </tr>
           </tbody>
       </table>
+      <nav v-if="systems.lastPageNumber!=1" aria-label="Page navigation example " class="">
+        <ul class="pagination">
+          <li v-if="!systems.firstPage" class="page-item">
+            <a class="page-link" href="javascript:;" aria-label="Previous" 
+            @click="goSys(systems.prevPageNumber)">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <!-- 回到第一页 -->
+          <template v-if="(systems.pageNumber-4)>1">
+            <li class="page-item">
+              <a class="page-link" href="javascript:;"  
+              @click="goSys(1)">1</a>
+            </li>
+            <li class="page-item disabled ">
+              <a class="page-link">...</a>
+            </li>
+          </template>
+          <template v-for="page in systems.pageNumbers">
+            <li class="page-item" :class="{active:(page==systems.pageNumber)}">
+              <a class="page-link" href="javascript:;"  
+              @click="goSys(page)">{{page}}</a>
+            </li>
+        </template>
+        <!-- 回到最后一页 -->
+         <template v-if="(systems.pageNumber+4+1)<systems.lastPageNumber">
+            <li class="page-item disabled ">
+              <a class="page-link">...</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="javascript:;"  
+              @click="goSys(systems.lastPageNumber)">{{systems.lastPageNumber}}</a>
+            </li>
+          </template>
+
+          <li v-if="!systems.lastPage" class="page-item">
+            <a class="page-link" href="javascript:;" aria-label="Next"
+            @click="goSys(systems.nextPageNumber)">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          <div class="input-group page-input">
+          <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
+          <button class="input-group-addon" id="basic-addon2" @click="goSys(formPage)">Go</button>
+        </div>
+        </ul>
+      </nav>
       </div>  
     </div>
     <div class="add-banner-mask" :class="{'none':openAddData==false}">
@@ -76,6 +123,7 @@
       loading: false,
       systems:'',
       openAddData:false,
+      formPage:'',
       addKey:'',
       addName:'',
       addGroup:'',
@@ -89,12 +137,19 @@
       })
     },
     mounted () {
-        
         this.$emit('loaded',false)
     },
     methods:{
       openAdd(){this.openAddData=true},
       closeAdd(){this.openAddData=false},
+      goSys(page){
+        var params = {
+          pageNum:page
+        }
+        Promise.all([SystemData.system(params)]).then(([systems])=>{
+            this.systems=systems.data.data
+        })
+      },
       update(id,index){
         var $this = this;
         var systems =this.systems;

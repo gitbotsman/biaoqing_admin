@@ -1,0 +1,32 @@
+.tags-m-title{
+	font-size: 16px;
+}
+.tag-container{
+	margin: 0 16px;
+	margin-bottom: 15px;
+    background: #fff;
+    padding: 0 10px;
+}
+.tags-m-name{
+	font-size: 14px;
+    border: 1px solid #ddd;
+    line-height: auto;
+    display: inline-block;
+    padding: 5px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    float: left;
+    color: #333;
+    transition: all ease 0.2s;
+}
+.tags-m-name:hover{
+	border: 1px solid #58c6ff !important;
+    color: #fff !important;
+    background: #58c6ff !important;
+}
+.tip{
+    font-size: 12px;
+    color: #999;
+}

@@ -71,6 +71,7 @@ const routes = [
       {path: '/topicdetail/:id', component: resolve => require(['./components/biaoqing/topic-detail.vue'], resolve)},
 
       {path: '/userlist', component: resolve => require(['./components/biaoqing/user-manage.vue'], resolve)},
+      {path: '/userdetail/:id', component: resolve => require(['./components/user/user-detail.vue'], resolve)},
       // 贴纸
       {path: '/stickerlist', component: resolve => require(['./components/sticker/sticker-list.vue'], resolve)},
       {path: '/facesticker', component: resolve => require(['./components/sticker/face-sticker.vue'], resolve)},
@@ -81,6 +82,7 @@ const routes = [
       {path: '/systemdata', component: resolve => require(['./components/role/systemdata.vue'], resolve)},
       {path: '/shadowmanage', component: resolve => require(['./components/user/shadow.vue'], resolve)},
       {path: '/myshadow', component: resolve => require(['./components/user/my-shadow.vue'], resolve)},
+      {path: '/tags', component: resolve => require(['./components/tags/tags-manage.vue'], resolve)},
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},

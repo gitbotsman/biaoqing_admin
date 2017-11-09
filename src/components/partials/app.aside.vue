@@ -54,9 +54,13 @@
     <router-link class="aside-item" to="/banner" title="Dashboard" v-ripple exact>
       <i class="fa fa-map"></i><span>广告管理</span>
     </router-link>
+    <router-link class="aside-item" to="/tags" title="Dashboard" v-ripple exact>
+      <i class="fa fa-motorcycle"></i><span>热词管理</span>
+    </router-link>
     <router-link class="aside-item" to="/feedback" title="Dashboard" v-ripple exact>
       <i class="fa fa-grav"></i><span>反馈管理</span>
     </router-link>
+    
   </div>
 </template>
 <script>

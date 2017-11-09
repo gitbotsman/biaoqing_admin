@@ -43,7 +43,6 @@
 				      			<span class="fa fa-sort-down fl" :class="{active:(sort=='create_time' && asc==true)}" style="display:block;"></span>
 				      		</span>
 				      </th>
-				      
 				      <th>粉丝数
 							<span class="biaoqing-sort clearfloat" @click="goUser(users.pageNumber,'fans_num',!asc)">
 				      			<span class="fa fa-sort-up fl" :class="{active:(sort=='fans_num' && asc==false)}" style="display:block;"></span>
@@ -74,7 +73,7 @@
 		    			</td>
 		    			<td>{{user.id}}</td>
 		    			<td class="max-width100">
-		    				<span class="biaoqing-table-content" :title="user.name">{{user.name}}</span>
+		    				<router-link target='_blank' class="biaoqing-table-content hover-line" :title="user.name":to="'/userdetail/'+user.id" v-ripple.stop>{{user.name}}</router-link>
 		    			</td>
 						<td class="max-width20" :title="user.phone">
 		    				{{user.phone}}
@@ -90,7 +89,6 @@
 					          	<span v-else-if="user.banPublishDuration=='-1'">禁言永久</span>
 					          	<span v-else>禁言{{ Math.ceil(user.banPublishDuration/(60*60*24))}}天</span>
 					          </button>
-
 					          <div class="dropdown-menu">
 					            <a @click="userBan(user.id,'1',index)" class="dropdown-item">1天</a>
 					            <a @click="userBan(user.id,'3',index)" class="dropdown-item">3天</a>
