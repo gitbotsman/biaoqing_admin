@@ -88,7 +88,6 @@
             </div>
           </div>
           <div class="row">
-            
             <div class="col-sm-12">
               <div class="form-group form-group-alt">
                 <label>注册IP</label>
@@ -97,51 +96,93 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
+              <div class="form-group form-group-alt">
+                <label>作品数</label>
+                <span class="form-control color999 flex-center">{{detail.workNum}}</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
               <div class="form-group form-group-alt">
                 <label>关注数</label>
                 <span class="form-control color999 flex-center">{{detail.followNum}}</span>
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <div class="form-group form-group-alt">
                 <label>粉丝数</label>
                 <span class="form-control color999 flex-center">{{detail.fansNum}}</span>
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <div class="form-group form-group-alt">
                 <label>喜欢的作品</label>
                 <span class="form-control color999 flex-center">{{detail.myLikeWorkNum}}</span>
               </div>
             </div>
           </div>
+      </div>
+    </div>
+    <div class="users-container mt-3">
+      <div class="btn btn-sm btn-outline-primary active">作品列表</div>
+        <div class="my-work biaoqing-table">
+          <Subjectlist 
+            :works="works"
+            :tags="tags"
+            :keyword="0"
+            :sort="sort"
+            :asc="asc"
+            :page="page"
+            @goSubject="goSubject"
+          ></Subjectlist>
+          <Pagepublic :pages="works" @paging="goSubject"></Pagepublic>
         </div>
     </div>
   </div>
 </template>
 
 <script>
+  import '../../../static/css/biaoqing/biaoqing.css'
   import '../../../static/css/biaoqing/user.css'
-  import { UserManage } from '../../resources'
+  import { UserManage,Subject} from '../../resources'
   import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
   import swal2 from 'sweetalert2'
   import $ from 'jquery'
   import querystring from 'querystring'
+
+  import Pagepublic from '../../widgets/pagepublic.vue'
+  import Subjectlist from '../../widgets/subjectlist.vue'
+
   export default {
     data: () => ({
       loading: false,
-      detail:''
+      detail:'',
+      works:'',
+      userId:'',
+      tags:'',
+      page:'',
+      sort:'',
+      asc:''
     }),
     beforeRouteEnter (to, from, next) {
       var id = to.params.id;
       var params={
         id:id
       }
-      var req = [UserManage.detail(params)]
-      Promise.all(req).then(([detail])=>{
+      var myWork={
+        userId:id
+      }
+      var req = [UserManage.detail(params),Subject.tags(),Subject.works(myWork)]
+      Promise.all(req).then(([detail,tags,works])=>{
         detail.data.data.createTime=formatTime(detail.data.data.createTime)
+        works.data.data.items.forEach(function(items){
+          items.createTime=formatTime(items.createTime)
+        })
+
         next(vm=>{
+          vm.userId=id;
+          vm.works=works.data.data;
+          vm.tags=tags.data;
           vm.detail = detail.data.data;
         })
       })
@@ -210,6 +251,37 @@
           },
         }).catch(swal2.noop)
       },
-    }
+      goSubject(page,keyword,sort,asc,enable){
+        this.$emit('loaded',true);
+        var params = {
+          pageNum:page,
+          keyword:0,
+          userId:this.userId
+        }
+
+        if(sort && sort!=''){
+          params.sort = sort;
+          params.asc = asc;
+          params.enable=this.enable;
+        }else{
+          params.sort = this.sort;
+          params.asc = this.asc;
+        }
+
+        Promise.all([Subject.works(params)]).then(([works]) => {
+          $('body,html').animate({scrollTop:0},10);
+          this.$emit('loaded',false)
+          for(var i = 0;i<works.data.data.items.length;i++){
+            works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
+          }
+
+          this.page=params.pageNum
+          this.sort=params.sort;
+          this.asc=params.asc;
+          this.works=works.data.data;
+        })
+      },
+    },
+    components:{Subjectlist,Pagepublic}
   }
 </script>
