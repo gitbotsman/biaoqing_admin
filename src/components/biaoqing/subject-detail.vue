@@ -27,9 +27,10 @@
 	                <div class="row">
 	                  <div class="col-sm-6 col-sm-6">
 	                    <div class="form-group form-group-alt">
-	                      <label>用户昵称</label>
-	                      <span class="form-control color999 flex-center">{{detailDataUser.name}}</span>
-	                      <span></span>
+	                        <label>用户昵称</label>
+	                        <span class="form-control color999 flex-center">
+		                      	<router-link :to="'/userdetail/'+detailDataUser.id">{{detailDataUser.name}}</router-link>
+	                  		</span>
 	                    </div>
 	                  </div>
 	                  <div class="col-sm-6 col-sm-6">
@@ -183,53 +184,7 @@
 					</tr>
 				</tbody>
     		</table>
-    		<nav v-if="comments.lastPageNumber!=1" aria-label="Page navigation example " class="">
-			  <ul class="pagination">
-			    <li v-if="!comments.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous" 
-			      @click="goComments(comments.prevPageNumber)">
-			        <span aria-hidden="true">&laquo;</span>
-			      </a>
-			    </li>
-			    <!-- 回到第一页 -->
-			    <template v-if="(comments.pageNumber-4)>1">
-			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goComments(1)">1</a>
-				    </li>
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-			    </template>
-			    <template v-for="page in comments.pageNumbers">
-				    <li class="page-item" :class="{active:(page==comments.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goComments(page)">{{page}}</a>
-				    </li>
-				</template>
-				<!-- 回到最后一页 -->
-				 <template v-if="(comments.pageNumber+4+1)<comments.lastPageNumber">
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goComments(comments.lastPageNumber)">{{comments.lastPageNumber}}</a>
-				    </li>
-			    </template>
-
-			    <li v-if="!comments.lastPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Next"
-			      @click="goComments(comments.nextPageNumber)">
-			        <span aria-hidden="true">&raquo;</span>
-			      </a>
-			    </li>
-			    <div class="input-group page-input">
-				  <input @keyup.enter="goComments(formPage)" type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-				  <button class="input-group-addon" id="basic-addon2" @click="goComments(formPage)">Go</button>
-				</div>
-			  </ul>
-			</nav>
+    		<Pagepublic :pages="comments" @paging="goComments"></Pagepublic>
     	</div>
     </div>
     <div @click='hiddenimg' class="img-view-tc cursor"><img src=""></div>
@@ -244,6 +199,8 @@ import swal2 from 'sweetalert2'
 import querystring from 'querystring'
 import $ from 'jquery'
 import {Shadow} from '../../resources'
+import Pagepublic from '../../widgets/pagepublic.vue'
+
 export default{
 	data:() => ({
 		shadow:Shadow.current(),
@@ -487,7 +444,8 @@ export default{
 			}
 			return style;
     	}
-    }//metho
+    },//methods
+    components:{Pagepublic}
 }
 
 

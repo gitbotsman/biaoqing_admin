@@ -30,53 +30,7 @@
 		    		</tr>
 		    	</tbody>
 			</table>
-			<nav v-if="feedback.lastPageNumber!=1" aria-label="Page navigation example">
-			  <ul class="pagination">
-			    <li v-if="!feedback.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous" 
-			      @click="goFeedback(feedback.prevPageNumber)">
-			        <span aria-hidden="true">&laquo;</span>
-			      </a>
-			    </li>
-			    <!-- 回到第一页 -->
-			    <template v-if="(feedback.pageNumber-4)>1">
-			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goFeedback(1)">1</a>
-				    </li>
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-			    </template>
-			    <template v-for="page in feedback.pageNumbers">
-				    <li class="page-item" :class="{active:(page==feedback.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goFeedback(page)">{{page}}</a>
-				    </li>
-				</template>
-				<!-- 回到最后一页 -->
-				 <template v-if="(feedback.pageNumber+4+1)<feedback.lastPageNumber">
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goFeedback(feedback.lastPageNumber)">{{feedback.lastPageNumber}}</a>
-				    </li>
-			    </template>
-
-			    <li v-if="!feedback.lastPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Next"
-			      @click="goFeedback(feedback.nextPageNumber)">
-			        <span aria-hidden="true">&raquo;</span>
-			      </a>
-			    </li>
-			    <div class="input-group page-input">
-				  <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-				  <button class="input-group-addon" id="basic-addon2" @click="goFeedback(formPage)">Go</button>
-				</div>
-			  </ul>
-			</nav>
+			<Pagepublic :pages="feedback" @paging="goFeedback"></Pagepublic>
 	    </div>
     </div>
 </div>
@@ -87,6 +41,7 @@
 import { TopicManage,http } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
+import Pagepublic from '../../widgets/pagepublic.vue'
 
 export default {
 	data: () => ({
@@ -127,6 +82,7 @@ export default {
 		        this.feedback=response.data.data;
 		    })
     	}
-    } 
+    },
+    components:{Pagepublic}
 }
 </script>

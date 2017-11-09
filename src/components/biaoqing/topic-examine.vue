@@ -13,12 +13,6 @@
 		          <button  @click="goTopicReview(reviews.pageNumber,sort,asc,'2')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='2')}" >审核成功</button>
 		          <button @click="goTopicReview(reviews.pageNumber,sort,asc,'-1')" type="button" class="btn btn-outline-primary" :class="{active:(audit=='-1')}" >审核失败</button>
 		        </div>
-		        <!-- <div class="input-group search-topic fl">
-			     	<input @keyup.enter="searchTopic" type="text" class="form-control" v-model="searchTopicKey" placeholder="输入关键词" aria-label="Search for...">
-			      	<span class="input-group-btn">
-			          <button @click="searchTopic" class="btn btn-secondary" type="button">Search</button>
-			        </span>
-			    </div> -->
 		    </div>
 			<table class="table table-bordered table-hover">
 				<thead>
@@ -60,7 +54,11 @@
 		    				<span class="biaoqing-table-content" :title="review.summary">{{review.summary}}</span>
 		    			</td>
 		    			<td class="max-width20">
-		    				<span :title="review.ownerName">{{review.ownerName}}</span>
+		    				<router-link 
+		    				  target="_blank"
+			                  :title="review.ownerName" 
+			                  :to="'/userdetail/'+review.ownerId"
+			                  >{{review.ownerName}}</router-link>
 		    			</td>
 						<td class="max-width20">
 		    				<span :title="review.auditUserName">{{review.auditUserName}}</span>
@@ -88,53 +86,7 @@
 		    		</tr>
 		    	</tbody>
 			</table>
-			<nav v-if="reviews.lastPageNumber!=1" aria-label="Page navigation example">
-			  <ul class="pagination">
-			    <li v-if="!reviews.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous" 
-			      @click="goTopicReview(reviews.prevPageNumber)">
-			        <span aria-hidden="true">&laquo;</span>
-			      </a>
-			    </li>
-			    <!-- 回到第一页 -->
-			    <template v-if="(reviews.pageNumber-4)>1">
-			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goTopicReview(1)">1</a>
-				    </li>
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-			    </template>
-			    <template v-for="page in reviews.pageNumbers">
-				    <li class="page-item" :class="{active:(page==reviews.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goTopicReview(page)">{{page}}</a>
-				    </li>
-				</template>
-				<!-- 回到最后一页 -->
-				 <template v-if="(reviews.pageNumber+4+1)<reviews.lastPageNumber">
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goTopicReview(reviews.lastPageNumber)">{{reviews.lastPageNumber}}</a>
-				    </li>
-			    </template>
-
-			    <li v-if="!reviews.lastPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Next"
-			      @click="goTopicReview(reviews.nextPageNumber)">
-			        <span aria-hidden="true">&raquo;</span>
-			      </a>
-			    </li>
-			    <div class="input-group page-input">
-				  <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-				  <button class="input-group-addon" id="basic-addon2" @click="goTopicReview(formPage)">Go</button>
-				</div>
-			  </ul>
-			</nav>
+			<Pagepublic :pages="reviews" @paging="goTopicReview"></Pagepublic>
 	    </div>	
     </div>
 </div>
@@ -147,7 +99,7 @@ import { Topic,TopicManage } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
 import axios from 'axios'
-
+import Pagepublic from '../../widgets/pagepublic.vue'
 export default {
 	data: () => ({
 		searchTopicKey:'',
@@ -297,6 +249,7 @@ export default {
 				})
 			}
     	}
-    } 
+    },
+    components:{Pagepublic}
 }
 </script>

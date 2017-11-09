@@ -68,53 +68,7 @@
             </tr>
           </tbody>
       </table>
-      <nav v-if="shadowList.lastPageNumber!=1" aria-label="Page navigation example">
-        <ul class="pagination">
-          <li v-if="!shadowList.firstPage" class="page-item">
-            <a class="page-link" href="javascript:;" aria-label="Previous" 
-            @click="goUser(shadowList.prevPageNumber)">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <!-- 回到第一页 -->
-          <template v-if="(shadowList.pageNumber-4)>1">
-            <li class="page-item">
-              <a class="page-link" href="javascript:;"  
-              @click="goUser(1)">1</a>
-            </li>
-            <li class="page-item disabled ">
-              <a class="page-link">...</a>
-            </li>
-          </template>
-          <template v-for="page in shadowList.pageNumbers">
-            <li class="page-item" :class="{active:(page==shadowList.pageNumber)}">
-              <a class="page-link" href="javascript:;"  
-              @click="goUser(page)">{{page}}</a>
-            </li>
-        </template>
-        <!-- 回到最后一页 -->
-         <template v-if="(shadowList.pageNumber+4+1)<shadowList.lastPageNumber">
-            <li class="page-item disabled ">
-              <a class="page-link">...</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="javascript:;"  
-              @click="goUser(shadowList.lastPageNumber)">{{shadowList.lastPageNumber}}</a>
-            </li>
-          </template>
-
-          <li v-if="!shadowList.lastPage" class="page-item">
-            <a class="page-link" href="javascript:;" aria-label="Next"
-            @click="goUser(shadowList.nextPageNumber)">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-          <div class="input-group page-input">
-          <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-          <button class="input-group-addon" id="basic-addon2" @click="goUser(formPage)">Go</button>
-        </div>
-        </ul>
-      </nav>
+      <Pagepublic :pages="shadowList" @paging="goUser"></Pagepublic>
     </div>
     <div class="selecTagContainer" :class="{show:(shadowShow==true)}">
       <div class="selecTag-bg" @click="cancleSelect"></div> 
@@ -151,7 +105,7 @@ import '../../../static/css/biaoqing/user.css'
 import '../../../static/css/biaoqing/biaoqing.css'
 import { Shadow } from '../../resources'
 import { formatTime } from '../../misc/utils'
-
+import Pagepublic from '../../widgets/pagepublic.vue'
 export default {
   data: () => ({
     loading: false,
@@ -280,7 +234,8 @@ export default {
         }
       })
     }
-  }
+  },
+  components:{Pagepublic}
 }
 </script>
 <style>

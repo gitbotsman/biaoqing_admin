@@ -115,53 +115,7 @@
 		    		</tr>
 		    	</tbody>
 			</table>
-			<nav v-if="users.lastPageNumber!=1" aria-label="Page navigation example">
-			  <ul class="pagination">
-			    <li v-if="!users.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous" 
-			      @click="goUser(users.prevPageNumber)">
-			        <span aria-hidden="true">&laquo;</span>
-			      </a>
-			    </li>
-			    <!-- 回到第一页 -->
-			    <template v-if="(users.pageNumber-4)>1">
-			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goUser(1)">1</a>
-				    </li>
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-			    </template>
-			    <template v-for="page in users.pageNumbers">
-				    <li class="page-item" :class="{active:(page==users.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goUser(page)">{{page}}</a>
-				    </li>
-				</template>
-				<!-- 回到最后一页 -->
-				 <template v-if="(users.pageNumber+4+1)<users.lastPageNumber">
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goUser(users.lastPageNumber)">{{users.lastPageNumber}}</a>
-				    </li>
-			    </template>
-
-			    <li v-if="!users.lastPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Next"
-			      @click="goUser(users.nextPageNumber)">
-			        <span aria-hidden="true">&raquo;</span>
-			      </a>
-			    </li>
-			    <div class="input-group page-input">
-				  <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-				  <button class="input-group-addon" id="basic-addon2" @click="goUser(formPage)">Go</button>
-				</div>
-			  </ul>
-			</nav>
+			<Pagepublic :pages="users" @paging="goUser"></Pagepublic>
 	    </div>
 		<!-- 禁言列表 -->
 	    <div class="biaoqing-table" v-if="bans.items">
@@ -226,53 +180,7 @@
 		    		</tr>
 		    	</tbody>
 			</table>
-			<nav v-if="bans.lastPageNumber!=1" aria-label="Page navigation example">
-			  <ul class="pagination">
-			    <li v-if="!bans.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous" 
-			      @click="banList(bans.prevPageNumber)">
-			        <span aria-hidden="true">&laquo;</span>
-			      </a>
-			    </li>
-			    <!-- 回到第一页 -->
-			    <template v-if="(bans.pageNumber-4)>1">
-			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="banList(1)">1</a>
-				    </li>
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-			    </template>
-			    <template v-for="page in bans.pageNumbers">
-				    <li class="page-item" :class="{active:(page==bans.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="banList(page)">{{page}}</a>
-				    </li>
-				</template>
-				<!-- 回到最后一页 -->
-				 <template v-if="(bans.pageNumber+4+1)<bans.lastPageNumber">
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="banList(bans.lastPageNumber)">{{bans.lastPageNumber}}</a>
-				    </li>
-			    </template>
-
-			    <li v-if="!bans.lastPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Next"
-			      @click="banList(bans.nextPageNumber)">
-			        <span aria-hidden="true">&raquo;</span>
-			      </a>
-			    </li>
-			    <div class="input-group page-input">
-				  <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's banname" aria-describedby="basic-addon2">
-				  <button class="input-group-addon" id="basic-addon2" @click="banList(formPage)">Go</button>
-				</div>
-			  </ul>
-			</nav>
+			<Pagepublic :pages="bans" @paging="banList"></Pagepublic>
 	    </div>
     </div>
 </div>
@@ -284,6 +192,9 @@ import querystring from 'querystring'
 import { UserManage } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import swal2 from 'sweetalert2'
+import Pagepublic from '../../widgets/pagepublic.vue'
+
+
 export default {
 	data: () => ({
 		loading: false,
@@ -511,6 +422,7 @@ export default {
 	        	return expire
 	        } 
 		}  
-    } 
+    },
+    components:{Pagepublic}
 }
 </script>

@@ -21,7 +21,6 @@
               <div class="form-group form-group-alt">
                 <label>话题名称</label>
                 <span class="form-control color999 flex-center">{{topicDetail.name}}</span>
-                <span></span>
               </div>
             </div>
             <div class="col-sm-4 col-sm-4">
@@ -29,14 +28,12 @@
                 <label>热门</label>
                 <span v-if="topicDetail.isHot===true" class="form-control color999 flex-center">是</span>
                 <span v-else class="form-control color999 flex-center">否</span>
-                <span></span>
               </div>
             </div>
             <div class="col-sm-4 col-sm-4">
               <div class="form-group form-group-alt">
                 <label>创建时间</label>
                 <span class="form-control color999 flex-center">{{topicDetail.createTime}}</span>
-                <span></span>
               </div>
             </div>
           </div>
@@ -45,7 +42,6 @@
               <div class="form-group form-group-alt">
                 <label>描述</label>
                 <span class="color999 flex-center">{{topicDetail.summary}}</span>
-                <span></span>
               </div>
             </div>
           </div>
@@ -105,7 +101,10 @@
                   <span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
                 </td>
                 <td class="max-width20">
-                  <span :title="work.userName">{{work.userName}}</span>
+                  <router-link 
+                  :title="work.userName" 
+                  :to="'/userdetail/'+work.userId"
+                  >{{work.userName}}</router-link>
                 </td>
                 <td class="max-width100 publish-time">
                   <span>{{work.createTime}}</span>
@@ -139,53 +138,7 @@
               </tr>
             </tbody>
         </table>
-        <nav v-if="works.lastPageNumber!=1" aria-label="Page navigation example " class="">
-          <ul class="pagination">
-            <li v-if="!works.firstPage" class="page-item">
-              <a class="page-link" href="javascript:;" aria-label="Previous" 
-              @click="goSubject(works.prevPageNumber)">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <!-- 回到第一页 -->
-            <template v-if="(works.pageNumber-4)>1">
-              <li class="page-item">
-                <a class="page-link" href="javascript:;"  
-                @click="goSubject(1)">1</a>
-              </li>
-              <li class="page-item disabled ">
-                <a class="page-link">...</a>
-              </li>
-            </template>
-            <template v-for="page in works.pageNumbers">
-              <li class="page-item" :class="{active:(page==works.pageNumber)}">
-                <a class="page-link" href="javascript:;"  
-                @click="goSubject(page)">{{page}}</a>
-              </li>
-          </template>
-          <!-- 回到最后一页 -->
-           <template v-if="(works.pageNumber+4+1)<works.lastPageNumber">
-              <li class="page-item disabled ">
-                <a class="page-link">...</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="javascript:;"  
-                @click="goSubject(works.lastPageNumber)">{{works.lastPageNumber}}</a>
-              </li>
-            </template>
-
-            <li v-if="!works.lastPage" class="page-item">
-              <a class="page-link" href="javascript:;" aria-label="Next"
-              @click="goSubject(works.nextPageNumber)">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-            <div class="input-group page-input">
-            <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-            <button class="input-group-addon" id="basic-addon2" @click="goSubject(formPage)">Go</button>
-          </div>
-          </ul>
-        </nav>
+        <Pagepublic :pages="works" @paging="goSubject"></Pagepublic>
       </div> 
       <div class="selecTagContainer" :class="{show:(showSetHot==true)}">
         <div class="selecTag-bg" @click="showSetHotHidden"></div>
@@ -209,7 +162,7 @@ import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import swal2 from 'sweetalert2'
 import querystring from 'querystring'
 import $ from 'jquery'
-
+import Pagepublic from '../../widgets/pagepublic.vue'
 export default{
 	data:() => ({
 		loading: false,
@@ -364,7 +317,8 @@ export default{
       toBack(){
         history.go(-1)
       }
-    }
+    },
+    components:{Pagepublic}
 }
 
 

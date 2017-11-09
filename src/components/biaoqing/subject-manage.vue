@@ -96,14 +96,18 @@
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
 		    			</td>
-              <td>
-                <span v-if="work.tag" @click="setTags(work.id,index,work.tag)" class="pass-ing cursor hover-line">
-                  {{work.tag}}
-                </span>
-                <span v-else @click="setTags(work.id,index,work.tag)" class="hover-line cursor pass-success">设置</span>
-              </td>
+			            <td>
+			                <span v-if="work.tag" @click="setTags(work.id,index,work.tag)" class="pass-ing cursor hover-line">
+			                  {{work.tag}}
+			                </span>
+			                <span v-else @click="setTags(work.id,index,work.tag)" class="hover-line cursor pass-success">设置</span>
+			            </td>
 		    			<td class="max-width20">
-		    				<span :title="work.userName">{{work.userName}}</span>
+		    				<router-link 
+		    					target="_blank"
+		    					:title="work.userName"
+		    					:to="'/userDetail/'+work.userId"
+		    				>{{work.userName}}</router-link>
 		    			</td>
 		    			<td class="max-width100 publish-time">
 		    				<span>{{work.createTime}}</span>
@@ -139,53 +143,7 @@
 		    		</tr>
 		    	</tbody>
 			</table>
-			<nav v-if="works.lastPageNumber!=1" aria-label="Page navigation example " class="">
-			  <ul class="pagination">
-			    <li v-if="!works.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous"
-			      @click="goSubject(works.prevPageNumber)">
-			        <span aria-hidden="true">&laquo;</span>
-			      </a>
-			    </li>
-			    <!-- 回到第一页 -->
-			    <template v-if="(works.pageNumber-4)>1">
-			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"
-				    	@click="goSubject(1)">1</a>
-				    </li>
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-			    </template>
-			    <template v-for="page in works.pageNumbers">
-				    <li class="page-item" :class="{active:(page==works.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"
-				    	@click="goSubject(page)">{{page}}</a>
-				    </li>
-				</template>
-				<!-- 回到最后一页 -->
-				 <template v-if="(works.pageNumber+4+1)<works.lastPageNumber">
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"
-				    	@click="goSubject(works.lastPageNumber)">{{works.lastPageNumber}}</a>
-				    </li>
-			    </template>
-
-			    <li v-if="!works.lastPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Next"
-			      @click="goSubject(works.nextPageNumber)">
-			        <span aria-hidden="true">&raquo;</span>
-			      </a>
-			    </li>
-			    <div class="input-group page-input">
-				  <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-				  <button class="input-group-addon" id="basic-addon2" @click="goSubject(formPage)">Go</button>
-				</div>
-			  </ul>
-			</nav>
+			<Pagepublic :pages="works" @paging="goSubject"></Pagepublic>
 	    </div>
 	    <div class="selecTagContainer" :class="{show:(showSetHot==true)}">
 	    	<div class="selecTag-bg" @click="showSetHotHidden"></div>
@@ -224,32 +182,34 @@
 	    </div>
     </div>
 
-  <div class="selecTagContainer">
-    <div class="selecTag-bg" @click="selectCancle"></div>
-    <div class="selecTag-main">
-      <div class="selecTag-title">添加标签：</div>
-      <div class="clearfloat">
-        <div v-for="tag in tags.data"
-             class="tag-name"
-             :class="{active:(ch==tag.name)}"
-             @click="selectTags(tag.name)"
-        >{{tag.name}}</div>
-      </div>
-      <div>
-        <input type="text" class="form-control mt-2" v-model="ch">
-        <div class="tip mt-2" style="font-size:13px; color:#999;">标签之间请用逗号（,） 隔开</div>
-      </div>
-      <div class="selecTag-btn-box">
-        <div class="selecTag-btn selecTag-cancle" @click="selectCancle">取消</div>
-        <div @click="setTagsView(subjectId,ch)" class="selecTag-btn selecTag-ok">确定</div>
-      </div>
-    </div>
-  </div>
+	  <div class="selecTagContainer">
+	    <div class="selecTag-bg" @click="selectCancle"></div>
+	    <div class="selecTag-main">
+	      <div class="selecTag-title">添加标签：</div>
+	      <div class="clearfloat">
+	        <div v-for="tag in tags.data"
+	             class="tag-name"
+	             :class="{active:(ch==tag.name)}"
+	             @click="selectTags(tag.name)"
+	        >{{tag.name}}</div>
+	      </div>
+	      <div>
+	        <input type="text" class="form-control mt-2" v-model="ch">
+	        <div class="tip mt-2" style="font-size:13px; color:#999;">标签之间请用逗号（,） 隔开</div>
+	      </div>
+	      <div class="selecTag-btn-box">
+	        <div class="selecTag-btn selecTag-cancle" @click="selectCancle">取消</div>
+	        <div @click="setTagsView(subjectId,ch)" class="selecTag-btn selecTag-ok">确定</div>
+	      </div>
+	    </div>
+	  </div>
 </div>
 </template>
 
 <script>
 import '../../../static/css/biaoqing/biaoqing.css'
+import Pagepublic from '../../widgets/pagepublic.vue'
+
 import { Subject } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
@@ -276,8 +236,8 @@ export default {
 		setHot:'',
 		modelUser:'',
 		enable:'',
-    subjectId:'',
-    ch:''
+	    subjectId:'',
+	    ch:''
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
@@ -409,50 +369,54 @@ export default {
 		        }
 		    })
     	},
-      setTags(id,index,tags){
-        this.subjectId = id;
-        this.index = index;
-        if(tags){
-          this.ch = tags;
-        }else{
-          this.ch = '';
-        }
-        $('.selecTagContainer').fadeIn('fast')
-      },
-      selectCancle(e){
-        $('.selecTagContainer').fadeOut('fast')
-        this.ch = '';
-      },
-      selectTags(tag){
-        if(this.ch.indexOf(tag)<0){
-          this.ch=this.ch+','+tag;
-        }
-      },
-      setTagsView(id,ch) {
-        var index = this.index;
-        var that = this;
-        var params = {
-          "id": id,
-          "tag": ch
-        }
-        if (ch != '') {
-          var msg = '设置成功'
-        } else {
-          var msg = '取消成功'
-        }
-        that.$http.post('/subject/update', params).then(response => {
-          if (response.data.code == 200) {
-            var works = that.works;
-            works.items[index].tag = params.tag;
-            toastr.success(msg);
-            that.ch = '';
-            that.subjectId = ''
-            $('.selecTagContainer').fadeOut('fast');
-          } else {
-            toastr.error(response.data.msg);
-          }
-        })
-      },
+		setTags(id,index,tags){
+			this.subjectId = id;
+			this.index = index;
+			if(tags){
+			  this.ch = tags;
+			}else{
+			  this.ch = '';
+			}
+			$('.selecTagContainer').fadeIn('fast')
+		},
+		selectCancle(e){
+			$('.selecTagContainer').fadeOut('fast')
+			this.ch = '';
+		},
+		selectTags(tag){
+			if(this.ch.indexOf(tag)<0){
+			  if(this.ch==''){
+			  	this.ch=tag;
+			  }else{
+			  	this.ch=this.ch+','+tag;
+			  }
+			}
+		},
+		setTagsView(id,ch) {
+			var index = this.index;
+			var that = this;
+			var params = {
+			  "id": id,
+			  "tag": ch
+			}
+			if (ch != '') {
+			  var msg = '设置成功'
+			} else {
+			  var msg = '取消成功'
+			}
+			that.$http.post('/subject/update', params).then(response => {
+			  if (response.data.code == 200) {
+			    var works = that.works;
+			    works.items[index].tag = params.tag;
+			    toastr.success(msg);
+			    that.ch = '';
+			    that.subjectId = ''
+			    $('.selecTagContainer').fadeOut('fast');
+			  } else {
+			    toastr.error(response.data.msg);
+			  }
+			})
+		},
     	tagSubject(page,keyword){
     		var params = {
 				pageSize:15,
@@ -695,7 +659,8 @@ export default {
     			}
     		})
     	}
-    }
+    },
+    components:{Pagepublic}
 }
 </script>
 <style>

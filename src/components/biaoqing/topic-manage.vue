@@ -72,7 +72,11 @@
 		    				<span class="biaoqing-table-content" :title="topic.summary">{{topic.summary}}</span>
 		    			</td>
 		    			<td class="max-width20">
-		    				<span :title="topic.ownerName">{{topic.ownerName}}</span>
+		    				<router-link 
+		    					target="_blank"
+		    					:title="topic.ownerName" 
+		    					:to="'/userdetail/'+topic.ownerId"
+		    					>{{topic.ownerName}}</router-link>
 		    			</td>
 
 		    			<td class="max-width100 publish-time">
@@ -97,53 +101,7 @@
 		    		</tr>
 		    	</tbody>
 			</table>
-			<nav v-if="topics.lastPageNumber!=1" aria-label="Page navigation example">
-			  <ul class="pagination">
-			    <li v-if="!topics.firstPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Previous" 
-			      @click="goTopics(topics.prevPageNumber)">
-			        <span aria-hidden="true">&laquo;</span>
-			      </a>
-			    </li>
-			    <!-- 回到第一页 -->
-			    <template v-if="(topics.pageNumber-4)>1">
-			    	<li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goTopics(1)">1</a>
-				    </li>
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-			    </template>
-			    <template v-for="page in topics.pageNumbers">
-				    <li class="page-item" :class="{active:(page==topics.pageNumber)}">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goTopics(page)">{{page}}</a>
-				    </li>
-				</template>
-				<!-- 回到最后一页 -->
-				 <template v-if="(topics.pageNumber+4+1)<topics.lastPageNumber">
-				    <li class="page-item disabled ">
-				    	<a class="page-link">...</a>
-				    </li>
-				    <li class="page-item">
-				    	<a class="page-link" href="javascript:;"  
-				    	@click="goTopics(topics.lastPageNumber)">{{topics.lastPageNumber}}</a>
-				    </li>
-			    </template>
-
-			    <li v-if="!topics.lastPage" class="page-item">
-			      <a class="page-link" href="javascript:;" aria-label="Next"
-			      @click="goTopics(topics.nextPageNumber)">
-			        <span aria-hidden="true">&raquo;</span>
-			      </a>
-			    </li>
-			    <div class="input-group page-input">
-				  <input type="number" class="form-control" v-model="formPage" placeholder="Page" aria-label="Recipient's username" aria-describedby="basic-addon2">
-				  <button class="input-group-addon" id="basic-addon2" @click="goTopics(formPage)">Go</button>
-				</div>
-			  </ul>
-			</nav>
+			<Pagepublic :pages="topics" @paging="goTopics"></Pagepublic>
 	    </div>	
     </div>
     <div class="selecTagContainer">
@@ -206,6 +164,7 @@ import toastr from '../../misc/toastr.esm'
 import swal2 from 'sweetalert2'
 import Uploader from '../../misc/uploader'
 var uploader = new Uploader('https://v0.api.upyun.com/biaoqingimg')
+import Pagepublic from '../../widgets/pagepublic.vue'
 
 export default {
 	data: () => ({
@@ -569,6 +528,7 @@ export default {
 			}
 
     	}
-    } 
+    },
+    components:{Pagepublic}
 }
 </script>
