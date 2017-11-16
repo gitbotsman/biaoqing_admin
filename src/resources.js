@@ -302,7 +302,8 @@ export const Subject = resource('subject', http, {
   tags: params => http.get('tag/all',{params:params}),     // 获取标签
   detail: params => http.get('subject/'+params.id),
   album: params => http.get('album/'+params.id),
-  comment:params => http.get('comment',{params:params})
+  comment:params => http.get('comment',{params:params}),
+  gif:params=> http.get('subject/albums',{params:params})
 })
 
 /**
@@ -353,5 +354,10 @@ export const Tags = resource('Tags', http, {
   index: params => http.get('/tag',{params:params}),
   material: params => http.get('/materialHot',{params:params}),
   search:params => http.get('/searchHot',{params:params})
+  
+})
+
+export const Task = resource('Task', http, {
+  liked: params => http.get('/subject/liked',{params:params}),
   
 })

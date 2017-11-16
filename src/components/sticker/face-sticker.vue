@@ -32,6 +32,7 @@
     			</div>
     		</div>
     	</div>
+    	<Pagepublic :pages="stickers" @paging="loadPage"></Pagepublic>
     </div>
 	<!-- 添加贴纸 -->
     <div class="add-banner-mask" :class="{'none':add==false}">
@@ -69,6 +70,7 @@ import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import swal2 from 'sweetalert2'
 import Uploader from '../../misc/uploader'
 import $ from 'jquery'
+import Pagepublic from '../../widgets/pagepublic.vue'
 var uploader = new Uploader('https://v0.api.upyun.com/biaoqingimg')
 
 
@@ -89,11 +91,11 @@ export default {
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
-			categoryId:''
+			categoryId:'',
+			pageSize:60
 		}
 		var resources = [StickerManage.faceCategory(),StickerManage.faceSticker(params)];
 		Promise.all(resources).then(([category,sticker]) => {
-			console.log(sticker)
 			next(vm => {
 				vm.categoryId = params.categoryId
 				vm.categorys=category.data.data;
@@ -261,7 +263,8 @@ export default {
     			var categoryId = this.categoryId;
     		}
     		var params = {
-    			categoryId:categoryId
+    			categoryId:categoryId,
+    			pageSize:60
     		}
     		Promise.all([StickerManage.faceSticker(params)]).then(([sticker]) => {
 				this.stickers=sticker.data.data;
@@ -269,6 +272,23 @@ export default {
 				this.categoryId=categoryId;
 			})
     	},
+    	loadPage(page){
+    		this.$emit('loaded',true)
+    		var categoryId = this.categoryId;
+    		var params = {
+    			categoryId:categoryId,
+    			pageSize:60,
+    			pageNum:page
+    		}
+    		Promise.all([StickerManage.faceSticker(params)]).then(([sticker]) => {
+    			this.$emit('loaded',false)
+				this.stickers=sticker.data.data;
+				this.categoryId=categoryId;
+			})
+
+    	},
+
+
     	//上传贴纸
     	upAddThumb(e){
     		var that = this;
@@ -284,7 +304,7 @@ export default {
     		var that = this;
 			var key="face/resource/"+uploader.bannergetFileName(e.target.files[0].name);
 			uploader.addFile(e.target.files,key).then(([file,fileOption])=>{
-				if(file.type=='application/x-zip-compressed'){
+				if(file.type=='application/x-zip-compressed' || file.type=="application/zip"){
 					that.addResource=file.name;
 					that.upArry.push(fileOption);
 				}else{
@@ -293,7 +313,8 @@ export default {
 				
 			})
     	}
-    } 
+    },
+    components:{Pagepublic}
 }
 </script>
 

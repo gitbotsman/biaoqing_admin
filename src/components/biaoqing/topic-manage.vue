@@ -193,7 +193,7 @@ export default {
 	beforeRouteEnter (to,form,next) {
 		var params = {
 			pageNum:1,
-			pageSize:15,
+			pageSize:10,
 			audit:'2',
 			sort:'',
 			asc:''
@@ -225,7 +225,7 @@ export default {
     	goTopics(page,sort,asc,isHot,isSlider){
     		var params = {
 				pageNum:page,
-				pageSize:15,
+				pageSize:10,
 				audit:'2'
 			}
 			if(sort){
@@ -380,7 +380,7 @@ export default {
     		this.$emit('loaded',true)
     		var params = {
 				pageNum:1,
-				pageSize:15,
+				pageSize:10,
 				audit:'2',
 				keyword:searchTopicKey
 			}

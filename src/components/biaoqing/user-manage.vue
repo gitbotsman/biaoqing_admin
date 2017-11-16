@@ -208,7 +208,7 @@ export default {
 	beforeRouteEnter (to,form,next) {
 		var params = {
 			pageNum:1,
-			pageSize:15
+			pageSize:10
 		}
 		Promise.all([UserManage.users(params)]).then(([users]) => {
 			if(users.data.data && users.data.code==200){
@@ -235,7 +235,7 @@ export default {
     		var $this = this;
     		this.$emit('loaded',true);
     		var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:page
 			}
 			if(sort && sort!=''){
@@ -342,7 +342,7 @@ export default {
     	banList(page,sort,asc){
     		this.$emit('loaded',true);
 			var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:page,
 				isExpire:'0'
 			}

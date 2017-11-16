@@ -11,6 +11,7 @@
             <tr>
               <th>头像</th>
               <th>马甲ID</th>
+              <th>用户ID</th>
               <th>用户名</th>
               <th>账号</th>
               <th>注册时间
@@ -33,6 +34,7 @@
                 </div>
               </td>
               <td>{{user.id}}</td>
+              <td>{{user.user.id}}</td>
               <td class="max-width100">
                 <span class="biaoqing-table-content" :title="user.name">{{user.user.name}}</span>
               </td>

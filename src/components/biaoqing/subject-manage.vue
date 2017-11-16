@@ -103,7 +103,7 @@ export default {
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
-			pageSize:15,
+			pageSize:10,
 			pageNum:1,
 			enable:1,
 			keyword:'0'
@@ -127,7 +127,7 @@ export default {
     	// 标签跳转
     	tagSubject(page,keyword){
     		var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:page,
 				enable:1
 			}
@@ -156,7 +156,7 @@ export default {
     	//回收站
     	goDelete(){
     		var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:1,
 				enable:0
 			}
@@ -177,7 +177,7 @@ export default {
     		this.ModelUserId="";
     		this.searchUserKey="";
     		var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:1,
 				enable:1,
 				keyword:'0'
@@ -198,7 +198,7 @@ export default {
     		this.$emit('loaded',true);
     		var you = this.you;
     		var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:page,
 				you:you,
 				enable:this.enable,
@@ -251,7 +251,7 @@ export default {
     			searchKey='0';
     		}
 			var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:1,
 				enable:1,
 				keyword:searchKey
@@ -273,7 +273,7 @@ export default {
     	},
     	selectModelUser(id){
     		var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:1,
 				userId:id,
 				enable:1,
@@ -322,7 +322,7 @@ export default {
     	},
     	youSubject(){
     		var params = {
-				pageSize:15,
+				pageSize:10,
 				pageNum:1,
 				you:1,
 				enable:1,

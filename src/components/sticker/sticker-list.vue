@@ -47,6 +47,8 @@
 				      <th>分类ID</th>
 				      <th>贴纸数量</th>
 				      <th>创建时间</th>
+              <th>权重
+              </th>
 				      <th>操作</th>
 				    </tr>
 		    	</thead>
@@ -68,7 +70,11 @@
 		    			<td class="max-width20 publish-time">
 		    				<span>{{materia.createTime}}</span>
 		    			</td>
+              <td class="hover-line cursor" @click="setRank(materia.id,materia.rank,index)">
+                <span class="text-success ">{{materia.rank}}</span>
+              </td>
 		    			<td class="max-width20">
+                
 		    				<span @click="setMateria('1',materia.id,index)" v-if="materia.isHot=='0'" class="pass-ing hover-line cursor">正常</span>
 		    				<span @click="setMateria('-1',materia.id,index)" v-if="materia.isHot=='1'" class="pass-success hover-line cursor">热门</span>
 		    				<span @click="setMateria('0',materia.id,index)" v-if="materia.isHot=='-1'" class="text-danger hover-line cursor">不推荐</span>
@@ -113,6 +119,7 @@ import '../../../static/css/biaoqing/biaoqing.css'
 import { StickerManage } from '../../resources'
 import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
 import toastr from '../../misc/toastr.esm'
+import swal2 from 'sweetalert2'
 import Pagepublic from '../../widgets/pagepublic.vue'
 export default {
 	data: () => ({
@@ -132,13 +139,13 @@ export default {
 			pageSize:15,
 			pageNum:1,
       enable:1,
-      keyword:'0'
+      keyword:'1'
 		}
 		Promise.all([StickerManage.category(params),StickerManage.materialHot()]).then(([materias,hots]) => {
       for(var i = 0;i<materias.data.data.items.length;i++){
 				materias.data.data.items[i].createTime=formatTime(materias.data.data.items[i].createTime)
 			}
-      next(vm => {
+      next( vm => {
         vm.enable=params.enable;
         vm.keyword=params.keyword;
         vm.hots = hots.data;
@@ -153,6 +160,45 @@ export default {
     methods: {
     	clearbigImg(e){clearViewImg(e)},
     	bigImg(e){viewImg(e,400)},
+      setRank(id,num,index){
+        var that = this;
+        swal2({
+          text:'请选择0-9排序值，越大权重越高',
+          input: 'number',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          showLoaderOnConfirm: true,
+          showCancelButton: true,
+          reverseButtons:true,
+          inputAttributes: {
+            min: 0,
+            max:9,
+            step: 1
+          },
+          inputValue: num,
+          preConfirm:function(num){
+            return new Promise(function(resolve,reject){
+              if(num !='' && (parseInt(num)>=0 && parseInt(num)<=9)){
+                swal2.close();
+                var params = {
+                  "id": id,
+                  "rank":num
+                }
+                that.$http.post('/category/update', params).then(response => {
+                    if(response.data.code==200){
+                      that.materias.items[index].rank=num
+                      toastr.success('请求成功');
+                    }else{
+                      toastr.error(response.data.msg);
+                    }
+                })
+              }else{
+                reject('请输入正确的排序值')
+              }
+            })
+          }
+        }).catch(swal2.noop)
+      },
     	goMaterial(page,keyword){
     		this.$emit('loaded',true);
   			var params = {

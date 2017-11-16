@@ -38,8 +38,8 @@
             <div class="card bg-twitter text-center b-0 p-3">
               <i class="fa fa-twitter fa-2x text-white"></i>
               <div class="text-white font-sm">
-                "Your time is limited, so don't waste it living someone else's life."
-                <div class="text-right font-xs text-italic">- Steve Travis</div>
+                "你的时间很有限，所以不要浪费生命重复别人的生活。"
+                <div class="text-right font-xs text-italic">- 史蒂夫·乔布斯</div>
               </div>
             </div>
           </div>

@@ -45,12 +45,11 @@
             <div class="font-xl">{{typename}} · {{page.totalCount}}</div>
             <router-link to="/user/new" class="text-link font-sm"><span class="img-btn">┼</span> 添加用户</router-link>
           </div>
-
           <div class="row no-gutters align-items-center py-2 px-4 bt-eee" v-for="(item, index) in page.items" :key="item.id">
             <router-link class="col d-flex text-grey" :to="'/user/' + item.id">
               <span class="img rounded" :style="{backgroundImage: 'url(' + item.avatar + ')'}"></span>
               <div class="ml-3">
-                <div>{{item.name}}</div>
+                <div>{{item.nick}}</div>
                 <div class="text-muted font-xxs">{{item.email}}</div>
               </div>
             </router-link>

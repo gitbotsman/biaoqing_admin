@@ -16,18 +16,11 @@
               <th>用户名</th>
               <th>账号</th>
               <th>密码</th>
-              <th>注册时间
-              </th>
-              <th>粉丝数
-              </th>
-              <th>关注数
-              </th>
-              <th>作品数
-              </th>
-              <th>
-                操作
-                <div style="font-weight:normal;font-size:12px;">(点击姓名取消绑定)</div>
-              </th>
+              <th>注册时间</th>
+              <th>粉丝数</th>
+              <th>关注数</th>
+              <th>作品数</th>
+              <th>操作<div style="font-weight:normal;font-size:12px;">(点击姓名取消绑定)</div></th>
             </tr>
           </thead>
           <tbody>
@@ -49,7 +42,6 @@
               <td class="max-width100 publish-time">
                 <span>{{user.createTime}}</span>
               </td>
-              
               <td class="max-width20">
                 {{user.user.fansNum}}
               </td>

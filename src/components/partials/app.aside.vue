@@ -51,6 +51,9 @@
         <router-link class="aside-item" to="/userlist" v-ripple.stop><span>用户列表</span></router-link>
       </div>
     </div>
+    <router-link class="aside-item" to="/task" title="Dashboard" v-ripple exact>
+      <i class="fa fa-bell"></i><span>定时任务</span>
+    </router-link>
     <router-link class="aside-item" to="/banner" title="Dashboard" v-ripple exact>
       <i class="fa fa-map"></i><span>广告管理</span>
     </router-link>

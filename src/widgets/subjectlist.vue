@@ -51,10 +51,8 @@
     			<td class="max-width100">
     				<span class="biaoqing-table-content" :title="work.content">{{work.content}}</span>
     			</td>
-	            <td>
-	                <span  @click="setTags(work.id,index,work.tag)" class="pass-ing cursor hover-line">
-	                  {{work.tag}}
-	                </span>
+	            <td style="width：60px;">
+	                <span @click="setTags(work.id,index,work.tag)" class="pass-ing cursor hover-line">{{work.tag}}</span>
 	                <span v-if="!work.tag" @click="setTags(work.id,index,work.tag)" class="hover-line cursor pass-success">设置</span>
 	            </td>
     			<td class="max-width20">

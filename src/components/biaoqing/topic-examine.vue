@@ -115,7 +115,7 @@ export default {
 	beforeRouteEnter (to,form,next) {
 		var params = {
 			pageNum:1,
-			pageSize:15,
+			pageSize:10,
 			sort:'create_time',
 			audit:'',
 			asc:false
@@ -151,7 +151,7 @@ export default {
     		this.$emit('loaded',true)
     		var params = {
 				pageNum:page,
-				pageSize:15
+				pageSize:10
 			}
 			if(audit){
 				if(audit=='all'){ params.audit = ''; }else{params.audit = audit}
@@ -230,7 +230,7 @@ export default {
 	    		this.$emit('loaded',true)
 	    		var params = {
 					pageNum:1,
-					pageSize:15,
+					pageSize:10,
 					audit:'1',
 					keyword:searchTopicKey
 				}

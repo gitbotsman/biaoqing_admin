@@ -1,4 +1,4 @@
-# framework-admin
+# biaoqing-admin
 
 > 基于Vue.js的单页面管理系统前端
 

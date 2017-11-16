@@ -83,6 +83,8 @@ const routes = [
       {path: '/shadowmanage', component: resolve => require(['./components/user/shadow.vue'], resolve)},
       {path: '/myshadow', component: resolve => require(['./components/user/my-shadow.vue'], resolve)},
       {path: '/tags', component: resolve => require(['./components/tags/tags-manage.vue'], resolve)},
+
+      {path: '/task', component: resolve => require(['./components/task/task-list.vue'], resolve)},
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},
