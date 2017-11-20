@@ -19,6 +19,10 @@
 		        </span>
 		    </div>
 		    <span class="cursor pass-success clear-model-user" @click="clearUserSearch">清除用户搜索</span>
+		    <!-- <div class="fr">
+		    	<span class="color999 hot-message-title">热门推送：</span>
+		    	<input type="text" class="hot-message" placeholder="设置热门后推送给用户的消息">
+		    </div> -->
     	</div>
     	<ul class="biaoqing-nav nav nav-tabs nav-justified nav-line"  role="tablist">
 			<li class="nav-item " v-for="tag in tags.data">

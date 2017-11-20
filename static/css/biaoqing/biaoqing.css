@@ -524,3 +524,17 @@
     right: -5px;
     top: -5px;
   }
+  .hot-message-title{
+    font-size: 13px;
+  }
+  .hot-message{
+    outline: none;
+    border:none;
+    width: 200px;
+    font-size: 12px;
+    border-bottom: 1px solid #eee;
+  }
+  .hot-message::placeholder{
+    color: #999;
+  }
+  

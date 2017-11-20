@@ -9,7 +9,7 @@
     		<div @click="openAdd" class="btn cursor btn-outline-success btn-sm mb-2"><i class="fa fa-plus-circle mr-2"></i>添加贴纸</div>
     		<div @click="addCategory" class="btn cursor btn-outline-success btn-sm ml-2 mb-2"><i class="fa fa-plus-circle mr-2"></i>添加分类</div>
     		<div v-if="stickersLength==0" @click="deleteCategory" class="btn cursor btn-outline-danger btn-sm ml-2 mb-2"><i class="fa fa-trash-o mr-2"></i>删除分类</div>
-
+			
     		<div class="clearfloat search-container flex-center mt-2">
     			<div class="btn-group btn-group-sm fl">
 	    			<button @click="laodSticker('all')" type="button" class="btn btn-outline-primary" :class="{'active':categoryId==''}">所有</button>
@@ -22,10 +22,8 @@
 		          	</button>
 		        </div>
     		</div>
-
-    		
     		<div class="pt-3 clearfloat">
-    			<div @mouseenter="deleteBlock" @mouseleave="deleteNone" v-for="(sticker,index) in stickers.items" class="sticker-item clearfloat fl ml-2 mb-2 pr cursor">
+    			<div @mouseenter="deleteBlock" @mouseleave="deleteNone" v-for="(sticker,index) in stickers.items" class="sticker-item clearfloat fl mr-2 mb-2 pr cursor">
     				<span class="sticker-item-img fl"><img :src="sticker.fullThumb"></span>
     				<span class="sticker-item-name fl" :title="sticker.name">{{sticker.name}}</span>
     				<div @click="deleteSticker(sticker.id)" class="cursor delete-face">删除</div>
@@ -318,7 +316,7 @@ export default {
 }
 </script>
 
-<style>
+<style>	
 	.delete-face{
 		position: absolute;
 		right: 3px;

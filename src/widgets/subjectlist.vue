@@ -56,7 +56,7 @@
 	                <span v-if="!work.tag" @click="setTags(work.id,index,work.tag)" class="hover-line cursor pass-success">设置</span>
 	            </td>
     			<td class="max-width20">
-    				<router-link 
+    				<router-link
     					target="_blank"
     					:title="work.userName"
     					:to="'/userDetail/'+work.userId"

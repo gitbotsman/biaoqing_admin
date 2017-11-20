@@ -73,7 +73,11 @@
 		    			</td>
 		    			<td>{{user.id}}</td>
 		    			<td class="max-width100">
-		    				<router-link target='_blank' class="biaoqing-table-content hover-line" :title="user.name":to="'/userdetail/'+user.id" v-ripple.stop>{{user.name}}</router-link>
+		    				<router-link target='_blank' 
+		    				class="biaoqing-table-content hover-line" 
+		    				:class="{'text-success':user.userType==5}"
+
+		    				:title="user.name":to="'/userdetail/'+user.id" v-ripple.stop>{{user.name}}</router-link>
 		    			</td>
 						<td class="max-width20" :title="user.phone">
 		    				{{user.phone}}
