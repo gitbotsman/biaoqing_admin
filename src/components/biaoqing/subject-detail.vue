@@ -139,12 +139,13 @@
         	<i @click="deleteGifImg" class="gif-img-box-delete"><img src="../../../static/img/bianjiziliao_icon_cuowu.png" ></i>
         </div>
     </div>
+	<div class="detail-comment">
+		 <div @click="goComments(1,'all')" class="user-disable btn btn-sm btn-outline-primary cursor" :class="{active:enable === ''}" style="margin-right:10px;">全部评论</div>
+	      <div @click="goComments(1,1)" class="user-disable btn btn-sm btn-outline-primary cursor" :class="{active:enable === 1}" style="margin-right:10px;">正常</div>
+	      <div @click="goComments(1,0)" class="user-disable btn btn-sm btn-outline-primary cursor" :class="{active:enable === 0}" style="margin-right:10px;">已删除</div>
+	</div>
     <div class="detail-comment" v-if="comments.totalCount>0">
     	<div class="detail-comment-title mb-2">全部评论({{comments.totalCount}})</div>
-
-      <div @click="goComments(1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:enable == ''}" style="margin-right:10px;">全部评论{{enable}}</div>
-      <div @click="goComments(1,1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:enable == 1}" style="margin-right:10px;">正常</div>
-      <div @click="goComments(1,0)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:enable == 0}" style="margin-right:10px;">已删除</div>
     	<div class="comment-list" style="padding:10px;">
     		<table class="table table-bordered">
 				<thead>
@@ -320,7 +321,7 @@ export default{
 		gifPage:1,
 		gifKey:'0',
 		selectGif:'',
-    enable:'',
+    	enable:'',
 		childSendGif:{
 			showSendGif:true,
 			selectGif:"",
@@ -611,35 +612,36 @@ export default{
     		this.$emit('loaded',true)
     		var subjectId=this.subjectId;
     		var params = {
-          subjectId:subjectId,
-          pageNum:page
-        }
+	          subjectId:subjectId,
+	          pageNum:page
+	        }
+	        if (enable || enable==0) {
+	        	if(enable=='all'){
+	        		params.enable = ''
+	        	}else{
+	        		params.enable = enable
+	        	}
+	        }else{
+	        	params.enable = this.enable
+	        }
 
-        if (enable != null || enable != '') {
-    		  params.enable = enable
-        }
-
-        console.dir(params)
-
-        Promise.all([Subject.comment(params)]).then(([comments]) => {
-          this.$emit('loaded',false)
-          $('body,html').animate({scrollTop:0},10);
-
-          comments.data.data.items.forEach(function(item,index){
-            item.createTime=formatTime(item.createTime);
-            if(item.images){
-              item.images.forEach(img=>{
-                if(img){
-                  img.style=$this.formatStyle(img.imageWidth,img.imageHeight,100);
-                }
-              })
-            }
-          })
-
+	        Promise.all([Subject.comment(params)]).then(([comments]) => {
+	          	this.$emit('loaded',false)
+	          	$('body,html').animate({scrollTop:0},10);
+		      	comments.data.data.items.forEach(function(item,index){
+		        	item.createTime=formatTime(item.createTime);
+		        	if(item.images){
+		            	item.images.forEach(img=>{
+			                if(img){
+			                  img.style=$this.formatStyle(img.imageWidth,img.imageHeight,100);
+			                }
+		            	})
+		            }
+		        })
 				this.page=page;
 				this.comments=comments.data.data;
-
-				this.enable = enable
+				this.enable = params.enable;
+				console.log(this.enable)
 			})
     	},
     	deleteBan(id,index,type){
