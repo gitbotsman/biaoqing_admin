@@ -141,6 +141,10 @@
     </div>
     <div class="detail-comment" v-if="comments.totalCount>0">
     	<div class="detail-comment-title mb-2">全部评论({{comments.totalCount}})</div>
+
+      <div @click="goComments(1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:enable == ''}" style="margin-right:10px;">全部评论{{enable}}</div>
+      <div @click="goComments(1,1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:enable == 1}" style="margin-right:10px;">正常</div>
+      <div @click="goComments(1,0)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:enable == 0}" style="margin-right:10px;">已删除</div>
     	<div class="comment-list" style="padding:10px;">
     		<table class="table table-bordered">
 				<thead>
@@ -160,9 +164,9 @@
 										{{comment.user.name}}
 									</router-link>
 									<p class="comment-p">
-										<span v-if="comment.beReplayUser">回复 
+										<span v-if="comment.beReplayUser">回复
 											<router-link class="pass-success" :to="'/userdetail/'+comment.beReplayUser.id">
-												{{comment.beReplayUser.name}}: 
+												{{comment.beReplayUser.name}}:
 											</router-link>
 										</span>
 										<span>{{comment.content}}</span>
@@ -170,9 +174,9 @@
 									<span v-if="comment.images">
 									<div v-for="img in comment.images"  v-if="img" class="comment-img">
 										<span>
-											<img class="cursor"  
-											     @click="lookimg(img.fullImage,img.imageWidth,img.imageHeight)" 
-											     :src="img.fullImage" 
+											<img class="cursor"
+											     @click="lookimg(img.fullImage,img.imageWidth,img.imageHeight)"
+											     :src="img.fullImage"
 											     :style="img.style">
 										</span>
 									</div>
@@ -201,20 +205,20 @@
 							</div>
 							<div v-if="shadow" class="mt-2 replay-input pr">
 								<div class="comment-input-gif clearfloat">
-									<input 
-										@keyup.enter="addReplayComment(comment.id,comment.user.id)" 
-										v-model="replayContent" 
-										placeholder="请输入回复的内容" 
+									<input
+										@keyup.enter="addReplayComment(comment.id,comment.user.id)"
+										v-model="replayContent"
+										placeholder="请输入回复的内容"
 										type="text" class="form-control">
 									<div v-if="childSendGif.selectGif.commentid==comment.id" class="sendGif-select-child-container mb-2 mt-2 mr-5 fr pr">
 							        	<span class="gif-img-box cursor">
-							        		<img 
+							        		<img
 							        		@click="lookimg(
 							        		childSendGif.selectGif.fullImage,
 							        		childSendGif.selectGif.imageWidth,
-							        		childSendGif.selectGif.imageHeight)" 
+							        		childSendGif.selectGif.imageHeight)"
 
-							        		:src="childSendGif.selectGif.fullImage" 
+							        		:src="childSendGif.selectGif.fullImage"
 							        		:style="childSendGif.selectGif.style">
 							        	</span>
 							        	<i @click="deleteChildGifImg" class="gif-img-box-delete"><img src="../../../static/img/bianjiziliao_icon_cuowu.png" ></i>
@@ -231,9 +235,9 @@
 						        	<div @scroll="tabGif" class="gif-container-box gif-child-box clearfloat">
 						        		<span @click="selectChildGifImg(index,comment.id)" v-for="(gif,index) in gifs" class="fl gif-img pr">
 						        			<span class="gif-img-box"><img :style="gif.style" :src="gif.fullImage"></span>
-						        			<i 
+						        			<i
 						        			v-if="
-						        			childSendGif.selectGif.commentid==comment.id && 
+						        			childSendGif.selectGif.commentid==comment.id &&
 						        			childSendGif.selectGif.id==gif.id" class="gifselect-icon">
 						        				<img src="../../../static/img/select_img.png">
 						        			</i>
@@ -256,7 +260,7 @@
     	</div>
     </div>
     <div @click='hiddenimg' class="img-view-tc cursor"><img src=""></div>
-	
+
 	<div v-if="shadow" class="mask" :class="{none: openShadow}">
 		<div class="mask-bg" @click="closePrise"></div>
 		<div class="praise-all mask-main">
@@ -292,7 +296,7 @@ import querystring from 'querystring'
 import $ from 'jquery'
 import { Shadow } from '../../resources'
 import Pagepublic from '../../widgets/pagepublic.vue'
-import "../../../static/js/divscroll.js" 
+import "../../../static/js/divscroll.js"
 
 export default{
 	data:() => ({
@@ -316,6 +320,7 @@ export default{
 		gifPage:1,
 		gifKey:'0',
 		selectGif:'',
+    enable:'',
 		childSendGif:{
 			showSendGif:true,
 			selectGif:"",
@@ -531,7 +536,7 @@ export default{
     		var beReplyId = beReplyId;
     		var replayContent = this.replayContent;
     		var subjectId = this.subjectId;
-    		
+
     		var selectGif = this.childSendGif.selectGif;
 
     		var replayUserId=Shadow.current().selectShadow.user.id;
@@ -601,31 +606,40 @@ export default{
     			'marginTop':'-'+mt+'px'
     		})
     	},
-    	goComments(page){
+    	goComments(page,enable){
     		var $this = this;
     		this.$emit('loaded',true)
     		var subjectId=this.subjectId;
     		var params = {
-				subjectId:subjectId,
-				pageNum:page
-			}
-			Promise.all([Subject.comment(params)]).then(([comments]) => {
-				this.$emit('loaded',false)
-				$('body,html').animate({scrollTop:0},10);
+          subjectId:subjectId,
+          pageNum:page
+        }
 
-				comments.data.data.items.forEach(function(item,index){
-					item.createTime=formatTime(item.createTime);
-					if(item.images){
-						item.images.forEach(img=>{
-							if(img){
-								img.style=$this.formatStyle(img.imageWidth,img.imageHeight,100);
-							}
-						})
-					}
-				})
+        if (enable != null || enable != '') {
+    		  params.enable = enable
+        }
+
+        console.dir(params)
+
+        Promise.all([Subject.comment(params)]).then(([comments]) => {
+          this.$emit('loaded',false)
+          $('body,html').animate({scrollTop:0},10);
+
+          comments.data.data.items.forEach(function(item,index){
+            item.createTime=formatTime(item.createTime);
+            if(item.images){
+              item.images.forEach(img=>{
+                if(img){
+                  img.style=$this.formatStyle(img.imageWidth,img.imageHeight,100);
+                }
+              })
+            }
+          })
 
 				this.page=page;
 				this.comments=comments.data.data;
+
+				this.enable = enable
 			})
     	},
     	deleteBan(id,index,type){
@@ -677,7 +691,7 @@ export default{
 				        } else {
 				        	reject('请输入禁言理由！')
 				        }
-				       
+
 				    })
 				},
 			}).catch(swal2.noop)
