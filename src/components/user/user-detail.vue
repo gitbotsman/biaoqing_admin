@@ -124,9 +124,10 @@
       </div>
     </div>
     <div class="users-container mt-3">
-      <div class="btn btn-sm btn-outline-primary active">作品列表</div>
-        <div class="my-work biaoqing-table">
-          <Subjectlist 
+      <div @click="goWorks()" class="btn btn-sm btn-outline-primary" :class="{active:showWorks}">作品列表</div>
+      <div @click="goLoginLog(1)" class="btn btn-sm btn-outline-primary" :class="{active:showLog}">登陆日志</div>
+        <div class="my-work biaoqing-table" v-if="showWorks">
+          <Subjectlist
             :works="works"
             :tags="tags"
             :keyword="0"
@@ -137,6 +138,30 @@
           ></Subjectlist>
           <Pagepublic :pages="works" @paging="goSubject"></Pagepublic>
         </div>
+
+      <div class="login-log biaoqing-table" v-if="showLog">
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>登陆设备</th>
+            <th>登陆IP</th>
+            <th>使用版本</th>
+            <th>登陆时间</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(loginLog,index) in loginLogs.items">
+            <td>{{loginLog.device}}</td>
+            <td>{{loginLog.clientHost}}</td>
+            <td>{{loginLog.version}}</td>
+            <td class="max-width100 publish-time">
+              <span>{{loginLog.createTime}}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <Pagepublic :pages="loginLogs" @paging="getLoginLogs"></Pagepublic>
+      </div>
     </div>
   </div>
 </template>
@@ -158,11 +183,14 @@
       loading: false,
       detail:'',
       works:'',
+      loginLogs:'',
       userId:'',
       tags:'',
       page:'',
       sort:'',
-      asc:''
+      asc:'',
+      showWorks:true,
+      showLog:''
     }),
     beforeRouteEnter (to, from, next) {
       var id = to.params.id;
@@ -186,7 +214,7 @@
           vm.detail = detail.data.data;
         })
       })
-      
+
     },
     mounted () {
         this.$emit('loaded',false)
@@ -194,6 +222,36 @@
     methods: {
       toBack(){
         history.go(-1)
+      },
+
+      goWorks() {
+        this.showWorks = true;
+        this.showLog = false;
+      },
+
+      getLoginLogs(page){
+        console.dir(this.userId)
+        this.$emit('loaded',true);
+        var params = {
+          pageSize:10,
+          pageNum:page,
+          userId:this.userId
+        }
+
+        this.$http.get('/user/log',{params:params}).then(response => {
+          this.$emit('loaded',false);
+          if(response.data.code==200){
+            for(var i = 0;i<response.data.data.items.length;i++){
+              response.data.data.items[i].createTime=formatTime(response.data.data.items[i].createTime)
+            }
+            this.loginLogs=response.data.data;
+          }
+        })
+      },
+      goLoginLog(page) {
+        this.showWorks = false;
+        this.showLog = true;
+        this.getLoginLogs(page)
       },
       deleteBan(id){
         var params = {

@@ -6,7 +6,8 @@
     </ol>
     <div class="biaoqing-container">
     	<div class="clearfloat" style="margin:5px 0;">
-    		<div @click="goUser(1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:users.items}" style="margin-right:10px;">所有用户</div>
+    		<div @click="goAllUser(1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:allStatus}" style="margin-right:10px;">所有用户</div>
+    		<div @click="goRecommendUser(1,1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:recommend}" style="margin-right:10px;">推荐</div>
     		<div @click="banList(1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:bans.items}">禁言列表</div>
 
     		<div v-if="users.items" class="user-search input-group">
@@ -36,7 +37,10 @@
 				      <th>手机号</th>
 				      <th>注册平台</th>
 				      <th>个人描述</th>
+				      <th>权重</th>
+				      <th>推荐</th>
 				      <th>操作</th>
+				      <th>最后发布时间</th>
 				      <th>注册时间
 				      		<span class="biaoqing-sort clearfloat" @click="goUser(users.pageNumber,'create_time',!asc)">
 				      			<span class="fa fa-sort-up fl" :class="{active:(sort=='create_time' && asc==false)}" style="display:block;"></span>
@@ -73,8 +77,8 @@
 		    			</td>
 		    			<td>{{user.id}}</td>
 		    			<td class="max-width100">
-		    				<router-link target='_blank' 
-		    				class="biaoqing-table-content hover-line" 
+		    				<router-link target='_blank'
+		    				class="biaoqing-table-content hover-line"
 		    				:class="{'text-success':user.userType==5}"
 
 		    				:title="user.name":to="'/userdetail/'+user.id" v-ripple.stop>{{user.name}}</router-link>
@@ -86,6 +90,13 @@
 		    			<td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="user.summary">{{user.summary}}</span>
 		    			</td>
+              <td class="max-width20">
+                {{user.rank}}
+              </td>
+              <td class="max-width100">
+                <span class="biaoqing-table-content" v-if="user.rcmd == true">是</span>
+                <span class="biaoqing-table-content" v-else="user.rcmd == false">否</span>
+              </td>
 						<td class=" overflow" >
 		    				<div class="btn-group mb-2">
 					          <button type="button" class="btn btn-outline-info  btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -104,9 +115,12 @@
 					        </div>
 		    			</td>
 		    			<td class="max-width100 publish-time">
+		    				<span>{{user.lastDynamicTime}}</span>
+		    			</td>
+		    			<td class="max-width100 publish-time">
 		    				<span>{{user.createTime}}</span>
 		    			</td>
-		    			
+
 		    			<td class="max-width20">
 		    				{{user.fansNum}}
 		    			</td>
@@ -139,7 +153,7 @@
 				      			<span class="fa fa-sort-down fl" :class="{active:(sort=='create_time' && asc==true)}" style="display:block;"></span>
 				      		</span>
 				      </th>
-				      
+
 				    </tr>
 		    	</thead>
 		    	<tbody>
@@ -207,7 +221,9 @@ export default {
 		formPage:'',
 		sort:'',
 		bans:'',
-		asc:''
+		asc:'',
+    recommend:'',
+    allStatus:'',
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
@@ -235,37 +251,66 @@ export default {
     methods: {
     	clearbigImg(e){clearViewImg(e)},
     	bigImg(e){viewImg(e,300)},
+
+      getUser(params) {
+        var $this = this;
+        this.$emit('loaded',true);
+
+        Promise.all([UserManage.users(params)]).then(([users]) => {
+          this.$emit('loaded',false);
+          $('body,html').animate({scrollTop:0},10);
+          if(users.data.data && users.data.code==200){
+            for(var i = 0;i<users.data.data.items.length;i++){
+              users.data.data.items[i].createTime=formatTime(users.data.data.items[i].createTime)
+              users.data.data.items[i].lastDynamicTime=formatTime(users.data.data.items[i].lastDynamicTime)
+            }
+            this.users=users.data.data;
+            this.bans='';
+            this.sort=params.sort;
+            this.asc=params.asc;
+          }else{
+            $this.$notice.error(users.data.msg);
+          }
+        })
+      },
     	goUser(page,sort,asc){
-    		var $this = this;
-    		this.$emit('loaded',true);
-    		var params = {
-				pageSize:10,
-				pageNum:page
-			}
-			if(sort && sort!=''){
-				params.sort = sort;
-				params.asc = asc;
-			}else{
-				params.sort = this.sort;
-				params.asc = this.asc;
-			}
-			Promise.all([UserManage.users(params)]).then(([users]) => {
-				this.$emit('loaded',false);
-				$('body,html').animate({scrollTop:0},10);
-				if(users.data.data && users.data.code==200){
-					for(var i = 0;i<users.data.data.items.length;i++){
-						users.data.data.items[i].createTime=formatTime(users.data.data.items[i].createTime)
-					}
-					this.users=users.data.data;
-					this.bans='';
-					this.sort=params.sort;
-					this.asc=params.asc;
-				}else{
-					$this.$notice.error(users.data.msg);
-				}
-			})
-			
+
+    	  var params = {
+          pageSize:10,
+          pageNum:page,
+        }
+
+        if(sort && sort!=''){
+          params.sort = sort;
+          params.asc = asc;
+        }else{
+          params.sort = this.sort;
+          params.asc = this.asc;
+        }
+        params.rcmd = this.recommend;
+        this.getUser(params)
     	},
+      goAllUser(page) {
+    	  this.recommend = '';
+    	  this.allStatus = true;
+
+
+        var params = {
+          pageSize:10,
+          pageNum:page,
+        }
+
+        params.sort = "rank_ desc,lastDynamicTime";
+        params.asc = false;
+
+    	  this.goUser(page)
+      },
+      goRecommendUser(page,recommend) {
+    	  this.allStatus = '';
+    	  if (recommend && recommend != '')
+    	    this.recommend = recommend;
+    	  this.getUser(page)
+      },
     	deleteBan(id,index,type){
     		var params = {
     			t:1
@@ -338,13 +383,15 @@ export default {
 				        } else {
 				        	reject('请输入禁言理由！')
 				        }
-				       
+
 				    })
 				},
 			}).catch(swal2.noop)
     	},
     	banList(page,sort,asc){
     		this.$emit('loaded',true);
+        this.recommend = '';
+        this.allStatus = '';
 			var params = {
 				pageSize:10,
 				pageNum:page,
@@ -357,7 +404,7 @@ export default {
 					for(var i = 0;i<response.data.data.items.length;i++){
 						response.data.data.items[i].createTime=formatTime(response.data.data.items[i].createTime)
 						response.data.data.items[i].expire=this.timeFilter(response.data.data.items[i].expire)
-						
+
 					}
 					this.users='';
 					this.bans=response.data.data;
@@ -368,7 +415,7 @@ export default {
     	},
     	searchUser(type){
     		var that = this;
-    		
+
     		var userid = that.searchKey;
     		if(userid!=''){
     			this.$emit('loaded',true);
@@ -408,7 +455,7 @@ export default {
 
     		}
     	},
-    	timeFilter(expire){  
+    	timeFilter(expire){
     		var msg = '';
     		var expire=parseInt(expire);
 		    if (expire > 0) {
@@ -424,8 +471,8 @@ export default {
 	            return msg
 	        }else{
 	        	return expire
-	        } 
-		}  
+	        }
+		}
     },
     components:{Pagepublic}
 }
