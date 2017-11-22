@@ -124,8 +124,8 @@
       </div>
     </div>
     <div class="users-container mt-3">
-      <div @click="goWorks()" class="btn btn-sm btn-outline-primary" :class="{active:showWorks}">作品列表</div>
-      <div @click="goLoginLog(1)" class="btn btn-sm btn-outline-primary" :class="{active:showLog}">登陆日志</div>
+      <div @click="goWorks()" class="btn btn-sm btn-outline-primary cursor" :class="{active:showWorks}">作品列表</div>
+      <div @click="goLoginLog(1)" class="btn btn-sm btn-outline-primary cursor" :class="{active:showLog}">登陆日志</div>
         <div class="my-work biaoqing-table" v-if="showWorks">
           <Subjectlist
             :works="works"

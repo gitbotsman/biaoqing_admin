@@ -6,8 +6,8 @@
     </ol>
     <div class="biaoqing-container">
     	<div class="clearfloat" style="margin:5px 0;">
-    		<div @click="goAllUser(1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:allStatus}" style="margin-right:10px;">所有用户</div>
-    		<div @click="goRecommendUser(1,1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:recommend}" style="margin-right:10px;">推荐</div>
+    		<div @click="goUser(1,sort,asc,'all')" class="user-disable btn btn-sm btn-outline-primary" :class="{active:allStatus}" style="margin-right:10px;">所有用户</div>
+    		<div @click="goUser(1,sort,asc,'1')" class="user-disable btn btn-sm btn-outline-primary" :class="{active:recommend}" style="margin-right:10px;">推荐</div>
     		<div @click="banList(1)" class="user-disable btn btn-sm btn-outline-primary" :class="{active:bans.items}">禁言列表</div>
 
     		<div v-if="users.items" class="user-search input-group">
@@ -36,7 +36,7 @@
 				      <th>用户名</th>
 				      <th>手机号</th>
 				      <th>注册平台</th>
-				      <th>个人描述</th>
+				      <!-- <th>个人描述</th> -->
 				      <th>权重</th>
 				      <th>推荐</th>
 				      <th>操作</th>
@@ -87,16 +87,17 @@
 		    				{{user.phone}}
 		    			</td>
 		    			<td>{{user.loginDevice}}</td>
-		    			<td class="max-width100">
+		    			<!-- <td class="max-width100">
 		    				<span class="biaoqing-table-content" :title="user.summary">{{user.summary}}</span>
-		    			</td>
-              <td class="max-width20">
-                {{user.rank}}
-              </td>
-              <td class="max-width100">
-                <span class="biaoqing-table-content" v-if="user.rcmd == true">是</span>
-                <span class="biaoqing-table-content" v-else="user.rcmd == false">否</span>
-              </td>
+		    			</td> -->
+						<td @click="setRank(user.id,index)" class="max-width20 pass-success cursor hover-line">
+							<span v-if="user.rank==undefined">设置</span>
+							<span v-else>{{user.rank}}</span>
+						</td>
+						<td @click="setRcmd(user.id,index,user.rcmd)" class="max-width100 cursor hover-line">
+							<span class="biaoqing-table-content text-success" v-if="user.rcmd == true">是</span>
+							<span class="biaoqing-table-content pass-success" v-else="user.rcmd == false">否</span>
+						</td>
 						<td class=" overflow" >
 		    				<div class="btn-group mb-2">
 					          <button type="button" class="btn btn-outline-info  btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -222,8 +223,8 @@ export default {
 		sort:'',
 		bans:'',
 		asc:'',
-    recommend:'',
-    allStatus:'',
+    	recommend:'',
+    	allStatus:'',
 	}),
 	beforeRouteEnter (to,form,next) {
 		var params = {
@@ -251,66 +252,102 @@ export default {
     methods: {
     	clearbigImg(e){clearViewImg(e)},
     	bigImg(e){viewImg(e,300)},
+		getUser(params) {
+			var $this = this;
+			this.$emit('loaded',true);
 
-      getUser(params) {
-        var $this = this;
-        this.$emit('loaded',true);
+			Promise.all([UserManage.users(params)]).then(([users]) => {
+			  this.$emit('loaded',false);
+			  $('body,html').animate({scrollTop:0},10);
+			  if(users.data.data && users.data.code==200){
+			    for(var i = 0;i<users.data.data.items.length;i++){
+			      users.data.data.items[i].createTime=formatTime(users.data.data.items[i].createTime)
+			      users.data.data.items[i].lastDynamicTime=formatTime(users.data.data.items[i].lastDynamicTime)
+			    }
+			    this.recommend=params.rcmd;
+			    this.users=users.data.data;
+			    this.bans='';
+			    this.sort=params.sort;
+			    this.asc=params.asc;
+			  }else{
+			    $this.$notice.error(users.data.msg);
+			  }
+			})
+		},
+    	goUser(page,sort,asc,recommend){
+    	  	var params = {
+	          pageSize:10,
+	          pageNum:page,
+	        }
+	        if(recommend){
+	        	recommend=='all'? params.rcmd='' : params.rcmd=recommend;
+	        }else{
+	        	params.rcmd = this.recommend;
+	        }
 
-        Promise.all([UserManage.users(params)]).then(([users]) => {
-          this.$emit('loaded',false);
-          $('body,html').animate({scrollTop:0},10);
-          if(users.data.data && users.data.code==200){
-            for(var i = 0;i<users.data.data.items.length;i++){
-              users.data.data.items[i].createTime=formatTime(users.data.data.items[i].createTime)
-              users.data.data.items[i].lastDynamicTime=formatTime(users.data.data.items[i].lastDynamicTime)
-            }
-            this.users=users.data.data;
-            this.bans='';
-            this.sort=params.sort;
-            this.asc=params.asc;
-          }else{
-            $this.$notice.error(users.data.msg);
-          }
-        })
-      },
-    	goUser(page,sort,asc){
-
-    	  var params = {
-          pageSize:10,
-          pageNum:page,
-        }
-
-        if(sort && sort!=''){
-          params.sort = sort;
-          params.asc = asc;
-        }else{
-          params.sort = this.sort;
-          params.asc = this.asc;
-        }
-        params.rcmd = this.recommend;
-        this.getUser(params)
+	        if(sort && sort!=''){
+	          params.sort = sort;
+	          params.asc = asc;
+	        }else{
+	          params.sort = this.sort;
+	          params.asc = this.asc;
+	        }
+        	this.getUser(params)
     	},
-      goAllUser(page) {
-    	  this.recommend = '';
-    	  this.allStatus = true;
-
-
-        var params = {
-          pageSize:10,
-          pageNum:page,
-        }
-
-        params.sort = "rank_ desc,lastDynamicTime";
-        params.asc = false;
-
-    	  this.goUser(page)
-      },
-      goRecommendUser(page,recommend) {
-    	  this.allStatus = '';
-    	  if (recommend && recommend != '')
-    	    this.recommend = recommend;
-    	  this.getUser(page)
-      },
+    	setRcmd(id,index,rcmd){
+    		var users = this.users;
+    		var params = {
+			  "id": id,
+			  "rcmd":!rcmd
+			}
+			this.$http.post('/user/update', params).then(response => {
+				swal2.close();
+		        if(response.data.code==200){
+		        	users.items[index].rcmd=params.rcmd;
+        			this.$notice.success(response.data.msg);
+		        }else{
+		        	this.$notice.error(response.data.msg);
+		        }
+		    })
+    	},
+    	setRank(id,index){
+    		var that = this;
+			swal2({
+			  text:'请输入权重值',
+			  input: 'number',
+			  confirmButtonText: '确定',
+			  cancelButtonText: '取消',
+			  showLoaderOnConfirm: true,
+			  showCancelButton: true,
+			  reverseButtons:true,
+			  inputAttributes: {
+			    min: 0,
+			    step: 1
+			  },
+			  preConfirm:function(num){
+			  	return new Promise(function(resolve,reject){
+			  		if(num !=''){
+						var params = {
+						  "id": id,
+						  "rank": num
+						}
+						that.$http.post('/user/update', params).then(response => {
+							swal2.close();
+					        if(response.data.code==200){
+					        	var users = that.users;
+					        	users.items[index].rank=num;
+			        			that.$notice.success(msg);
+					        }else{
+					        	that.$notice.error(response.data.msg);
+					        }
+					    })
+			  		}else{
+			  			reject('请输入权重值')
+			  		}
+			  	})
+			  }
+			}).catch(swal2.noop)
+    	},
     	deleteBan(id,index,type){
     		var params = {
     			t:1
@@ -390,14 +427,13 @@ export default {
     	},
     	banList(page,sort,asc){
     		this.$emit('loaded',true);
-        this.recommend = '';
-        this.allStatus = '';
+        	this.recommend = '';
+        	this.allStatus = '';
 			var params = {
 				pageSize:10,
 				pageNum:page,
 				isExpire:'0'
 			}
-
 			this.$http.get('/ban',{params:params}).then(response => {
 				this.$emit('loaded',false);
 				if(response.data.code==200){
