@@ -32,6 +32,7 @@
       <div class="children">
         <div class="fold-header">Forms</div>
         <router-link class="aside-item" to="/topicexamine" v-ripple.stop><span>专题审核</span></router-link>
+        <router-link class="aside-item" to="/verifies" v-ripple.stop><span>认证审核</span></router-link>
       </div>
     </div>
     <div class="aside-item parent" v-ripple>

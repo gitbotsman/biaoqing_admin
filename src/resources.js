@@ -310,6 +310,10 @@ export const Comment = resource("comment",http,{
   comments:params => http.get('comment',{params:params})
 })
 
+export const UserVerify = resource("verify",http,{
+  verifies:params => http.get("verify",{params:params})
+})
+
 /**
  * 话题申请列表
  * @param path request path
