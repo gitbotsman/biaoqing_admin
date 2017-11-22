@@ -359,5 +359,6 @@ export const Tags = resource('Tags', http, {
 
 export const Task = resource('Task', http, {
   liked: params => http.get('/subject/liked',{params:params}),
-  
 })
+
+

@@ -55,8 +55,8 @@ export default {
 				pageSize:15,
 				pageNum:1
 			}
+
 			vm.$http.get('/feedback',{params:params}).then(response => {
-				console.log(response)
 				for(var i = 0;i<response.data.data.items.length;i++){
 					response.data.data.items[i].createTime=formatTime(response.data.data.items[i].createTime)
 				}
@@ -65,7 +65,7 @@ export default {
 		})
 	},
     mounted () {
-      this.$emit('loaded')
+     	this.$emit('loaded')
     },
     methods: {
     	goFeedback(page){

@@ -138,8 +138,8 @@ export default {
   },
   methods: {
     tagShadow(isAllot){
-      if(isAllot==='false') isAllot=false;
-      if(isAllot==='true') isAllot=true;
+      if(isAllot==='false') isAllot=0;
+      if(isAllot==='true') isAllot=1;
       if(isAllot==='') isAllot='';
       var params={
         pageNum:1,

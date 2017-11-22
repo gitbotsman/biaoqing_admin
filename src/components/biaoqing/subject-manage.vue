@@ -84,7 +84,7 @@ import '../../../static/css/biaoqing/biaoqing.css'
 import Pagepublic from '../../widgets/pagepublic.vue'
 import Subjectlist from '../../widgets/subjectlist.vue'
 
-import { Subject } from '../../resources'
+import { Subject,Findip } from '../../resources'
 import { formatTime } from '../../misc/utils'
 import $ from 'jquery'
 
@@ -112,6 +112,7 @@ export default {
 			enable:1,
 			keyword:'0'
 		}
+
 		Promise.all([Subject.works(params),Subject.tags()]).then(([works,tags]) => {
 			for(var i = 0;i<works.data.data.items.length;i++){
 				works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)

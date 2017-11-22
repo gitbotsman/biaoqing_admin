@@ -35,6 +35,14 @@ module.exports = {
           '^/biaoqingimg': ''
         }
       },
+      // '/service': {
+      //   target: 'http://ip.taobao.com/',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/service': '/service'
+      //   }
+      // }
+
       // '/api': {
       //   target: 'http://192.168.0.37:1889/',
       //   changeOrigin: true,
