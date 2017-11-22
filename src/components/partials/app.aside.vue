@@ -24,6 +24,7 @@
         <div class="fold-header">Forms</div>
         <router-link class="aside-item" to="/subjectmanage" v-ripple.stop><span>表情列表</span></router-link>
         <router-link class="aside-item" to="/topicmanage" v-ripple.stop><span>专题列表</span></router-link>
+        <router-link class="aside-item" to="/comments" v-ripple.stop><span>评论列表</span></router-link>
       </div>
     </div>
     <div class="aside-item parent" v-ripple>
@@ -63,7 +64,7 @@
     <router-link class="aside-item" to="/feedback" title="Dashboard" v-ripple exact>
       <i class="fa fa-grav"></i><span>反馈管理</span>
     </router-link>
-    
+
   </div>
 </template>
 <script>

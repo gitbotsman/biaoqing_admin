@@ -63,12 +63,13 @@ const routes = [
       {path: '/department/:id', component: resolve => require(['./components/department/edit.vue'], resolve)},
       {path: '/files/:parent?', component: resolve => require(['./components/files/files.vue'], resolve)},
       {path: '/filess/:type?', component: resolve => require(['./components/files/filess.vue'], resolve)},
-      
+
       {path: '/subjectmanage', component: resolve => require(['./components/biaoqing/subject-manage.vue'], resolve)},
       {path: '/subjectdetail/:id', component: resolve => require(['./components/biaoqing/subject-detail.vue'], resolve)},
       {path: '/topicmanage', component: resolve => require(['./components/biaoqing/topic-manage.vue'], resolve)},
       {path: '/topicexamine', component: resolve => require(['./components/biaoqing/topic-examine.vue'], resolve)},
       {path: '/topicdetail/:id', component: resolve => require(['./components/biaoqing/topic-detail.vue'], resolve)},
+      {path: '/comments', component: resolve => require(['./components/biaoqing/comment/list.vue'], resolve)},
 
       {path: '/userlist', component: resolve => require(['./components/biaoqing/user-manage.vue'], resolve)},
       {path: '/userdetail/:id', component: resolve => require(['./components/user/user-detail.vue'], resolve)},
