@@ -1,0 +1,36 @@
+.commentlist-user{
+	line-height: 30px;
+}
+.commentlist-user-tx{
+	display: inline-block;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border-radius: 100%;
+}
+.commentlist-user-tx img {
+    border-radius: 100%;
+    width: 100%;
+    height: 100%;
+}
+.commentlist-user-name{
+	display: inline-block;
+	font-size: 14px;
+}
+.commentlist-content p{
+	margin-bottom: 0;
+	line-height: 1.8;
+	word-wrap:break-word;
+}
+.commentlist-replay-content{
+	background: #f5f5f5;
+	padding:0 10px 10px 10px;
+}
+.commentlist-content{
+	
+}
+.normal-td{
+	text-align:left !important;
+	white-space: normal !important;
+	overflow: visible !important;
+}

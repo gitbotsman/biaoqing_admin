@@ -367,7 +367,6 @@ export default{
 						})
 					}
 				})
-				console.log(comments)
 				vm.gifs = gifs.data.data.items;
     			vm.subjectId=subjectId;
     			vm.comments=comments.data.data;
