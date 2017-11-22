@@ -16,6 +16,20 @@ export const shorten = function () {
   } while (seq != 0)
   return arr.join('')
 }
+export const formatStyle = function(imgW,imgH,width){
+  if (imgW>imgH){
+    var ml = ((imgW/imgH)*width)/2
+    var style="height:100%;left:50%;top: 0;margin-left: -"+ml+"px";
+  }else if(imgW<imgH){
+    var mt = ((imgH/imgW)*width)/2
+    var style="width:100%;left:0;top: 50%;margin-top: -"+mt+"px";
+  }else{
+    var style="width:100%;height:100%";
+  }
+  return style;
+}
+
+
 export const base64_encode = function(a) {
   var b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
   var c, d, e, f, g, h, i, j, k = 0,
