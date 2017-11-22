@@ -306,6 +306,10 @@ export const Subject = resource('subject', http, {
   gif:params=> http.get('subject/albums',{params:params})
 })
 
+export const Comment = resource("comment",http,{
+  comments:params => http.get('comment',{params:params})
+})
+
 /**
  * 话题申请列表
  * @param path request path
@@ -354,7 +358,7 @@ export const Tags = resource('Tags', http, {
   index: params => http.get('/tag',{params:params}),
   material: params => http.get('/materialHot',{params:params}),
   search:params => http.get('/searchHot',{params:params})
-  
+
 })
 
 export const Task = resource('Task', http, {
