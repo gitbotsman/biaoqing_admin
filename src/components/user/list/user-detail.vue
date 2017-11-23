@@ -167,16 +167,16 @@
 </template>
 
 <script>
-  import '../../../static/css/biaoqing/biaoqing.css'
-  import '../../../static/css/biaoqing/user.css'
-  import { UserManage,Subject} from '../../resources'
-  import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
+  import '../../../../static/css/biaoqing/biaoqing.css'
+  import '../../../../static/css/biaoqing/user.css'
+  import { UserManage,Subject} from '../../../resources'
+  import { viewImg, clearViewImg,formatTime } from '../../../misc/utils'
   import swal2 from 'sweetalert2'
   import $ from 'jquery'
   import querystring from 'querystring'
 
-  import Pagepublic from '../../widgets/pagepublic.vue'
-  import Subjectlist from '../../widgets/subjectlist.vue'
+  import Pagepublic from '../../../widgets/pagepublic.vue'
+  import Subjectlist from '../../../widgets/subjectlist.vue'
 
   export default {
     data: () => ({

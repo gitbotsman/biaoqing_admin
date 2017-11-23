@@ -58,9 +58,9 @@
 </template>
 
 <script>
-  import DateSelect from '../../widgets/dateselect.vue'
-  import {Admin} from '../../resources'
-  import toastr from '../../misc/toastr.esm'
+  import DateSelect from '../../../widgets/dateselect.vue'
+  import {Admin} from '../../../resources'
+  import toastr from '../../../misc/toastr.esm'
 
   export default {
     data: () => ({

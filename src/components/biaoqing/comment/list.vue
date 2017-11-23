@@ -35,7 +35,7 @@
               </router-link >
               <div class="commentlist-content ml-2">
                   <p>{{comment.content}}</p>
-                  <div v-if="comment.images" class="comment-img">
+                  <div v-if="comment.images && comment.images.length>0" class="comment-img">
                     <span v-for="img in comment.images">
                       <img 
                       @click="lookimg(img.fullImage,img.imageWidth,img.imageHeight)"

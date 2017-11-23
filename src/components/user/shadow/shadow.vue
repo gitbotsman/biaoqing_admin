@@ -5,8 +5,8 @@
   </ol>
   <div class="biaoqing-container">
     <div @click="tagShadow()" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot==='')}">所有马甲</div>
-    <div @click="tagShadow('false')" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot===false)}">未分配马甲</div>
-    <!-- <div @click="tagShadow('true')" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot===true)}">已分配马甲</div> -->
+    <div @click="tagShadow('0')" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot==='0')}">未分配马甲</div>
+    <!-- <div @click="tagShadow('1')" class="user-disable btn btn-sm btn-outline-primary mb-2 mr-3" :class="{active:(isAllot==='1')}">已分配马甲</div> -->
     <div class="biaoqing-table" v-if="shadowList.items">
       <table class="table table-bordered table-hover">
         <thead>
@@ -93,11 +93,11 @@
 </template>
 
 <script>
-import '../../../static/css/biaoqing/user.css'
-import '../../../static/css/biaoqing/biaoqing.css'
-import { Shadow } from '../../resources'
-import { formatTime } from '../../misc/utils'
-import Pagepublic from '../../widgets/pagepublic.vue'
+import '../../../../static/css/biaoqing/user.css'
+import '../../../../static/css/biaoqing/biaoqing.css'
+import { Shadow } from '../../../resources'
+import { formatTime } from '../../../misc/utils'
+import Pagepublic from '../../../widgets/pagepublic.vue'
 export default {
   data: () => ({
     loading: false,
@@ -138,8 +138,8 @@ export default {
   },
   methods: {
     tagShadow(isAllot){
-      if(isAllot==='false') isAllot=0;
-      if(isAllot==='true') isAllot=1;
+      if(isAllot==='0') isAllot=0;
+      if(isAllot==='1') isAllot=1;
       if(isAllot==='') isAllot='';
       var params={
         pageNum:1,

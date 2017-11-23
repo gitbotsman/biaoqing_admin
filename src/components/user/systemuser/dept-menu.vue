@@ -16,8 +16,8 @@
 </template>
 
 <script>
-  import {Department} from '../../resources'
-  import toastr from '../../misc/toastr.esm'
+  import {Department} from '../../../resources'
+  import toastr from '../../../misc/toastr.esm'
 
   export default {
     name: 'usermenu',

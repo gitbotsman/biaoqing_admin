@@ -65,9 +65,9 @@
   </div>
 </template>
 <script>
-  import { Admin, Role, Department } from '../../resources'
-  import Pagination from '../../widgets/pagination.vue'
-  import { debounce } from '../../misc/utils'
+  import { Admin, Role, Department } from '../../../resources'
+  import Pagination from '../../../widgets/pagination.vue'
+  import { debounce } from '../../../misc/utils'
   import AddUserMenu from './add-user-menu.vue'
   import UserMenu from './user-menu.vue'
   import DeptMenu from './dept-menu.vue'

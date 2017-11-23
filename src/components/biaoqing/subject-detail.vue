@@ -198,8 +198,8 @@
 												</div>
 											</div>
 										</div>
-										<span @click="deleteComment(comment.id)" class="delete-comment cursor">删除评论</span>
-										<span v-if="shadow" @click="replayComment" class="replay cursor">回复</span>
+										<span v-if="comment.enable" @click="deleteComment(comment.id)" class="delete-comment cursor">删除评论</span>
+										<span v-if="shadow && comment.enable" @click="replayComment" class="replay cursor">回复</span>
 										<span class="time">{{comment.createTime}}</span>
 									</div>
 								</div>
@@ -321,7 +321,7 @@ export default{
 		gifPage:1,
 		gifKey:'0',
 		selectGif:'',
-    	enable:'',
+    	enable:1,
 		childSendGif:{
 			showSendGif:true,
 			selectGif:"",
@@ -331,7 +331,8 @@ export default{
 		var subjectId = to.params.id;
 		var params = {
 			id:subjectId,
-			subjectId:subjectId
+			subjectId:subjectId,
+			enable:'1'
 		}
 		var gif={
 			pageSize:16,

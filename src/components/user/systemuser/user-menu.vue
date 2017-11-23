@@ -47,8 +47,8 @@
 </template>
 
 <script>
-  import {Admin} from '../../resources'
-  import toastr from '../../misc/toastr.esm'
+  import {Admin} from '../../../resources'
+  import toastr from '../../../misc/toastr.esm'
 
   export default {
     name: 'usermenu',

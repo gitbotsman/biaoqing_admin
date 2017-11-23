@@ -60,7 +60,8 @@
     					target="_blank"
     					:title="work.userName"
     					:to="'/userDetail/'+work.userId"
-    				>{{work.userName}}</router-link>
+    					:class="{'pass-ing':work.userType==5}"
+    				>{{work.userName}}{{work.userType}}</router-link>
     			</td>
     			<td class="max-width100 publish-time">
     				<span>{{work.createTime}}</span>

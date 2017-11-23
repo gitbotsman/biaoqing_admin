@@ -45,10 +45,10 @@ const routes = [
     children: [
       {path: '', component: resolve => require(['./components/dashboard.vue'], resolve)},
       {path: '/html/:file', component: Html},
-      {path: '/users/:type?/:dept?', component: resolve => require(['./components/user/users.vue'], resolve)},
-      {path: '/user/new', component: resolve => require(['./components/user/new.vue'], resolve)},
-      {path: '/user/profile', component: resolve => require(['./components/user/profile.vue'], resolve)},
-      {path: '/user/:id', component: resolve => require(['./components/user/edit.vue'], resolve)},
+      {path: '/users/:type?/:dept?', component: resolve => require(['./components/user/systemuser/users.vue'], resolve)},
+      {path: '/user/new', component: resolve => require(['./components/user/systemuser/new.vue'], resolve)},
+      {path: '/user/profile', component: resolve => require(['./components/user/systemuser/profile.vue'], resolve)},
+      {path: '/user/:id', component: resolve => require(['./components/user/systemuser/edit.vue'], resolve)},
       {path: '/roles/:id?', component: resolve => require(['./components/role/roles.vue'], resolve)},
       {path: '/dict', component: resolve => require(['./components/dict/list.vue'], resolve)},
       {path: '/dict/new', component: resolve => require(['./components/dict/new.vue'], resolve)},
@@ -71,8 +71,8 @@ const routes = [
       {path: '/topicdetail/:id', component: resolve => require(['./components/biaoqing/topic-detail.vue'], resolve)},
       {path: '/comments', component: resolve => require(['./components/biaoqing/comment/list.vue'], resolve)},
 
-      {path: '/userlist', component: resolve => require(['./components/biaoqing/user-manage.vue'], resolve)},
-      {path: '/userdetail/:id', component: resolve => require(['./components/user/user-detail.vue'], resolve)},
+      {path: '/userlist', component: resolve => require(['./components/user/list/user-manage.vue'], resolve)},
+      {path: '/userdetail/:id', component: resolve => require(['./components/user/list/user-detail.vue'], resolve)},
       // 贴纸
       {path: '/stickerlist', component: resolve => require(['./components/sticker/sticker-list.vue'], resolve)},
       {path: '/facesticker', component: resolve => require(['./components/sticker/face-sticker.vue'], resolve)},
@@ -81,8 +81,8 @@ const routes = [
       {path: '/banner', component: resolve => require(['./components/sticker/banner-manage.vue'], resolve)},
 
       {path: '/systemdata', component: resolve => require(['./components/role/systemdata.vue'], resolve)},
-      {path: '/shadowmanage', component: resolve => require(['./components/user/shadow.vue'], resolve)},
-      {path: '/myshadow', component: resolve => require(['./components/user/my-shadow.vue'], resolve)},
+      {path: '/shadowmanage', component: resolve => require(['./components/user/shadow/shadow.vue'], resolve)},
+      {path: '/myshadow', component: resolve => require(['./components/user/shadow/my-shadow.vue'], resolve)},
       {path: '/tags', component: resolve => require(['./components/tags/tags-manage.vue'], resolve)},
 
       //用户认证审核

@@ -206,12 +206,12 @@
 
 </template>
 <script>
-import '../../../static/css/biaoqing/user.css'
+import '../../../../static/css/biaoqing/user.css'
 import querystring from 'querystring'
-import { UserManage } from '../../resources'
-import { viewImg, clearViewImg,formatTime } from '../../misc/utils'
+import { UserManage } from '../../../resources'
+import { viewImg, clearViewImg,formatTime } from '../../../misc/utils'
 import swal2 from 'sweetalert2'
-import Pagepublic from '../../widgets/pagepublic.vue'
+import Pagepublic from '../../../widgets/pagepublic.vue'
 
 
 export default {

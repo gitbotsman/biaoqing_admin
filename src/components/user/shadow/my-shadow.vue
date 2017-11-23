@@ -65,10 +65,10 @@
 </template>
 
 <script>
-import '../../../static/css/biaoqing/user.css'
-import '../../../static/css/biaoqing/biaoqing.css'
-import { Shadow } from '../../resources'
-import { formatTime } from '../../misc/utils'
+import '../../../../static/css/biaoqing/user.css'
+import '../../../../static/css/biaoqing/biaoqing.css'
+import { Shadow } from '../../../resources'
+import { formatTime } from '../../../misc/utils'
 
 export default {
   data: () => ({
