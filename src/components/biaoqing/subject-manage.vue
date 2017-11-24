@@ -19,10 +19,11 @@
 		        </span>
 		    </div>
 		    <span class="cursor pass-success clear-model-user" @click="clearUserSearch">清除用户搜索</span>
-		    <!-- <div class="fr">
+		    <div class="fr">
 		    	<span class="color999 hot-message-title">热门推送：</span>
-		    	<input type="text" class="hot-message" placeholder="设置热门后推送给用户的消息">
-		    </div> -->
+		    	<input v-model="hotmessage" type="text" class="hot-message" placeholder="设置热门后推送给用户的消息">
+		    	<span class="btn btn-sm btn-info ml-3 mr-4 cursor" @click="setMessage">修改</span>
+		    </div>
     	</div>
     	<ul class="biaoqing-nav nav nav-tabs nav-justified nav-line"  role="tablist">
 			<li class="nav-item " v-for="tag in tags.data">
@@ -83,6 +84,7 @@
 import '../../../static/css/biaoqing/biaoqing.css'
 import Pagepublic from '../../widgets/pagepublic.vue'
 import Subjectlist from '../../widgets/subjectlist.vue'
+import storage from 'localStorage'
 
 import { Subject,Findip } from '../../resources'
 import { formatTime } from '../../misc/utils'
@@ -90,6 +92,7 @@ import $ from 'jquery'
 
 export default {
 	data: () => ({
+		hotmessage:storage.getItem('hotmessage'),
 		loading: false,
 		searchUserKey:'',
 		searchKey:'',
@@ -112,7 +115,6 @@ export default {
 			enable:1,
 			keyword:'0'
 		}
-
 		Promise.all([Subject.works(params),Subject.tags()]).then(([works,tags]) => {
 			for(var i = 0;i<works.data.data.items.length;i++){
 				works.data.data.items[i].createTime=formatTime(works.data.data.items[i].createTime)
@@ -249,6 +251,11 @@ export default {
 				this.works=works.data.data;
 			})
     	},
+    	setMessage(){
+    		var hotmessage = this.hotmessage;
+    		storage.setItem('hotmessage', hotmessage)
+    		swal({type: 'success', title: '修改成功', text: '您的操作已经执行成功!'})
+    	},
     	searchSuject(){
     		this.$emit('loaded',true)
     		var searchKey = this.searchKey;
@@ -345,7 +352,6 @@ export default {
 	    		this.works = works.data.data;
 	    		this.you=1;
 			})
-
     	},
     	init(){
     		this.enable=''

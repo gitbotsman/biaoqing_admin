@@ -233,9 +233,10 @@ export default {
 		}
 		Promise.all([UserManage.users(params)]).then(([users]) => {
 			if(users.data.data && users.data.code==200){
-				for(var i = 0;i<users.data.data.items.length;i++){
-					users.data.data.items[i].createTime=formatTime(users.data.data.items[i].createTime)
-				}
+				users.data.data.items.forEach(item => {
+					item.createTime=formatTime(item.createTime)
+					item.lastDynamicTime=formatTime(item.lastDynamicTime)
+				})
 				next(vm => {
 					vm.users = users.data.data;
 				})
@@ -260,10 +261,10 @@ export default {
 			  this.$emit('loaded',false);
 			  $('body,html').animate({scrollTop:0},10);
 			  if(users.data.data && users.data.code==200){
-			    for(var i = 0;i<users.data.data.items.length;i++){
-			      users.data.data.items[i].createTime=formatTime(users.data.data.items[i].createTime)
-			      users.data.data.items[i].lastDynamicTime=formatTime(users.data.data.items[i].lastDynamicTime)
-			    }
+			    users.data.data.items.forEach(item => {
+					item.createTime=formatTime(item.createTime)
+					item.lastDynamicTime=formatTime(item.lastDynamicTime)
+				})
 			    this.recommend=params.rcmd;
 			    this.users=users.data.data;
 			    this.bans='';

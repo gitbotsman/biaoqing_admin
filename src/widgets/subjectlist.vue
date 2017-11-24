@@ -129,7 +129,7 @@ import swal2 from 'sweetalert2'
 import querystring from 'querystring'
 import $ from 'jquery'
 import toastr from '../misc/toastr.esm'
-
+import storage from 'localStorage'
 export default {
     name: 'pagepublic',
     props: ['works','tags','keyword','sort','asc','page'],
@@ -164,34 +164,46 @@ export default {
 			  "isHot": type
 			}
 			if(type=='1'){
-				swal2({
-				  	title: '输入推送给用户的消息',
-			    	text:'谨慎操作！',
-					input: 'text',
-					showCancelButton: true,
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					showLoaderOnConfirm: true,
-					reverseButtons:true,
-				  	preConfirm:function(reason){
-				  		return new Promise(function(resolve,reject){
-				  			if(reason!==''){params.message=reason}
-							swal2.close();
-				  			that.$http.post('/subject/update', params).then(response => {
-						        if(response.data.code==200){
-						        	var works = that.works;
-						        	works.items[index].isHot=params.isHot;
-				        			toastr.success('设置成功');
-						        }else{
-						        	toastr.error(response.data.msg);
-						        }
-						    })
-				  			
+				if(!storage.getItem('hotmessage') || storage.getItem('hotmessage')===""){
+					that.$http.post('/subject/update', params).then(response => {
+				        if(response.data.code==200){
+				        	var works = that.works;
+				        	works.items[index].isHot=params.isHot;
+		        			toastr.success('设置成功');
+				        }else{
+				        	toastr.error(response.data.msg);
+				        }
+				    })
+				}else{
+					swal2({
+					  	title: '输入推送给用户的消息',
+				    	text:'谨慎操作！',
+						input: 'text',
+						inputValue:storage.getItem('hotmessage'),
+						showCancelButton: true,
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						showLoaderOnConfirm: true,
+						reverseButtons:true,
+					  	preConfirm:function(reason){
+					  		return new Promise(function(resolve,reject){
+					  			if(reason!==''){params.message=reason}
+								swal2.close();
+					  			that.$http.post('/subject/update', params).then(response => {
+							        if(response.data.code==200){
+							        	var works = that.works;
+							        	works.items[index].isHot=params.isHot;
+					        			toastr.success('设置成功');
+							        }else{
+							        	toastr.error(response.data.msg);
+							        }
+							    })
+					  			
 
-				  		})
-				  	}
-				}).catch(swal2.noop);
-
+					  		})
+					  	}
+					}).catch(swal2.noop);
+				}
 			}else{
 				if(type){var msg = '设置成功'}else{var msg = '取消成功'}
 				that.$http.post('/subject/update', params).then(response => {

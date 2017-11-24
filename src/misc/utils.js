@@ -228,6 +228,7 @@ export const timepast = function (timestamp) {
 }
 /* 格式化时间 */
 export const formatTime = function (ns) {
+  if(!ns || ns==='') return '';
   var timeFormate = new Date(ns);
   var now = new Date();
   var nowYear = now.getFullYear();

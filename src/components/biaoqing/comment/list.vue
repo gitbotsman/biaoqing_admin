@@ -4,9 +4,9 @@
     <li class="breadcrumb-item">表情管理</li>
     <li class="breadcrumb-item">表情列表</li>
   </ol>
-  <div class="biaoqing-container">
+  <div class="biaoqing-container" @click="closesendGif">
     <div class="biaoqing-table">
-      <div class="pb-2">
+      <div class="pb-2 clearfloat">
         <div class="user-disable btn btn-sm btn-outline-primary cursor mr-2" :class="{'active':commentsParams.enable === ''}"
           @click="goComments(1,'all')">全部评论</div>
         <div class="user-disable btn btn-sm btn-outline-primary cursor mr-2" :class="{'active':commentsParams.enable === '1'}"
@@ -26,13 +26,14 @@
             <td style="width:100px;">
               <router-link class="hover-line" :to="'/subjectdetail/'+comment.subjectId">{{comment.subjectId}}</router-link>
             </td>
-            <td class="max-width500 normal-td">
+            <td class="max-width500 normal-td commentlist-container">
               <router-link class="commentlist-user " :to="'/userdetail/'+comment.user.id">
                 <div class="commentlist-user-tx mr-1">
                   <img :src="comment.user.fullAvatar">
                 </div>
                 <div class="commentlist-user-name" :class="{'pass-ing':comment.user.userType === 5}">{{comment.user.name}}</div>
               </router-link >
+              <!-- 评论内容 -->
               <div class="commentlist-content ml-2">
                   <p>{{comment.content}}</p>
                   <div v-if="comment.images && comment.images.length>0" class="comment-img">
@@ -51,7 +52,7 @@
                       <div class="commentlist-user-name" :class="{'pass-ing':comment.beReplayUser.userType === 5}">{{comment.beReplayUser.name}}</div>
                     </router-link >
                     <p>{{comment.beReplyComment.content}}</p>
-                    <div v-if="comment.beReplyComment.images" class="comment-img">
+                    <div v-if="comment.beReplyComment.images && comment.beReplyComment.images.length>0" class="comment-img">
                       <span v-for="img in comment.beReplyComment.images">
                         <img 
                         class="cursor" 
@@ -61,9 +62,10 @@
                     </div>
                   </div>
               </div>
+              <!-- 操作 -->
               <div class="commentlist-bar clearfloat">
                 <span class="time fr">{{comment.createTime}}</span>
-                <span v-if="comment.enable" class="replay cursor fr pr-3 pass-success">回复</span>
+                <span v-if="comment.enable && shadow" @click="replayComment" class="replay cursor fr pr-3 pass-success">回复</span>
                 <span v-if="comment.enable" @click="deleteComment(comment.id)" class="delete-comment cursor fr hover-line">删除评论</span>
                 <div class="pr fr" style="display:inline-block;">
                   <div class="btn-group mr-4">
@@ -78,6 +80,53 @@
                       <div class="dropdown-divider"></div>
                       <a @click="deleteBan(comment.user.id,index,'ban')" class="dropdown-item">解除禁言</a>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <!-- 回复框 -->
+              <div v-if="shadow && comment.enable" class="m-2 replay-input pr replay-input-close">
+                <div class="comment-input-gif clearfloat">
+                  <input v-model="replayContent" placeholder="请输入回复的内容" type="text" class="form-control">
+                  <!-- 选中的图片 -->
+                  <div v-if="childSendGif.selectGif.commentid==comment.id" class="sendGif-select-child-container mb-2 mt-2 mr-5 fr pr">
+                    <span class="gif-img-box cursor">
+                      <img
+                      @click="lookimg(
+                      childSendGif.selectGif.fullImage,
+                      childSendGif.selectGif.imageWidth,
+                      childSendGif.selectGif.imageHeight)"
+
+                      :src="childSendGif.selectGif.fullImage"
+                      :style="childSendGif.selectGif.style">
+                    </span>
+                    <i @click="deleteChildGifImg" class="gif-img-box-delete"><img src="../../../../static/img/bianjiziliao_icon_cuowu.png" ></i>
+                  </div>
+                </div>
+                <div class="mt-2 clearfloat">
+                  <div @click="childTabGif" class="btn btn-sm btn-success cursor fl" style="font-size: 12px;">
+                    GIF
+                  </div> 
+                  <button @click="addReplayComment(comment.id,comment.user.id,comment.subjectId)" class="btn btn-sm fr btn-info ml-5">回复</button>
+                </div>
+                <!-- 图片回复 -->
+                <div @click="stop" class="gif-container" :class="{none:childSendGif.showSendGif==false}" style="bottom:38px;">
+                  <div @scroll="tabGif" class="gif-container-box gif-child-box clearfloat">
+                    <span @click="selectChildGifImg(index,comment.id)" v-for="(gif,index) in gifs" class="fl gif-img pr">
+                      <span class="gif-img-box"><img :style="gif.style" :src="gif.fullImage"></span>
+                      <i
+                      v-if="
+                      childSendGif.selectGif.commentid==comment.id &&
+                      childSendGif.selectGif.id==gif.id" class="gifselect-icon">
+                        <img src="../../../../static/img/select_img.png">
+                      </i>
+                    </span>
+                    <div class="loading-gif">加载中...</div>
+                  </div>
+                  <div class="gif-container-bar">
+                    <span @click="totabGif('0')" :class="{active:gifKey=='0'}">
+                      <i class="ti-star pr-2" style="position:relative;top:-1px;"></i>最新</span>
+                    <span @click="totabGif('1')" :class="{active:gifKey=='1'}">
+                      <i class="ti-crown pr-2" style="position:relative;top:-1px;"></i>最热</span>
                   </div>
                 </div>
               </div>
@@ -113,9 +162,17 @@
         enable:'1',
         page:1
       },
-      
+      childSendGif:{
+        showSendGif:false,
+        selectGif:''
+      },
+
+      replayContent:'',
       comments:"",
-      gifs:""
+      gifs:"",
+      gifPage:1,
+      gifKey:'0',
+      flag:true
     }),
     beforeRouteEnter(to,form,next){
       var gif={
@@ -131,6 +188,9 @@
       Promise.all(request).then(([comments,gifs]) => {
         comments.data.data.items.forEach(function(item,index){
           item.createTime=formatTime(item.createTime);
+          gifs.data.data.items.forEach(img => {
+            img.style=formatStyle(img.imageWidth,img.imageHeight,100);
+          })
           if(item.images){
             item.images.forEach(img=>{
               if(img){
@@ -145,11 +205,8 @@
               }
             })
           }
-
         })
         next(vm => {
-
-        console.log(comments.data.data)
           vm.gifs = gifs.data.data.items;
           vm.comments=comments.data.data;
         })
@@ -159,9 +216,134 @@
       this.$emit('loaded',false)
     },
     methods: {
+      // 展开回复框
+      replayComment(e){
+        $('.gif-container-box').perfectScrollbar({cursorwidth:'7px'});
+        var replayInput = $(e.target).parents('.commentlist-container').find('.replay-input');
+        if(replayInput.hasClass('replay-input-opend')){
+          replayInput.removeClass('replay-input-opend')
+        }else{
+          $('.replay-input').removeClass('replay-input-opend');
+          replayInput.addClass('replay-input-opend')
+        }
+        this.replayInit()
+      },
+      replayInit(){
+        this.replayContent='';
+        this.childSendGif.selectGif=""
+      },
+      // 回复
+      addReplayComment(commentId,beReplyId,subjectId){
+        var replayCommentId = commentId;
+        var beReplyId = beReplyId;
+        var replayContent = this.replayContent;
+        var selectGif = this.childSendGif.selectGif;
+        var replayUserId=Shadow.current().selectShadow.user.id;
+        var data={
+          "beReplyCommentId": replayCommentId,
+          "beReplyId": beReplyId,
+          "content": replayContent,
+          "subjectId": subjectId,
+          "userId": replayUserId,
+          "images": [
+              {
+                "albumId": selectGif.id,
+                "subjectId": selectGif.subjectId
+              }
+          ]
+        }
+        if(replayContent !='' || selectGif!=''){
+          this.$http.post('/comment',data).then(res => {
+            if(res.data.code==200){
+              $('.replay-input').removeClass('replay-input-opend')
+              this.replayInit();
+              this.goComments(this.commentsParams.page);
+              this.$notice.success(res.data.msg)
+            }else{
+              this.$notice.error(res.data.msg)
+            }
+          })
+        }
+      },
+      // 选择图片评论
+      selectChildGifImg(index,commentid){
+        var selectGif = this.gifs[index];
+        selectGif.commentid=commentid;
+        this.childSendGif.selectGif=selectGif
+      },
+      // 切换图片评论
+      totabGif(key){
+        var gif={
+          pageSize:16,
+          pageNum:1,
+          keyword:key
+        }
+        Promise.all([Subject.gif(gif)]).then(([gifs]) => {
+          gifs.data.data.items.forEach(item => {
+              var imgW = item.imageWidth;
+            var imgH = item.imageHeight;
+            item.style=formatStyle(imgW,imgH,90);
+            })
+          this.gifs = gifs.data.data.items;
+          this.gifPage = gif.pageNum;
+          this.gifKey = gif.keyword;
+        })
+      },
+      // 滚动图片评论
+      tabGif(e){
+        var itemLength = $(e.target).find('.gif-img').length;
+        var gifHeight = Math.ceil(itemLength/4)*90 - parseInt($(e.target).height());
+        var gifScrollTop = $(e.target).scrollTop()
+        var flag = this.flag;
 
+        if(gifScrollTop>gifHeight && flag){
+          this.flag=false
+          var key = this.gifKey;
+          var page = this.gifPage+1;
+          var gif={
+            pageSize:16,
+            pageNum:page,
+            keyword:key
+          }
+          $('.loading-gif').css('display','block')
+          var request = [Subject.gif(gif)]
+          Promise.all(request).then(([gifs]) => {
+            gifs.data.data.items.forEach(item => {
+                var imgW = item.imageWidth;
+              var imgH = item.imageHeight;
+              item.style=formatStyle(imgW,imgH,90);
+              })
+            $('.loading-gif').css('display','none')
+            this.flag=true
+            var oldGif = this.gifs;
+            this.gifs = oldGif.concat(gifs.data.data.items);
+            this.childSendGif.sendGifs = oldGif.concat(gifs.data.data.items);
 
+            this.gifKey = gif.keyword;
+            this.gifPage = gif.pageNum;
+          })
+        }
+      },
+      // 打开和关闭图片评论
+      deleteChildGifImg(){
+        this.childSendGif.selectGif=""
+      },
+      stop(e){
+        e.stopPropagation();
+      },
+      closesendGif(e){
+        this.childSendGif.showSendGif=false;
+        this.sendGif=false
+        e.stopPropagation();
+      },
+      childTabGif(e){
+        this.childSendGif.showSendGif=!this.childSendGif.showSendGif
+        e.stopPropagation();
+      },
+      // 刷新评论
       goComments(page,enable){
+        this.replayInit();
+         $('.replay-input').removeClass('replay-input-opend');
         const $this=this 
         var params={
           pageSize:10,
@@ -214,7 +396,7 @@
         }, function(){
           $this.$http.delete('/comment/'+id,{params:params}).then(response => {
             if(response.data.code==200){
-              $this.goComments($this.page);
+              $this.goComments($this.commentsParams.page);
               $this.$notice.success('删除成功');
             }else{
               $this.$notice.error('删除失败');

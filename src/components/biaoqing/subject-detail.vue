@@ -157,31 +157,49 @@
 					<tr v-for="(comment,index) in comments.items">
 						<td class="replay-container">
 							<div class="flex flex-center">
-								<router-link class="comment-user-tx" :to="'/userdetail/'+comment.user.id" >
-									<img :src="comment.user.fullAvatar" />
-								</router-link>
 								<div class="comment-user-info">
-									<router-link class="name" :class="{'text-success':(comment.user.userType=='5')}" :to="'/userdetail/'+comment.user.id">
-										{{comment.user.name}}
-									</router-link>
+									<!-- 用户名 -->
+									<router-link class="commentlist-user " :to="'/userdetail/'+comment.user.id">
+				                      <div class="commentlist-user-tx mr-1">
+				                        <img :src="comment.user.fullAvatar">
+				                      </div>
+				                      <div class="commentlist-user-name" :class="{'pass-ing':comment.userType === 5}">{{comment.user.name}}</div>
+				                    </router-link >
+				                    <!-- 评论内容 -->
 									<p class="comment-p">
-										<span v-if="comment.beReplayUser">回复
-											<router-link class="pass-success" :to="'/userdetail/'+comment.beReplayUser.id">
-												{{comment.beReplayUser.name}}:
-											</router-link>
-										</span>
 										<span>{{comment.content}}</span>
 									</p>
 									<span v-if="comment.images">
-									<div v-for="img in comment.images"  v-if="img" class="comment-img">
-										<span>
-											<img class="cursor"
-											     @click="lookimg(img.fullImage,img.imageWidth,img.imageHeight)"
-											     :src="img.fullImage"
-											     :style="img.style">
-										</span>
-									</div>
+										<div v-for="img in comment.images"  v-if="img" class="comment-img">
+											<span>
+												<img class="cursor"
+												     @click="lookimg(img.fullImage,img.imageWidth,img.imageHeight)"
+												     :src="img.fullImage"
+												     :style="img.style">
+											</span>
+										</div>
 									</span>
+
+									<!-- 被回复的内容  -->
+									<div v-if="comment.beReplayUser" class="commentlist-replay-content m-2">
+										<router-link class="commentlist-user " :to="'/userdetail/'+comment.beReplayUser.id">
+					                      <div class="commentlist-user-tx mr-1">
+					                        <img :src="comment.beReplayUser.fullAvatar">
+					                      </div>
+					                      <div class="commentlist-user-name" :class="{'pass-ing':comment.beReplayUser.userType === 5}">{{comment.beReplayUser.name}}</div>
+					                    </router-link >
+					                    <p style="font-size:13px;">{{comment.beReplyComment.content}}</p>
+					                    <div v-if="comment.beReplyComment.images && comment.beReplyComment.images.length>0" class="comment-img">
+					                      <span v-for="img in comment.beReplyComment.images">
+					                        <img 
+					                        class="cursor" 
+					                        @click="lookimg(img.fullImage,img.imageWidth,img.imageHeight)"
+					                        :src="img.fullImage" :style="img.style">
+					                      </span>
+					                    </div>
+									</div>
+
+									<!-- 评论操作 -->
 									<div class="comment-user-info-tool pr">
 										<div class="pr" style="display:inline-block;">
 											<div class="btn-group mr-4 ">
@@ -204,6 +222,7 @@
 									</div>
 								</div>
 							</div>
+							<!-- 回复框 -->
 							<div v-if="shadow" class="mt-2 replay-input pr">
 								<div class="comment-input-gif clearfloat">
 									<input
@@ -289,9 +308,10 @@
 </div>
 </template>
 <script>
+import '../../../static/css/biaoqing/comments.css'
 import '../../../static/css/biaoqing/biaoqing.css'
 import { Subject } from '../../resources'
-import { formatTime } from '../../misc/utils'
+import { formatTime,formatStyle } from '../../misc/utils'
 import swal2 from 'sweetalert2'
 import querystring from 'querystring'
 import $ from 'jquery'
@@ -350,12 +370,12 @@ export default{
     			albums.data.data.forEach(item => {
     				var imgW = item.imageWidth;
 					var imgH = item.imageHeight;
-					item.style=vm.formatStyle(imgW,imgH,150);
+					item.style=formatStyle(imgW,imgH,150);
     			})
     			gifs.data.data.items.forEach(item => {
     				var imgW = item.imageWidth;
 					var imgH = item.imageHeight;
-					item.style=vm.formatStyle(imgW,imgH,90);
+					item.style=formatStyle(imgW,imgH,90);
     			})
 
 				comments.data.data.items.forEach(function(item,index){
@@ -363,10 +383,17 @@ export default{
 					if(item.images){
 						item.images.forEach(img=>{
 							if(img){
-								img.style=vm.formatStyle(img.imageWidth,img.imageHeight,100);
+								img.style=formatStyle(img.imageWidth,img.imageHeight,100);
 							}
 						})
 					}
+					if(item.beReplyComment && item.beReplyComment.images){
+			            item.beReplyComment.images.forEach(img=>{
+			              if(img){
+			                img.style=formatStyle(img.imageWidth,img.imageHeight,100);
+			              }
+			            })
+			          }
 				})
 				vm.gifs = gifs.data.data.items;
     			vm.subjectId=subjectId;
@@ -388,7 +415,7 @@ export default{
 			var imgW = this.gifs[index].imageWidth;
 			var imgH = this.gifs[index].imageHeight;
 			var selectGif = this.gifs[index];
-			selectGif.style=this.formatStyle(imgW,imgH,120);
+			selectGif.style=formatStyle(imgW,imgH,120);
 
     		this.selectGif=this.gifs[index]
     	},
@@ -424,7 +451,7 @@ export default{
 				gifs.data.data.items.forEach(item => {
     				var imgW = item.imageWidth;
 					var imgH = item.imageHeight;
-					item.style=this.formatStyle(imgW,imgH,90);
+					item.style=formatStyle(imgW,imgH,90);
     			})
 				this.gifs = gifs.data.data.items;
 				this.gifPage = gif.pageNum;
@@ -451,7 +478,7 @@ export default{
 					gifs.data.data.items.forEach(item => {
 	    				var imgW = item.imageWidth;
 						var imgH = item.imageHeight;
-						item.style=this.formatStyle(imgW,imgH,90);
+						item.style=formatStyle(imgW,imgH,90);
 	    			})
 					$('.loading-gif').css('display','none')
 					this.flag=true
@@ -554,9 +581,9 @@ export default{
 				    }
 				]
 			}
-			if(replayCommentId!='' || selectGif!=''){
+			if(replayContent!='' || selectGif!=''){
 				this.$http.post('/comment',data).then(res => {
-					if(res.data.code){
+					if(res.data.code==200){
 						$('.replay-input').removeClass('replay-input-opend')
 						this.closeReplayComment();
 						this.goComments(this.page);
@@ -633,15 +660,21 @@ export default{
 		        	if(item.images){
 		            	item.images.forEach(img=>{
 			                if(img){
-			                  img.style=$this.formatStyle(img.imageWidth,img.imageHeight,100);
+			                  img.style=formatStyle(img.imageWidth,img.imageHeight,100);
 			                }
 		            	})
 		            }
+		            if(item.beReplyComment && item.beReplyComment.images){
+			            item.beReplyComment.images.forEach(img=>{
+			              if(img){
+			                img.style=formatStyle(img.imageWidth,img.imageHeight,100);
+			              }
+			            })
+			          }
 		        })
 				this.page=page;
 				this.comments=comments.data.data;
 				this.enable = params.enable;
-				console.log(this.enable)
 			})
     	},
     	deleteBan(id,index,type){
@@ -727,18 +760,6 @@ export default{
 				})
 				swal.close()
 			})
-    	},
-    	formatStyle(imgW,imgH,width){
-			if (imgW>imgH){
-				var ml = ((imgW/imgH)*width)/2
-				var style="height:100%;left:50%;top: 0;margin-left: -"+ml+"px";
-			}else if(imgW<imgH){
-				var mt = ((imgH/imgW)*width)/2
-				var style="width:100%;left:0;top: 50%;margin-top: -"+mt+"px";
-			}else{
-				var style="width:100%;height:100%";
-			}
-			return style;
     	},
     },//methods
     components:{Pagepublic}
