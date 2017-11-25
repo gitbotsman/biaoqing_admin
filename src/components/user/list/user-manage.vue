@@ -22,7 +22,6 @@
 		        <button @click="searchUser('bans')" class="btn btn-secondary" type="button">Go!</button>
 		      </span>
 		    </div>
-
     		<div class="user-total" v-if="users.items"><i class="fa fa-diamond"></i>总注册人数{{users.totalCount}}人</div>
     		<div class="user-total" v-if="bans.items"><i class="fa fa-diamond"></i>被禁言人数{{bans.totalCount}}人</div>
     	</div>
@@ -77,7 +76,7 @@
 		    			</td>
 		    			<td>{{user.id}}</td>
 		    			<td class="max-width100">
-		    				<router-link target='_blank'
+		    				<router-link 
 		    				class="biaoqing-table-content hover-line"
 		    				:class="{'text-success':user.userType==5}"
 
@@ -121,7 +120,6 @@
 		    			<td class="max-width100 publish-time">
 		    				<span>{{user.createTime}}</span>
 		    			</td>
-
 		    			<td class="max-width20">
 		    				{{user.fansNum}}
 		    			</td>

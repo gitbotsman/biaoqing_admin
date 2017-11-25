@@ -368,5 +368,8 @@ export const Tags = resource('Tags', http, {
 export const Task = resource('Task', http, {
   liked: params => http.get('/subject/liked',{params:params}),
 })
+export const Report = resource('Report', http, {
+  list: params => http.get('/report',{params:params}),
+})
 
 

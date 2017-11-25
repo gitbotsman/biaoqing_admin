@@ -6,14 +6,25 @@
   </ol>
   <div class="biaoqing-container" @click="closesendGif">
     <div class="biaoqing-table">
-      <div class="pb-2 clearfloat">
+      <div class="pb-2 clearfloat flex flex-center">
         <div class="user-disable btn btn-sm btn-outline-primary cursor mr-2" :class="{'active':commentsParams.enable === ''}"
           @click="goComments(1,'all')">全部评论</div>
         <div class="user-disable btn btn-sm btn-outline-primary cursor mr-2" :class="{'active':commentsParams.enable === '1'}"
             @click="goComments(1,'1')">正常</div>
         <div class="user-disable btn btn-sm btn-outline-primary cursor" :class="{'active':commentsParams.enable === '0'}"
           @click="goComments(1,'0')">已删除</div>
+
+
+        <div class="input-group ml-5" style="width:300px;">
+            <input @keyup.enter="searchComments" type="text" class="form-control" v-model="search.userId" placeholder="输入用户ID">
+            <span class="input-group-btn">
+              <button @click="searchComments" class="btn btn-secondary" type="button">搜索</button>
+            </span>
+            
+        </div>
+        <span @click="clearSearch" class="cursor pass-success ml-2" style="font-size:14px;line-height:38px;">清除搜索</span>
       </div>
+
       <table class="table table-bordered ">
         <thead>
           <tr>
@@ -158,6 +169,10 @@
     data:() => ({
       shadow:Shadow.current(),
       loading: false,
+      search:{
+        userId:'',
+        keyword:''
+      },
       commentsParams:{
         enable:'1',
         page:1
@@ -184,6 +199,10 @@
         pageSize:10,
         enable:'1'
       }
+      if(to.query.id){
+        params.keyword=to.query.id;
+        params.enable='';
+      }
       var request = [Comment.comments(params),Subject.gif(gif)]
       Promise.all(request).then(([comments,gifs]) => {
         comments.data.data.items.forEach(function(item,index){
@@ -207,6 +226,7 @@
           }
         })
         next(vm => {
+          vm.commentsParams.enable =params.enable
           vm.gifs = gifs.data.data.items;
           vm.comments=comments.data.data;
         })
@@ -340,6 +360,50 @@
         this.childSendGif.showSendGif=!this.childSendGif.showSendGif
         e.stopPropagation();
       },
+      // 搜索评论
+      searchComments(userid,keyword){
+        var $this = this;
+        var id  = this.search.userId
+        var params={
+          pageSize:10,
+          pageNum:1,
+          userId:id
+        }
+        
+        // if(userid && userid!='') params.userId=userid;
+        // if(keyword && keyword!='') params.keyword=keyword;
+        console.log(params)
+        Promise.all([Comment.comments(params)]).then(([comments]) => {
+          
+          if(comments.data.data){
+            comments.data.data.items.forEach(function(item,index){
+              item.createTime=formatTime(item.createTime);
+              if(item.images){
+                item.images.forEach(img=>{
+                  if(img){
+                    img.style=formatStyle(img.imageWidth,img.imageHeight,100);
+                  }
+                })
+              }
+              if(item.beReplyComment && item.beReplyComment.images){
+                item.beReplyComment.images.forEach(img=>{
+                  if(img){
+                    img.style=formatStyle(img.imageWidth,img.imageHeight,100);
+                  }
+                })
+              }
+            })
+          }
+          $this.search.userId = params.userId
+          $this.commentsParams.page=params.pageNum;
+          $this.commentsParams.enable='';
+          $this.comments=comments.data.data;
+        })
+      },
+      clearSearch(){
+        this.search.userId=''
+        this.goComments(1)
+      },
       // 刷新评论
       goComments(page,enable){
         this.replayInit();
@@ -349,6 +413,8 @@
           pageSize:10,
           pageNum:page
         }
+        if(this.search.userId !=''){ params.userId=this.search.userId }
+
         if(enable){
           enable=='all'? params.enable='' : params.enable=enable
         }else{

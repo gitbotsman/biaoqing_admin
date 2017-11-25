@@ -90,6 +90,7 @@ const routes = [
       {path: '/verify/:id', component: resolve => require(['./components/user/verify/edit.vue'], resolve)},
 
       {path: '/task', component: resolve => require(['./components/task/task-list.vue'], resolve)},
+      {path: '/report', component: resolve => require(['./components/report/report.vue'], resolve)}
     ]
   },
   {path: '/login', component: resolve => require(['./components/login.vue'], resolve)},

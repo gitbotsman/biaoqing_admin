@@ -5,17 +5,20 @@
       <li class="breadcrumb-item">脸部贴纸</li>
     </ol>
     <div class="biaoqing-container">
-    	<div class="biaoqing-table pb-2">
-    		<div @click="openAdd" class="btn cursor btn-outline-success btn-sm mb-2"><i class="fa fa-plus-circle mr-2"></i>添加贴纸</div>
-    		<div @click="addCategory" class="btn cursor btn-outline-success btn-sm ml-2 mb-2"><i class="fa fa-plus-circle mr-2"></i>添加分类</div>
-    		<div v-if="stickersLength==0" @click="deleteCategory" class="btn cursor btn-outline-danger btn-sm ml-2 mb-2"><i class="fa fa-trash-o mr-2"></i>删除分类</div>
-			
+    	<div class="biaoqing-table pb-2 pr">
+    		<div @click="openAdd" class="btn cursor btn-outline-success btn-sm"><i class="fa fa-plus-circle mr-2"></i>添加贴纸</div>
+    		<div @click="addCategory" class="btn cursor btn-outline-success btn-sm ml-2"><i class="fa fa-plus-circle mr-2"></i>添加分类</div>
+    		<div v-if="stickersLength==0" @click="deleteCategory" class="btn cursor btn-outline-danger btn-sm ml-2"><i class="fa fa-trash-o mr-2"></i>删除分类</div>
+			<div class="face-tip "><i class="mr-1 fa fa-info-circle"></i>点击分类的同时按住Ctrl键修改权重值，按住Alt键修改分类名称</div>
     		<div class="clearfloat search-container flex-center mt-2">
     			<div class="btn-group btn-group-sm fl">
 	    			<button @click="laodSticker('all')" type="button" class="btn btn-outline-primary" :class="{'active':categoryId==''}">所有</button>
+
 		          	<button v-for="(category,index) in categorys.items" 
 		          			type="button" 
 		          			class="btn btn-outline-primary"
+		          			@click.ctrl.exact.stop="categoryRank(category.id,category.rank,category.name)"
+		          			@click.alt.exact.stop="categoryName(category.id,category.name)"
 		          			@click="laodSticker(category.id)"
 		          			:class="{'active':categoryId==category.id}">
 		          		{{category.name}}
@@ -26,6 +29,7 @@
     			<div @mouseenter="deleteBlock" @mouseleave="deleteNone" v-for="(sticker,index) in stickers.items" class="sticker-item clearfloat fl mr-2 mb-2 pr cursor">
     				<span class="sticker-item-img fl"><img :src="sticker.fullThumb"></span>
     				<span class="sticker-item-name fl" :title="sticker.name">{{sticker.name}}</span>
+    				<div @click="setRank(sticker.id,index)" class="sticker-number">{{sticker.rank}}</div>
     				<div @click="deleteSticker(sticker.id)" class="cursor delete-face">删除</div>
     			</div>
     		</div>
@@ -90,7 +94,9 @@ export default {
 	beforeRouteEnter (to,form,next) {
 		var params = {
 			categoryId:'',
-			pageSize:60
+			pageSize:60,
+			sort:'rank_ desc,update_time ',
+			asc:false
 		}
 		var resources = [StickerManage.faceCategory(),StickerManage.faceSticker(params)];
 		Promise.all(resources).then(([category,sticker]) => {
@@ -112,6 +118,45 @@ export default {
 			this.addName='';
 			this.addResource='';
 			this.upArry=[];
+    	},
+    	setRank(id,index){
+    		var that = this;
+			swal2({
+			  text:'请输入 0-9 排序值',
+			  input: 'number',
+			  confirmButtonText: '确定',
+			  cancelButtonText: '取消',
+			  showLoaderOnConfirm: true,
+			  showCancelButton: true,
+			  reverseButtons:true,
+			  inputAttributes: {
+			    min: 0,
+			    max: 9,
+			    step: 1
+			  },
+			  preConfirm:function(num){
+			  	return new Promise(function(resolve,reject){
+			  		if(num !=''){
+						var params = {
+							  "id": id,
+							  "rank": num
+							}
+						that.$http.put('/sticker',params).then(res => {
+							var stickers = that.stickers;
+							swal2.close()
+							if (res.data.code==200) {
+								that.loadPage(that.page)
+								that.$notice.success(res.data.msg)
+							}else{
+								that.$notice.error(res.data.msg)
+							}
+						})
+			  		}else{
+			  			reject('请输入排序值')
+			  		}
+			  	})
+			  }
+			}).catch(swal2.noop)
     	},
     	openAdd(){this.add=true},
     	deleteNone(){$('.delete-face').css('display','none')},
@@ -167,6 +212,80 @@ export default {
     			swal.close()
     		})
     		
+    	},
+    	categoryName(id,name){
+    		var that = this;
+    		swal2({
+			    title: "修改 ‘"+name+"’ 的分类名称",
+				input: 'text',
+				showCancelButton: true,
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				showLoaderOnConfirm: true,
+				reverseButtons:true,
+				inputValue:name,
+				preConfirm: function (text) {
+					return new Promise(function (resolve,reject) {
+				        if (text != '') {
+					        var params = {
+								"id": id,
+								"name": text
+							}
+							that.$http.put('/sticker/category',params).then(res => {
+								swal2.close()
+								if (res.data.code==200) {
+									that.laodCategory()
+									that.$notice.success(res.data.msg)
+								}else{
+									that.$notice.error(res.data.msg)
+								}
+							})
+				        } else {
+				        	reject('请输入名称！')
+				        }
+
+				    })
+				},
+			}).catch(swal2.noop)
+    	},
+    	categoryRank(id,rank,name){
+    		var that = this;
+			swal2({
+			  text:"修改 ‘"+name+"’ 分类的排序值(0-9)",
+			  input: 'number',
+			  confirmButtonText: '确定',
+			  cancelButtonText: '取消',
+			  showLoaderOnConfirm: true,
+			  showCancelButton: true,
+			  reverseButtons:true,
+			  inputAttributes: {
+			    min: 0,
+			    max: 9,
+			    step: 1
+			  },
+			  inputValue:rank,
+			  preConfirm:function(num){
+			  	return new Promise(function(resolve,reject){
+			  		if(num !=''){
+						var params = {
+							  "id": id,
+							  "rank": num
+							}
+						that.$http.put('/sticker/category',params).then(res => {
+							swal2.close()
+							if (res.data.code==200) {
+								that.laodCategory()
+								that.$notice.success(res.data.msg)
+							}else{
+								that.$notice.error(res.data.msg)
+							}
+						})
+			  		}else{
+			  			reject('请输入排序值')
+			  		}
+			  	})
+			  }
+			}).catch(swal2.noop)
     	},
     	laodCategory(){
     		Promise.all([StickerManage.faceCategory()]).then(([category]) => {
@@ -262,7 +381,9 @@ export default {
     		}
     		var params = {
     			categoryId:categoryId,
-    			pageSize:60
+    			pageSize:60,
+    			sort:'rank_ desc,update_time ',
+				asc:false
     		}
     		Promise.all([StickerManage.faceSticker(params)]).then(([sticker]) => {
 				this.stickers=sticker.data.data;
@@ -271,12 +392,14 @@ export default {
 			})
     	},
     	loadPage(page){
-    		this.$emit('loaded',true)
+    		this.$emit('loaded',true)                                                                                                     
     		var categoryId = this.categoryId;
     		var params = {
     			categoryId:categoryId,
     			pageSize:60,
-    			pageNum:page
+    			pageNum:page,
+    			sort:'rank_ desc,update_time ',
+				asc:false
     		}
     		Promise.all([StickerManage.faceSticker(params)]).then(([sticker]) => {
     			this.$emit('loaded',false)
@@ -327,6 +450,28 @@ export default {
 		font-size: 12px;
 		padding: 2px 5px;
 		display: none;
+	}
+	.face-tip{
+		position: absolute;
+		right: 0;
+		font-size: 13px;
+		display: inline-block;
+		line-height: 31px;
+		color: #999;
+		margin-left: 30px;
+	}
+	.sticker-number{
+		position: absolute;
+		left: 2px;
+		top: 2px;
+		color: #007bff;
+		background: #f5f5f5;
+		width: 23px;
+		height: 23px;
+		text-align: center;
+		line-height: 23px;
+		font-size: 14px;
+		border-radius: 100%;
 	}
 	.delete-face:hover{
 		background: #dc3545;

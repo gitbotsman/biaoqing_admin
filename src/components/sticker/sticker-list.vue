@@ -29,13 +29,6 @@
           {{hot.value}}
         </a>
       </li>
-      <!-- <li class="nav-item ">
-        <a
-          :class="{active:(enable==false)}"
-          @click="goDelete">
-          回收站
-        </a>
-      </li> -->
     </ul>
 		<div class="biaoqing-table">
 			<table class="table table-bordered table-hover">
