@@ -19,6 +19,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { -we
 .breadcrumb { background: transparent; display: flex; margin-bottom: 0 }
 .breadcrumb-item + .breadcrumb-item::before { font-family: FontAwesome; content: '\F105'; color: #636c72 }
 .list-group-item { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; outline: 0 }
+.overflow{text-overflow: ellipsis; overflow: hidden; white-space: nowrap; outline: 0}
 .list-group.no-border > .list-group-item { border-color: transparent }
 .list-group.list-group-gap > .list-group-item { margin-bottom: 5px; border-radius: 3px 3px 3px 3px }
 .list-group.list-group-sm > .list-group-item { padding: 6px 10px }

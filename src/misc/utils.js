@@ -4,6 +4,14 @@ import swal from 'sweetalert'
 import $ from 'jquery'
 
 
+export const todaydata = function(todayData,yesterdayData){
+  todayData.diffDeleteWorkCount = parseInt(todayData.deleteWorkCount)-parseInt(yesterdayData.deleteWorkCount);
+  todayData.diffHotWorkCount = parseInt(todayData.hotWorkCount)-parseInt(yesterdayData.hotWorkCount);
+  todayData.diffNewUserCount = parseInt(todayData.newUserCount)-parseInt(yesterdayData.newUserCount);
+  todayData.diffNewWorkCount = parseInt(todayData.newWorkCount)-parseInt(yesterdayData.newWorkCount);
+  todayData.diffNewWorkUserCount = parseInt(todayData.newWorkUserCount)-parseInt(yesterdayData.newWorkUserCount);
+  return todayData
+}
 /* 生成当前时间戳对应的62进制形式短链接 */
 export const shorten = function () {
   var DIGITS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'

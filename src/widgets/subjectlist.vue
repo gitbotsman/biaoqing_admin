@@ -20,6 +20,12 @@
 	      			<span class="fa fa-sort-down fl" :class="{active:(sort=='view_num' && asc==true)}" style="display:block;"></span>
 	      		</span>
 		      </th>
+		      <th>点击量
+		      	<span class="biaoqing-sort clearfloat" @click="goSubject(works.prevPageNumber,keyword,'click_num',!asc)">
+	      			<span class="fa fa-sort-up fl" :class="{active:(sort=='click_num' && asc==false)}" style="display:block;"></span>
+	      			<span class="fa fa-sort-down fl" :class="{active:(sort=='click_num' && asc==true)}" style="display:block;"></span>
+	      		</span>
+		      </th>
 		      <th>点赞
 				<span class="biaoqing-sort clearfloat" @click="goSubject(works.prevPageNumber,keyword,'liked_num',!asc)">
 	      			<span class="fa fa-sort-up fl" :class="{active:(sort=='liked_num' && asc==false)}"  style="display:block;"></span>
@@ -68,6 +74,9 @@
     			</td>
     			<td class="view-num">
     				<span>{{work.viewNum}}</span>
+    			</td>
+    			<td class="view-num">
+    				<span>{{work.clickNum}}</span>
     			</td>
     			<td class="like-num">
     				<span>{{work.likedNum}}</span>

@@ -14,10 +14,9 @@
             <th>电话</th>
             <th>认证描述</th>
             <th>审核状态</th>
-            <th>审核</th>
             <th>IP地址</th>
             <th>创建时间</th>
-            <th>操作</th>
+            <th>审核</th>
           </tr>
           </thead>
           <tbody>
@@ -25,28 +24,20 @@
             <td><router-link :title="item.user.name" :to="'/userDetail/'+item.user.id">{{item.user.name}}</router-link></td>
             <td>{{item.name}}</td>
             <td>{{item.phone}}</td>
-            <td>{{item.summary}}</td>
+            <td class="max-width100 ">
+              <span class="overflow" :title="item.summary">{{item.summary}}</span></td>
             <td>
               <span class="text-info" v-if="item.audit == 0"> 审核中 </span>
               <span class="pass-ing" v-if="item.audit == 1"> 通过 </span>
               <span class="text-danger" v-if="item.audit == -1"> 失败 </span>
             </td>
+            <td>{{item.clientHost}}</td>
+            <td>{{item.createTime}}</td>
             <td>
               <router-link :title="item.id" :to="'/verify/'+item.id">
                 <span v-if="item.audit == 1"> {{item.admin.name}} </span>
                 <span v-if="item.audit == 0"> 审核 </span>
               </router-link>
-            </td>
-            <td>{{item.clientHost}}</td>
-
-            <!--<td class="img-view" @mouseenter="bigImg"  @mouseleave="clearbigImg">-->
-              <!--<div class="biaoqing-list-cover">-->
-                <!--<img class="biaoqing-list-cover-img" :data-height="like.subject.coverHeight" :data-width="like.subject.coverWidth" :src="[like.subject.fullCover+'!thumb240']">-->
-              <!--</div>-->
-            <!--</td>-->
-            <td>{{item.createTime}}</td>
-            <td style="width: 70px !important;">
-              <span class="cursor hover-line text-danger" @click="">演习</span>
             </td>
           </tr>
           </tbody>

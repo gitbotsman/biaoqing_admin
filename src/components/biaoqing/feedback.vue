@@ -11,15 +11,22 @@
 		    		<tr>
 				      <th>内容</th>
 				      <th>来源</th>
+				      <th style="width:100px;">提交用户</th>
 				      <th>提交时间</th>
 				      <th>联系方式</th>
 				    </tr>
 		    	</thead>
 		    	<tbody>
 		    		<tr v-for="(feed,index) in feedback.items" >
-		    			<td :title="feed.subContent" class="max-width400">{{feed.subContent}}</td>
+		    			<td :title="feed.subContent" class="max-width100">{{feed.subContent}}</td>
 		    			<td :title="feed.device" class="max-width100">
 		    				{{feed.device}}
+		    			</td>
+		    			<td class="">
+		    				<router-link v-if="feed.user" :to="'/userdetail/'+feed.user.id">
+			    				<span class="user-tx mr-1"><img :src="feed.user.fullAvatar"></span>
+			    				<span class="overflow" style="max-width:150px;display:inline-block;">{{feed.user.name}}</span>
+		    				</router-link>
 		    			</td>
 		    			<td :title="feed.createTime" class="max-width50">
 		    				{{feed.createTime}}
@@ -86,3 +93,17 @@ export default {
     components:{Pagepublic}
 }
 </script>
+<style>
+.user-tx{
+	display: inline-block;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border-radius: 100%;
+}
+.user-tx img{
+	border-radius: 100%;
+    width: 100%;
+    height: 100%;
+}
+</style>

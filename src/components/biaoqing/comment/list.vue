@@ -14,15 +14,13 @@
         <div class="user-disable btn btn-sm btn-outline-primary cursor" :class="{'active':commentsParams.enable === '0'}"
           @click="goComments(1,'0')">已删除</div>
 
-
-        <div class="input-group ml-5" style="width:300px;">
-            <input @keyup.enter="searchComments" type="text" class="form-control" v-model="search.userId" placeholder="输入用户ID">
-            <span class="input-group-btn">
-              <button @click="searchComments" class="btn btn-secondary" type="button">搜索</button>
-            </span>
-            
+        <div class="md-form-group ml-5" :class="[search.keyword==''?'md-float-label':'']">
+          <input @keyup.enter="searchComments('keyword')" class="md-input" v-model="search.keyword"><label>搜索评论内容</label>
         </div>
-        <span @click="clearSearch" class="cursor pass-success ml-2" style="font-size:14px;line-height:38px;">清除搜索</span>
+        <div class="md-form-group ml-3" :class="[search.userId==''?'md-float-label':'']">
+          <input @keyup.enter="searchComments" class="md-input" v-model="search.userId"><label>输入用户ID</label>
+        </div>
+        <span @click="clearSearch" class="cursor pass-success ml-4" style="font-size:14px;line-height:38px;">清除搜索</span>
       </div>
 
       <table class="table table-bordered ">
@@ -360,8 +358,7 @@
         this.childSendGif.showSendGif=!this.childSendGif.showSendGif
         e.stopPropagation();
       },
-      // 搜索评论
-      searchComments(userid,keyword){
+      searchComments(type){
         var $this = this;
         var id  = this.search.userId
         var params={
@@ -369,12 +366,12 @@
           pageNum:1,
           userId:id
         }
-        
-        // if(userid && userid!='') params.userId=userid;
-        // if(keyword && keyword!='') params.keyword=keyword;
-        console.log(params)
+        if(type=='keyword'){
+          params.keyword=this.search.keyword
+        }else{
+          params.userId=this.search.userId
+        }
         Promise.all([Comment.comments(params)]).then(([comments]) => {
-          
           if(comments.data.data){
             comments.data.data.items.forEach(function(item,index){
               item.createTime=formatTime(item.createTime);
@@ -394,6 +391,12 @@
               }
             })
           }
+          if(type=='keyword'){
+            $this.search.keyword=params.keyword
+          }else{
+           $this.search.userId=params.userId
+          }
+
           $this.search.userId = params.userId
           $this.commentsParams.page=params.pageNum;
           $this.commentsParams.enable='';
@@ -402,6 +405,7 @@
       },
       clearSearch(){
         this.search.userId=''
+        this.search.keyword=''
         this.goComments(1)
       },
       // 刷新评论
@@ -414,6 +418,7 @@
           pageNum:page
         }
         if(this.search.userId !=''){ params.userId=this.search.userId }
+        if(this.search.keyword !=''){ params.keyword=this.search.keyword }
 
         if(enable){
           enable=='all'? params.enable='' : params.enable=enable

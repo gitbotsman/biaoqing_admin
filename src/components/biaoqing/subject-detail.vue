@@ -365,6 +365,7 @@ export default{
 		Subject.comment(params),
 		Subject.gif(gif)]
 		Promise.all(request).then(([detail,albums,comments,gifs]) => {
+			console.log(comments)
 			detail.data.data.createTime=formatTime(detail.data.data.createTime);
     		next(vm => {
     			albums.data.data.forEach(item => {
@@ -377,7 +378,9 @@ export default{
 					var imgH = item.imageHeight;
 					item.style=formatStyle(imgW,imgH,90);
     			})
+    			if(comments.data.code==200){
 
+    			}
 				comments.data.data.items.forEach(function(item,index){
 					item.createTime=formatTime(item.createTime);
 					if(item.images){
@@ -393,7 +396,7 @@ export default{
 			                img.style=formatStyle(img.imageWidth,img.imageHeight,100);
 			              }
 			            })
-			          }
+			        }
 				})
 				vm.gifs = gifs.data.data.items;
     			vm.subjectId=subjectId;
